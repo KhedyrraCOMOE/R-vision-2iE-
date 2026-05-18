@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M20 — Droit du Travail · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; margin-top: 12px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 8px; border-radius: 4px; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { background: #00f0c0; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; border-radius: var(--r2); border: 1px solid rgba(255,107,53,0.4); background: rgba(255,107,53,0.1); color: var(--orange); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 72px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.score-label { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); }
+.score-stat.red { border-color: rgba(255,77,106,0.4); }
+.score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M20</div>
+  <div class="header-title">Droit du Travail — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '📜',
+    title: 'Contrat de Travail — Définition & Caractéristiques',
+    subtitle: 'CTB Art.29 · Chap. 1',
+    content: `
+      <div class="memo-section-title">📌 Définition légale (Art.29 CTB)</div>
+      <div class="key-box"><div class="key-title">Définition</div><div class="key-text">Toute convention écrite ou verbale par laquelle une personne (travailleur) s'engage à mettre son activité professionnelle, moyennant rémunération, sous la direction et l'autorité d'une autre personne (employeur).</div></div>
+      <div class="memo-section-title">⚡ 3 Éléments constitutifs</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Prestation de travail</div><div class="def-text">Fourniture d'un service ou travail effectif</div></div>
+        <div class="def-item"><div class="def-term">Rémunération</div><div class="def-text">Salaire en espèce ou en nature</div></div>
+        <div class="def-item"><div class="def-term">Subordination juridique</div><div class="def-text">Critère ESSENTIEL — soumission à la direction et au contrôle de l'employeur</div></div>
+        <div class="def-item"><div class="def-term">Intuiti personae</div><div class="def-text">Le travailleur doit personnellement exécuter le travail</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège classique</div><div class="piege-text">La caractéristique ESSENTIELLE n'est PAS le caractère bilatéral, ni la rémunération (présents dans d'autres contrats) — c'est la <strong>subordination juridique</strong>.</div></div>
+    `
+  },
+  {
+    icon: '🔀',
+    title: 'Distinction Contrat Travail / Contrats Voisins',
+    subtitle: 'Chap. 1 · Pages 9-12',
+    content: `
+      <table class="chiffres-table">
+        <tr><th>Contrat</th><th>Critère distinctif</th></tr>
+        <tr><td>Entreprise</td><td>Exécution de sa propre initiative — pas de subordination — directives que pour l'orientation générale</td></tr>
+        <tr><td>Mandat</td><td>Mandataire agit pour compte d'autrui mais pas sous autorité pour sa conduite globale</td></tr>
+        <tr><td>Société</td><td>Partage des bénéfices ET des risques — droit de regard sur la marche de l'entreprise</td></tr>
+        <tr><td>Louage de chose</td><td>Mise à disposition d'une chose — le lien de subordination tranche</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">Règle d'or</div><div class="key-text">Dans tous les cas, c'est l'<strong>absence ou présence du lien de subordination</strong> qui permet de qualifier le contrat.</div></div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'CDI vs CDD — Types de contrats',
+    subtitle: 'Chap. 2 · Art.49-54 CTB',
+    content: `
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">CDI</div><div class="def-text">Durée non fixée à l'avance. Caractérisé par la faculté de <strong>résiliation unilatérale et réciproque</strong>.</div></div>
+        <div class="def-item"><div class="def-term">CDD</div><div class="def-text">Terme fixé à l'avance. Durée max : <strong>2 ans</strong> (nationaux), <strong>3 ans</strong> (non-nationaux). CDD abusivement renouvelé → CDI.</div></div>
+      </div>
+      <div class="memo-section-title">⚠ Inconvénients du CDD pour le travailleur</div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège : ce que le CDD PRIVE</div><div class="piege-text">
+        1. Prive de la <strong>mesure de protection par le préavis</strong> à l'arrivée du terme.<br>
+        2. Prive des <strong>avantages d'ancienneté</strong> (renouvellements successifs sans continuité).
+        <br><em>❌ Ne prive PAS de l'indemnité compensatrice de congé (droit maintenu).</em>
+      </div></div>
+      <div class="memo-section-title">📝 Période d'essai (CCIP Art.12)</div>
+      <table class="chiffres-table">
+        <tr><th>Catégorie</th><th>Durée max</th></tr>
+        <tr><td>Personnel payé à l'heure/journée</td><td>8 jours</td></tr>
+        <tr><td>Employés</td><td>1 mois</td></tr>
+        <tr><td>Agents de maîtrise, techniciens, ingénieurs</td><td>3 mois</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">Règle période d'essai</div><div class="key-text">Pendant l'essai : rupture possible sans indemnités ni préavis par l'une ou l'autre partie.</div></div>
+    `
+  },
+  {
+    icon: '⏸',
+    title: 'Suspension du Contrat de Travail',
+    subtitle: 'Chap. 3 · Art.93 CTB — 19 cas',
+    content: `
+      <div class="key-box"><div class="key-title">Principe</div><div class="key-text">Le contrat continue d'exister mais les parties sont dispensées momentanément de leurs obligations. Pas de rupture.</div></div>
+      <div class="memo-section-title">📋 Principaux cas de suspension (Art.93)</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Militaire</div><div class="def-text">Départ sous les drapeaux de l'employeur ou du travailleur</div></div>
+        <div class="def-item"><div class="def-term">Maladie/accident</div><div class="def-text">Non professionnel (limité à 1 an) ou professionnel (AT/MP)</div></div>
+        <div class="def-item"><div class="def-term">Maternité</div><div class="def-text">Repos grossesse et accouchement / congé sans solde pour enfant</div></div>
+        <div class="def-item"><div class="def-term">Grève/lock-out</div><div class="def-text">Si procédure légale respectée</div></div>
+        <div class="def-item"><div class="def-term">Mise à pied</div><div class="def-text">Suspension disciplinaire</div></div>
+        <div class="def-item"><div class="def-term">Force majeure</div><div class="def-text">5 mois renouvelable 1 fois. Si persiste → résiliation possible.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège — grossesse</div><div class="piege-text">La femme enceinte peut <strong>suspendre son contrat sur prescription médicale</strong>, sans que cela soit une rupture. Ce n'est PAS "s'absenter sans autorisation" ni "demander une augmentation".</div></div>
+    `
+  },
+  {
+    icon: '✏️',
+    title: 'Modification du Contrat de Travail',
+    subtitle: 'Chap. 4 · Art.91 CTB',
+    content: `
+      <div class="key-box"><div class="key-title">Art.91 CTB — Modification de la situation juridique de l'employeur</div><div class="key-text">En cas de succession, vente, fusion, transformation, mise en société… <strong>tous les contrats en cours SUBSISTENT</strong> entre le nouvel employeur et le personnel. Les contrats ne sont ni rompus, ni modifiés, ni suspendus automatiquement.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège fréquent</div><div class="piege-text">Réponses pièges : "contrats rompus", "contrats suspendus", "contrats modifiés" → toutes FAUSSES.<br>La bonne réponse est toujours : <strong>"tous les contrats en cours subsistent"</strong>.</div></div>
+      <div class="memo-section-title">Modification proposée par l'employeur</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Si travailleur accepte</div><div class="def-text">Poursuite du contrat modifié</div></div>
+        <div class="def-item"><div class="def-term">Si travailleur refuse</div><div class="def-text">Rupture imputable à l'employeur → préavis + indemnités à charge de l'employeur</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '💔',
+    title: 'Résiliation du Contrat — Préavis & Licenciement',
+    subtitle: 'Chap. 5 · Art.97 CTB · CCIP Art.30-35',
+    content: `
+      <div class="memo-section-title">📋 9 cas de cessation (Art.97)</div>
+      <div class="key-box"><div class="key-title">Cas de cessation</div><div class="key-text">Accord-parties · Cessation d'activité · Annulation/résolution judiciaire · Arrivée du terme (CDD) · Démission · Licenciement · Retraite · Incapacité permanente totale · Décès</div></div>
+      <div class="memo-section-title">⏱ Durée du préavis (CCIP Art.30)</div>
+      <table class="chiffres-table">
+        <tr><th>Catégorie</th><th>Durée préavis</th></tr>
+        <tr><td>Personnel à salaire non mensuel (heure/journée)</td><td>8 jours</td></tr>
+        <tr><td>Travailleurs à salaire mensuel</td><td>1 mois</td></tr>
+        <tr><td>Agents de maîtrise, cadres et assimilés</td><td>3 mois</td></tr>
+      </table>
+      <div class="memo-section-title">💰 Indemnité de licenciement (CCIP Art.35)</div>
+      <table class="chiffres-table">
+        <tr><th>Période d'ancienneté</th><th>% / an sur salaire global mensuel moyen 6 derniers mois</th></tr>
+        <tr><td>Années 1 à 5</td><td>25%</td></tr>
+        <tr><td>Années 6 à 10</td><td>30%</td></tr>
+        <tr><td>Au-delà de 10 ans</td><td>40%</td></tr>
+      </table>
+      <div class="memo-section-title">⚠ Licenciement irrégulier vs abusif</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Irrégulier</div><div class="def-text">Procédure non respectée (forme, préavis…)</div></div>
+        <div class="def-item"><div class="def-term">Abusif</div><div class="def-text">Motif illégitime : grossesse, syndicat, opinions, plainte du travailleur, religion</div></div>
+      </div>
+      <div class="memo-section-title">📤 Droits en cas de démission</div>
+      <div class="key-box"><div class="key-title">Ce que le travailleur démissionnaire peut obtenir</div><div class="key-text">✅ Salaire de présence (jours travaillés)<br>✅ Certificat de travail<br>❌ PAS d'indemnité compensatrice de préavis (c'est lui qui démissionne)<br>❌ PAS d'indemnité de licenciement<br>⚠ Indemnité de fin de contrat seulement si ancienneté > 20 ans (selon CCIP)</div></div>
+    `
+  },
+  {
+    icon: '⚔️',
+    title: 'Conflits du Travail — Individuel vs Collectif',
+    subtitle: 'Partie 2 · Art.319 & Art.367 CTB',
+    content: `
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Conflit individuel</div><div class="def-text">Oppose <strong>un ou plusieurs travailleurs à leurs employeurs</strong> à l'occasion de l'exécution du contrat — pour la reconnaissance d'un <strong>droit individuel</strong>.</div></div>
+        <div class="def-item"><div class="def-term">Conflit collectif</div><div class="def-text">Oppose <strong>un groupement de travailleurs à un groupement d'employeurs ou à un employeur isolément</strong> — intérêts <strong>collectifs</strong> en jeu.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège — conflit collectif</div><div class="piege-text">Réponse piège : "intérêts INDIVIDUELS en jeu" → FAUX. Le conflit collectif met en jeu des intérêts <strong>COLLECTIFS</strong>.</div></div>
+    `
+  },
+  {
+    icon: '🏛️',
+    title: 'Procédure de Règlement des Conflits',
+    subtitle: 'Partie 2 · Art.320 / Art.369-373 CTB',
+    content: `
+      <div class="memo-section-title">⚖️ Conflit INDIVIDUEL — 3 phases</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Au sein de l'entreprise</strong> — par les délégués du personnel</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Inspection du Travail</strong> — tentative de conciliation amiable (obligatoire)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Tribunal du travail</strong> — en cas d'échec de conciliation</div></div>
+      <div class="memo-section-title">🔥 Conflit COLLECTIF — 2 étapes</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Conciliation</strong> — notification immédiate à l'Inspecteur du travail du ressort (conflit limité) OU au Directeur Général du Travail (conflit sur plusieurs ressorts). Délai : 15 jours.</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Arbitrage</strong> — Conseil d'arbitrage désigné par le <strong>Ministre chargé du travail</strong> (dans 10 jours après PV non-conciliation). Sentence susceptible de pourvoi en cassation.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges fréquents</div><div class="piege-text">
+        • Conflit sur <strong>un</strong> ressort → Inspecteur/Contrôleur du travail du ressort<br>
+        • Conflit sur <strong>plusieurs</strong> ressorts → Directeur Général du Travail<br>
+        • Conseil d'arbitrage désigné par le <strong>Ministre</strong> (pas l'Inspecteur, pas le DG)
+      </div></div>
+    `
+  },
+  {
+    icon: '⏰',
+    title: 'Durée du Travail — Heures Supplémentaires',
+    subtitle: 'Partie 3 · Art.137 CTB · Arrêté 2007-003',
+    content: `
+      <div class="key-box"><div class="key-title">Durée légale</div><div class="key-text">40 heures / semaine dans tous les établissements publics et privés (Art.137 CTB).<br>Équivalent mensuel : <strong>173,33 heures/mois</strong>.<br>Repos hebdomadaire : <strong>24h consécutives minimum</strong>, en principe le dimanche.</div></div>
+      <div class="memo-section-title">📈 Majorations heures supplémentaires (jour)</div>
+      <table class="chiffres-table">
+        <tr><th>Heures</th><th>Majoration</th></tr>
+        <tr><td>8 premières heures sup. de jour (jours ordinaires)</td><td>+15%</td></tr>
+        <tr><td>Heures sup. au-delà (jours ordinaires)</td><td>+35%</td></tr>
+        <tr><td>Jour du repos / jours fériés (jour)</td><td>+60%</td></tr>
+        <tr><td>Jours ordinaires (nuit)</td><td>+50%</td></tr>
+        <tr><td>Repos hebdomadaire / jours fériés (nuit)</td><td>+120%</td></tr>
+      </table>
+      <div class="memo-section-title">🔄 Heures d'équivalence (sélection)</div>
+      <table class="chiffres-table">
+        <tr><th>Secteur</th><th>Heures équivalentes à 40h</th></tr>
+        <tr><td>Pharmacies, commerce de détail</td><td>42h</td></tr>
+        <tr><td>Hôpitaux, hôtels/restaurants, stations-service</td><td>45h</td></tr>
+        <tr><td>Chauffeurs transport de personnel</td><td>48h</td></tr>
+        <tr><td>Gardiens de jour et de nuit</td><td>72h</td></tr>
+        <tr><td>Gens de maison</td><td>60h</td></tr>
+      </table>
+    `
+  },
+  {
+    icon: '🔒',
+    title: 'Lock-out, Grève & Droit du Travail — Notions clés',
+    subtitle: 'Art.388-389 CTB · Glossaire',
+    content: `
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Lock-out</div><div class="def-text">Décision par laquelle un employeur interdit aux <strong>salariés</strong> l'accès de l'entreprise à l'occasion d'un conflit collectif de travail.</div></div>
+        <div class="def-item"><div class="def-term">Grève</div><div class="def-text">Cessation concertée et collective du travail en vue d'appuyer des revendications professionnelles.</div></div>
+        <div class="def-item"><div class="def-term">Source du droit</div><div class="def-text">L'ensemble des règles applicables dans un État à un moment donné.</div></div>
+        <div class="def-item"><div class="def-term">Droit du travail</div><div class="def-text">L'ensemble des règles applicables aux relations individuelles et collectives entre travailleurs et employeurs.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège — lock-out</div><div class="piege-text">Le lock-out concerne LES SALARIÉS — pas les clients, pas les partenaires financiers, pas l'inspection du travail.</div></div>
+      <div class="key-box"><div class="key-title">Grève/lock-out interdit avant…</div><div class="key-text">…épuisement des procédures de <strong>conciliation et d'arbitrage</strong>. Violation = faute grave pour les travailleurs (perte préavis + dommages-intérêts).</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quel est l'élément constitutif ESSENTIEL du contrat de travail qui le distingue des autres contrats ?",type:'multi',opts:[{t:"Le caractère bilatéral ou synallagmatique",c:false},{t:"La subordination juridique",c:true},{t:"La rémunération",c:false},{t:"Le caractère onéreux",c:false}],diff:'easy',piege:true,expl:"La subordination juridique est le véritable critère du contrat de travail selon la doctrine et la jurisprudence. Les autres éléments (bilatéral, rémunération) se retrouvent dans d'autres types de contrats.",ref:"Chap. 1 › I.1 › Page 10"},
+  {q:"Dans un contrat d'entreprise, comment l'entrepreneur exécute-t-il sa tâche ?",type:'multi',opts:[{t:"Sous la direction et l'autorité d'une autre personne",c:false},{t:"De sa propre initiative en ne recevant des directives que pour l'orientation générale",c:true},{t:"En recevant quotidiennement les directives",c:false},{t:"Au nom d'un groupe de personnes",c:false}],diff:'med',piege:true,expl:"Dans le contrat d'entreprise, l'absence de subordination est la clé : l'entrepreneur agit de sa propre initiative et ne reçoit des directives que pour l'orientation générale — il n'est pas soumis à l'autorité permanente de l'employeur.",ref:"Chap. 1 › I.1.1.a › Page 10"},
+  {q:"Selon le CTB, la forme du contrat de travail est :",type:'multi',opts:[{t:"Obligatoirement écrite sous peine de nullité",c:false},{t:"Libre — l'accord de volonté des parties suffit",c:true},{t:"Obligatoirement établie par acte notarié",c:false},{t:"Soumise à visa de l'Inspection du Travail dans tous les cas",c:false}],diff:'easy',piege:false,expl:"En vertu du principe de liberté contractuelle, la forme est libre. L'exception concerne les contrats des travailleurs non-nationaux et ceux exécutés hors du pays, qui doivent être écrits et visés.",ref:"Chap. 2 › I › Page 13"},
+  {q:"La durée maximale du contrat de travail à durée déterminée pour un travailleur national est de :",type:'multi',opts:[{t:"1 an",c:false},{t:"2 ans",c:true},{t:"3 ans",c:false},{t:"5 ans",c:false}],diff:'easy',piege:false,expl:"Art.54 CTB : le CDD ne peut excéder 2 ans pour les travailleurs nationaux et 3 ans pour les non-nationaux.",ref:"Chap. 2 › I.1.b › Page 15"},
+  {q:"Combien de cas de suspension du contrat de travail sont prévus par l'Art.93 de la loi n°028-2008 ?",type:'multi',opts:[{t:"12 cas",c:false},{t:"15 cas",c:false},{t:"19 cas",c:true},{t:"21 cas",c:false}],diff:'med',piege:false,expl:"L'article 93 du Code du Travail du Burkina Faso prévoit exactement 19 cas de suspension du contrat de travail.",ref:"Chap. 3 › a › Page 18"},
+  {q:"Pendant la période de suspension du contrat de travail, que se passe-t-il ?",type:'multi',opts:[{t:"Le contrat est rompu définitivement",c:false},{t:"Le contrat continue d'exister mais les parties sont momentanément dispensées de leurs obligations",c:true},{t:"Seul l'employeur est dispensé de verser le salaire",c:false},{t:"Le contrat est automatiquement transformé en CDD",c:false}],diff:'easy',piege:false,expl:"La suspension n'est pas une rupture. Le contrat continue d'exister mais aucune des parties n'exécute ses obligations pendant la durée de la suspension.",ref:"Chap. 3 › b › Page 20"},
+  {q:"S'il survient une modification dans la situation juridique de l'employeur (vente, fusion…), que deviennent les contrats de travail en cours ?",type:'multi',opts:[{t:"Ils sont automatiquement rompus",c:false},{t:"Ils sont suspendus jusqu'à la fin de la transition",c:false},{t:"Ils subissent une modification automatique",c:false},{t:"Ils subsistent entre le nouvel employeur et le personnel",c:true}],diff:'med',piege:true,expl:"Art.91 CTB : tous les contrats de travail en cours au jour de la modification subsistent entre le nouvel employeur et le personnel. C'est la règle de la permanence du contrat de travail.",ref:"Chap. 4 › I › Page 21"},
+  {q:"La caractéristique essentielle du contrat de travail à durée indéterminée est :",type:'multi',opts:[{t:"Le caractère indéterminé du contrat",c:false},{t:"L'interdiction de toute rupture unilatérale",c:false},{t:"La faculté de résiliation unilatérale et réciproque laissée à chacun des contractants",c:true},{t:"La faculté de résiliation de commun accord uniquement",c:false}],diff:'med',piege:true,expl:"La caractéristique essentielle du CDI est la FACULTÉ de résiliation unilatérale ET réciproque. Attention : ce n'est pas simplement le caractère indéterminé de la durée.",ref:"Chap. 5 › I › Page 26"},
+  {q:"Le préavis a pour objet de permettre aux parties au contrat :",type:'multi',opts:[{t:"D'apprécier les compétences du travailleur",c:false},{t:"D'apprécier les conditions de travail",c:false},{t:"De donner à l'autre partie un délai pour prendre les mesures propres à pallier les conséquences de la rupture",c:true},{t:"D'apprécier la qualité du lien de subordination",c:false}],diff:'easy',piege:false,expl:"Le préavis donne à l'autre partie le temps nécessaire pour se préparer aux conséquences de la rupture : recherche d'emploi pour le travailleur, remplacement pour l'employeur.",ref:"Chap. 5 › I.2 › Page 26"},
+  {q:"La durée du préavis pour les agents de maîtrise, cadres et assimilés est de :",type:'multi',opts:[{t:"8 jours",c:false},{t:"1 mois",c:false},{t:"2 mois",c:false},{t:"3 mois",c:true}],diff:'easy',piege:false,expl:"CCIP Art.30 : agents de maîtrise, cadres et assimilés = 3 mois de préavis. Personnel non mensuel = 8 jours. Personnel mensuel = 1 mois.",ref:"Chap. 5 › I.2.a › Page 26"},
+  {q:"Le licenciement est dit IRRÉGULIER lorsque :",type:'multi',opts:[{t:"Il est fondé sur la religion du travailleur",c:false},{t:"Il est motivé par l'appartenance syndicale",c:false},{t:"La procédure n'a pas été respectée",c:true},{t:"Il est motivé par les opinions politiques",c:false}],diff:'med',piege:true,expl:"Irrégulier = problème de FORME (procédure non respectée). Abusif = problème de FOND (motif illégitime comme la religion, le syndicat, les opinions). Distinction fondamentale à mémoriser.",ref:"Chap. 5 › I.2 › Page 28"},
+  {q:"Le licenciement est dit ABUSIF lorsque (plusieurs réponses possibles) :",type:'multi',opts:[{t:"Motivé par la grossesse de la travailleuse",c:true},{t:"La procédure n'a pas été respectée",c:false},{t:"Motivé par le dépôt d'une plainte du travailleur contre l'employeur",c:true},{t:"Motivé par la baisse de rendement",c:false}],diff:'hard',piege:true,expl:"Licenciement abusif = motif illégitime : grossesse, syndicat, opinions, recours contre l'employeur. La baisse de rendement est un motif professionnel LÉGITIME. La procédure non respectée = irrégulier (pas abusif).",ref:"Chap. 5 › I.2 › Page 28"},
+  {q:"En cas de DÉMISSION, le travailleur peut prétendre à (plusieurs réponses possibles) :",type:'multi',opts:[{t:"Son salaire de présence",c:true},{t:"Son certificat de travail",c:true},{t:"Son indemnité compensatrice de préavis",c:false},{t:"Son indemnité de licenciement",c:false}],diff:'hard',piege:true,expl:"Le travailleur démissionnaire reçoit son salaire de présence et son certificat de travail. Il ne reçoit PAS d'indemnité compensatrice de préavis (car c'est lui qui démissionne) ni d'indemnité de licenciement.",ref:"Chap. 5 › II › Page 29"},
+  {q:"À l'arrivée du terme d'un CDD, le travailleur a droit à (plusieurs réponses possibles) :",type:'multi',opts:[{t:"Indemnité de fin de contrat",c:true},{t:"Indemnité compensatrice de congé s'il en existe",c:true},{t:"Indemnité compensatrice de préavis",c:false},{t:"Bonification d'échelon après 15 ans d'ancienneté",c:false}],diff:'hard',piege:true,expl:"À l'arrivée du terme d'un CDD, le travailleur reçoit l'indemnité de fin de contrat et l'indemnité compensatrice de congé si applicable. Il ne bénéficie PAS du préavis (inconvénient du CDD) ni d'une bonification d'échelon.",ref:"Chap. 5 › II › Page 29"},
+  {q:"Toute femme enceinte dont l'état a été dûment constaté a le droit de :",type:'multi',opts:[{t:"S'absenter sans autorisation préalable de son employeur",c:false},{t:"Demander une augmentation de salaire",c:false},{t:"Suspendre son contrat de travail sur prescription médicale",c:true},{t:"Demander de l'aide à un autre travailleur",c:false}],diff:'med',piege:true,expl:"Art.144 CTB : la femme enceinte peut SUSPENDRE son travail sur prescription médicale, sans que cela soit une cause de rupture de contrat. Elle ne peut pas s'absenter sans autorisation.",ref:"Chap. 5 › I.2.d › Page 28"},
+  {q:"Le contrat d'apprentissage est obligatoirement soumis au visa de :",type:'multi',opts:[{t:"Le Ministre du Travail",c:false},{t:"L'Inspecteur du Travail du ressort",c:true},{t:"L'A.N.P.E.",c:false},{t:"Le tribunal du travail",c:false}],diff:'med',piege:false,expl:"Le contrat d'apprentissage doit être soumis au visa de l'Inspecteur du Travail du ressort. C'est lui qui procède aux vérifications. Après visa, il est enregistré à l'A.N.P.E.",ref:"Chap. 6 › I › Page 31"},
+  {q:"En cas d'OMISSION du visa du contrat d'apprentissage, que se passe-t-il ?",type:'multi',opts:[{t:"Le contrat d'apprentissage est nul et sans effet",c:false},{t:"Le maître doit verser une allocation d'apprentissage",c:false},{t:"Le contrat est requalifié en contrat de travail et le maître doit verser un salaire ≥ SMIG",c:true},{t:"Le contrat reste valable mais est régularisé dans les 30 jours",c:false}],diff:'hard',piege:false,expl:"En cas d'omission du visa, il n'y a pas de contrat d'apprentissage mais un contrat de travail. Le maître doit alors payer un salaire au moins égal au SMIG (et non une simple allocation d'apprentissage).",ref:"Chap. 6 › I › Page 32"},
+  {q:"Le différend individuel du travail oppose :",type:'multi',opts:[{t:"Un groupement de travailleurs à un groupement d'employeurs",c:false},{t:"Un ou plusieurs travailleurs à leurs employeurs pour la reconnaissance d'un droit individuel",c:true},{t:"Un groupement de travailleurs à un employeur dans lequel des intérêts collectifs sont en jeu",c:false},{t:"Plusieurs travailleurs à un employeur sur l'interprétation d'une convention collective",c:false}],diff:'med',piege:true,expl:"Art.319 CTB : le différend individuel oppose un ou plusieurs travailleurs à leurs employeurs à l'occasion de l'exécution du contrat de travail, pour la reconnaissance d'un DROIT INDIVIDUEL.",ref:"Partie 2 › Chap. 1 › Page 38"},
+  {q:"Tout conflit collectif circonscrit dans le ressort territorial d'une Inspection du Travail doit être notifié à :",type:'multi',opts:[{t:"Le Secrétaire Général du ministère chargé du travail",c:false},{t:"L'inspecteur ou le contrôleur du travail du ressort",c:true},{t:"Le Ministre chargé du travail",c:false},{t:"Le Directeur Général du Travail",c:false}],diff:'med',piege:true,expl:"Si le conflit collectif est limité à un seul ressort territorial → notification à l'Inspecteur/Contrôleur du travail du ressort. Si le conflit s'étend sur plusieurs ressorts → Directeur Général du Travail.",ref:"Partie 2 › Chap. 2 › I › Page 42"},
+  {q:"Le conflit collectif du travail oppose :",type:'multi',opts:[{t:"Plusieurs travailleurs à un employeur (intérêts individuels)",c:false},{t:"Un groupement de travailleurs à un groupement d'employeurs ou à un employeur isolément dans lequel des intérêts COLLECTIFS sont en jeu",c:true},{t:"Un ou plusieurs travailleurs à leur employeur pour la reconnaissance d'un droit individuel",c:false},{t:"Un groupement de travailleurs à un employeur dans lequel des intérêts INDIVIDUELS sont en jeu",c:false}],diff:'hard',piege:true,expl:"Le conflit collectif implique OBLIGATOIREMENT des intérêts COLLECTIFS (pas individuels). L'option 'intérêts individuels' est un piège classique à éviter.",ref:"Partie 2 › Chap. 2 › Page 41"},
+  {q:"Dans la procédure de règlement du conflit collectif, le conseil d'arbitrage est désigné par :",type:'multi',opts:[{t:"Le Directeur Général du Travail",c:false},{t:"L'inspecteur ou le contrôleur du travail du ressort",c:false},{t:"Le Ministre chargé du travail",c:true},{t:"Le Ministre chargé de l'emploi",c:false}],diff:'med',piege:true,expl:"C'est le MINISTRE CHARGÉ DU TRAVAIL qui désigne le conseil d'arbitrage dans les 10 jours suivant la réception du PV de non-conciliation.",ref:"Partie 2 › Chap. 2 › I › Page 43"},
+  {q:"Lorsque le conflit collectif s'étend sur plusieurs ressorts territoriaux, il est notifié au :",type:'multi',opts:[{t:"Inspecteur ou contrôleur du travail",c:false},{t:"Conseil d'arbitrage",c:false},{t:"Ministre chargé du travail",c:false},{t:"Directeur Général du Travail",c:true}],diff:'med',piege:true,expl:"Si le conflit dépasse un seul ressort territorial, c'est le DIRECTEUR GÉNÉRAL DU TRAVAIL qui est compétent pour la conciliation (pas le Ministre, pas l'Inspecteur).",ref:"Partie 2 › Chap. 2 › I › Page 42"},
+  {q:"La source du droit désigne :",type:'multi',opts:[{t:"L'ensemble des règles applicables aux cadres dans une entreprise donnée",c:false},{t:"L'ensemble des règles applicables au monde du travail",c:false},{t:"L'ensemble des règles applicables aux travailleurs étrangers",c:false},{t:"L'ensemble des règles applicables dans un État à un moment donné",c:true}],diff:'easy',piege:true,expl:"La 'source du droit' (notion générale de droit) désigne l'ensemble des règles applicables dans un État à un moment donné. Ne pas confondre avec le 'droit du travail' qui lui est plus spécifique.",ref:"Introduction › Page 6"},
+  {q:"La durée légale de travail hebdomadaire au Burkina Faso est de :",type:'multi',opts:[{t:"35 heures",c:false},{t:"40 heures",c:true},{t:"45 heures",c:false},{t:"48 heures",c:false}],diff:'easy',piege:false,expl:"Art.137 CTB : la durée légale de travail dans les établissements publics ou privés ne peut excéder 40 heures par semaine.",ref:"Partie 3 › Chap. 1 › Page 47"},
+  {q:"Le repos hebdomadaire est de :",type:'multi',opts:[{t:"12 heures consécutives",c:false},{t:"24 heures minimum par semaine",c:true},{t:"48 heures minimum par semaine",c:false},{t:"36 heures consécutives",c:false}],diff:'easy',piege:false,expl:"Art.155 CTB : le repos hebdomadaire est de 24 heures minimum par semaine et a lieu en principe le dimanche.",ref:"Partie 3 › Chap. 2 › I › Page 55"},
+  {q:"La durée de la période d'essai pour les agents de maîtrise, techniciens et ingénieurs est de :",type:'multi',opts:[{t:"8 jours",c:false},{t:"1 mois",c:false},{t:"3 mois",c:true},{t:"5 mois",c:false}],diff:'easy',piege:true,expl:"CCIP Art.12 : agents de maîtrise, techniciens, ingénieurs = 3 mois maximum. Attention : 5 mois n'existe pas dans le texte.",ref:"Chap. 2 › II.2 › Page 16"},
+  {q:"La majoration des heures supplémentaires pour chacune des 8 premières heures de jour (jours ordinaires) est de :",type:'multi',opts:[{t:"10%",c:false},{t:"15%",c:true},{t:"35%",c:false},{t:"50%",c:false}],diff:'med',piege:false,expl:"Arrêté 2007-003 : les 8 premières heures supplémentaires de jour donnent lieu à une majoration de 15%. Les heures suivantes : 35%. Jours de repos/fériés : 60%.",ref:"Partie 3 › Chap. 2 › II.1 › Page 52"},
+  {q:"La majoration des heures supplémentaires effectuées la nuit pendant les jours ordinaires est de :",type:'multi',opts:[{t:"35%",c:false},{t:"50%",c:true},{t:"60%",c:false},{t:"120%",c:false}],diff:'med',piege:true,expl:"Arrêté 2007-003 : heures supplémentaires de NUIT les jours ordinaires = 50%. Pour les jours de repos et fériés de nuit = 120%.",ref:"Partie 3 › Chap. 2 › II.2 › Page 53"},
+  {q:"Le contrat de travail à durée déterminée abusivement renouvelé se transforme en :",type:'multi',opts:[{t:"Contrat d'apprentissage",c:false},{t:"Contrat de mandat",c:false},{t:"Contrat de travail à durée indéterminée",c:true},{t:"Contrat d'entreprise",c:false}],diff:'easy',piege:false,expl:"Art.54 CTB : le CDD abusivement renouvelé se transforme automatiquement en CDI. C'est une protection essentielle du travailleur contre l'abus de contrats précaires.",ref:"Chap. 2 › I.1.b › Page 15"},
+  {q:"Le contrat de travail est conclu 'intuiti personae' du côté du :",type:'multi',opts:[{t:"Employeur uniquement",c:false},{t:"Travailleur uniquement",c:true},{t:"Des deux parties",c:false},{t:"Ni de l'un ni de l'autre",c:false}],diff:'med',piege:true,expl:"Le contrat de travail est conclu intuiti personae DU CÔTÉ DU TRAVAILLEUR seulement. C'est pourquoi en cas de modification de la situation juridique de l'employeur, les contrats subsistent.",ref:"Chap. 4 › I.1 › Page 21"},
+  {q:"Quels éléments sont inclus dans le calcul de l'indemnité compensatrice de préavis ? (plusieurs réponses)",type:'multi',opts:[{t:"Le salaire catégoriel et le sursalaire",c:true},{t:"La prime d'ancienneté",c:true},{t:"L'indemnité de transport",c:false},{t:"Les indemnités de fonction",c:true}],diff:'hard',piege:true,expl:"Inclus : salaire catégoriel + sursalaire + prime d'ancienneté + heures supplémentaires + indemnités de fonction. EXCLUS : primes de remboursement de frais (transport, logement, rendement, assiduité).",ref:"Chap. 5 › I.2.c › Page 27"},
+  {q:"Les heures supplémentaires sont limitées à quel maximum hebdomadaire ?",type:'multi',opts:[{t:"10 heures",c:false},{t:"15 heures",c:false},{t:"20 heures",c:true},{t:"25 heures",c:false}],diff:'med',piege:false,expl:"Les heures supplémentaires ne peuvent être effectuées que dans la limite de 20 heures maximum par semaine.",ref:"Partie 3 › Chap. 2 › Page 50"},
+  {q:"Pendant la période d'essai, les parties peuvent rompre le contrat :",type:'multi',opts:[{t:"Avec préavis d'1 mois obligatoire",c:false},{t:"Sans indemnités ni préavis",c:true},{t:"Avec versement d'une indemnité de rupture",c:false},{t:"Uniquement d'un commun accord",c:false}],diff:'easy',piege:false,expl:"La période d'essai offre aux deux parties la faculté réciproque de rompre le contrat sans indemnités ni préavis — c'est l'un de ses avantages pour les deux parties.",ref:"Chap. 2 › II › Page 16"},
+  {q:"La durée du contrat d'apprentissage ne peut être supérieure à :",type:'multi',opts:[{t:"1 an",c:false},{t:"2 ans",c:false},{t:"3 ans",c:true},{t:"5 ans",c:false}],diff:'easy',piege:false,expl:"La durée du contrat d'apprentissage ne peut excéder 3 ans. Les deux premiers mois sont considérés comme période d'essai.",ref:"Chap. 6 › III.1 › Page 33"},
+  {q:"La majoration des heures supplémentaires effectuées le jour du repos hebdomadaire (de nuit) est de :",type:'multi',opts:[{t:"60%",c:false},{t:"80%",c:false},{t:"100%",c:false},{t:"120%",c:true}],diff:'hard',piege:false,expl:"Arrêté 2007-003 : le taux maximum de majoration est de 120% pour les heures supplémentaires effectuées de nuit pendant le jour du repos hebdomadaire ou les jours fériés.",ref:"Partie 3 › Chap. 2 › II.2 › Page 53"},
+  {q:"Le lock-out est une décision par laquelle un employeur interdit :",type:'multi',opts:[{t:"Aux clients l'accès de l'entreprise lors d'un conflit collectif",c:false},{t:"Aux salariés l'accès de l'entreprise lors d'un conflit collectif",c:true},{t:"Aux partenaires financiers l'accès lors d'un conflit",c:false},{t:"À l'inspection du travail l'accès lors d'un conflit",c:false}],diff:'easy',piege:true,expl:"Le lock-out concerne exclusivement les SALARIÉS. C'est l'employeur qui ferme l'accès de l'entreprise aux travailleurs pendant un conflit collectif.",ref:"Partie 2 › Chap. 2 › Art.388 › Page 44"},
+  {q:"L'heure équivalente à 40h pour les gardiens de jour et de nuit est :",type:'multi',opts:[{t:"48h",c:false},{t:"56h",c:false},{t:"60h",c:false},{t:"72h",c:true}],diff:'hard',piege:false,expl:"Arrêté 2007-004 : 72 heures de présence par semaine pour les gardiens de jour et de nuit sont considérées comme équivalentes à 40 heures de travail effectif.",ref:"Partie 3 › Chap. 1 › I › Page 47"},
+  {q:"La demande du visa du contrat de travail incombe à :",type:'multi',opts:[{t:"Le travailleur",c:false},{t:"L'inspection du travail d'office",c:false},{t:"L'employeur",c:true},{t:"L'A.N.P.E.",c:false}],diff:'easy',piege:false,expl:"La demande du visa incombe à l'employeur. Si ce dernier omet de le faire, le travailleur peut faire constater la nullité du contrat et réclamer des dommages-intérêts.",ref:"Chap. 2 › I.2 › Page 16"},
+  {q:"L'accord de conciliation lors du règlement d'un conflit collectif est :",type:'multi',opts:[{t:"Soumis à homologation du tribunal",c:false},{t:"Immédiatement exécutoire",c:true},{t:"Exécutoire après 15 jours",c:false},{t:"Valable uniquement si toutes les parties signent",c:false}],diff:'med',piege:false,expl:"L'accord de conciliation est immédiatement exécutoire. Il est déposé au greffe du tribunal et une ampliation est remise aux parties.",ref:"Partie 2 › Chap. 2 › I › Page 43"},
+  {q:"Les heures de récupération effectuées sur autorisation de l'Inspecteur du Travail sont rémunérées :",type:'multi',opts:[{t:"Avec une majoration de 15%",c:false},{t:"Avec une majoration de 25%",c:false},{t:"Au taux normal sans majoration",c:true},{t:"Avec une majoration de 50%",c:false}],diff:'med',piege:true,expl:"Les heures de RÉCUPÉRATION (autorisées par l'Inspecteur pour compenser des heures perdues) sont rémunérées au taux NORMAL, sans majoration. À distinguer des heures supplémentaires.",ref:"Partie 3 › Chap. 2 › I.2 › Page 52"},
+  {q:"Combien de conditions de fond doit remplir un contrat de travail pour être valable ?",type:'multi',opts:[{t:"2 conditions",c:false},{t:"3 conditions",c:true},{t:"4 conditions",c:false},{t:"5 conditions",c:false}],diff:'med',piege:false,expl:"3 conditions de fond : 1) Capacité juridique des parties, 2) Licéité du contrat, 3) Consentement personnel et exempt de vices (erreur, dol, violence).",ref:"Chap. 2 › I › Page 14"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"M. Sawadogo est engagé par une société minière comme agent de sécurité. La société change de propriétaire par cession de parts. M. Sawadogo peut-il continuer à travailler normalement ?",type:'multi',opts:[{t:"Non, la cession entraîne automatiquement la rupture de son contrat",c:false},{t:"Oui, son contrat subsiste avec le nouveau propriétaire (Art.91 CTB)",c:true},{t:"Son contrat est suspendu jusqu'à la fin des formalités",c:false},{t:"Il doit renégocier un nouveau contrat avec le nouvel employeur",c:false}],diff:'med',piege:false,expl:"Art.91 CTB : toute modification dans la situation juridique de l'employeur (dont la cession) laisse subsister tous les contrats en cours. M. Sawadogo continue donc de travailler normalement avec le nouvel employeur.",ref:"Chap. 4 › I › Page 21"},
+  {q:"Mme Ouédraogo, enceinte de 4 mois, présente un certificat médical recommandant une réduction de travail. Son employeur veut la licencier. Ce licenciement est-il possible ?",type:'multi',opts:[{t:"Oui, l'employeur peut toujours licencier pour faute grave",c:false},{t:"Non, la grossesse est une cause de suspension — le licenciement serait abusif",c:true},{t:"Oui, si la procédure est respectée",c:false},{t:"Oui, mais avec préavis doublé",c:false}],diff:'med',piege:true,expl:"Un licenciement motivé par la grossesse est ABUSIF (Art.144 CTB). La femme enceinte peut suspendre son contrat sur prescription médicale. Licencier pour grossesse = licenciement abusif.",ref:"Chap. 5 › I.2.d + Chap. 5 › I.2 › Page 28"},
+  {q:"M. Kaboré, comptable depuis 12 ans avec un salaire global de 150 000 FCFA/mois, est licencié. Quel est son taux d'indemnité de licenciement pour les années 11 et 12 ?",type:'multi',opts:[{t:"25% par an",c:false},{t:"30% par an",c:false},{t:"40% par an",c:true},{t:"50% par an",c:false}],diff:'med',piege:false,expl:"CCIP Art.35 : pour les années au-delà de 10 ans, le taux est de 40% par année. Les années 11 et 12 sont donc calculées à 40% × salaire global mensuel moyen des 6 derniers mois.",ref:"Chap. 5 › II › Page 29"},
+  {q:"Un syndicat déclenche une grève sans avoir épuisé les procédures de conciliation et d'arbitrage. Quelle est la conséquence pour les travailleurs grévistes ?",type:'multi',opts:[{t:"Les travailleurs perdent leur prime d'ancienneté",c:false},{t:"Les travailleurs perdent le droit à l'indemnité de préavis et aux dommages-intérêts pour rupture",c:true},{t:"Les travailleurs sont automatiquement licenciés",c:false},{t:"Il n'y a aucune conséquence légale",c:false}],diff:'hard',piege:false,expl:"Art.389 CTB : la grève avant épuisement des procédures est une faute grave. Les travailleurs perdent le droit à l'indemnité de préavis ET aux dommages-intérêts pour rupture du contrat.",ref:"Partie 2 › Chap. 2 › II › Page 44"},
+  {q:"Un employeur souhaite muter un agent de sécurité de Ouagadougou à Bobo-Dioulasso sans que cette clause ne figure au contrat. Le travailleur refuse. Qui est responsable de la rupture ?",type:'multi',opts:[{t:"Le travailleur, car il refuse un ordre légitime",c:false},{t:"L'employeur, car la mutation est une modification substantielle non prévue au contrat",c:true},{t:"Les deux parties à égalité",c:false},{t:"Personne — le contrat continue sans modification",c:false}],diff:'hard',piege:false,expl:"Un changement de lieu de travail non prévu au contrat et important constitue une modification substantielle. Si le travailleur refuse, la rupture est imputable à l'EMPLOYEUR, qui doit préavis et indemnités.",ref:"Chap. 4 › II › Page 23"},
+  {q:"Mme Traoré, employée à salaire mensuel, est licenciée sans préavis pour raisons disciplinaires. Elle a droit à :",type:'multi',opts:[{t:"Rien — le licenciement disciplinaire dispense toujours du préavis",c:false},{t:"Une indemnité compensatrice de préavis d'1 mois (sauf faute lourde prouvée)",c:true},{t:"3 mois d'indemnité compensatrice de préavis",c:false},{t:"Uniquement un certificat de travail",c:false}],diff:'med',piege:true,expl:"L'indemnité compensatrice de préavis est due sauf en cas de FAUTE LOURDE (Art.69 CTB). Un licenciement disciplinaire n'est pas automatiquement une faute lourde. Pour un salarié mensuel : 1 mois de préavis.",ref:"Chap. 5 › I.2 › Page 27"},
+  {q:"Un apprenti de 15 ans travaille dans un atelier de menuiserie. Après 2 mois, le maître souhaite rompre le contrat unilatéralement. Est-ce possible sans indemnité ?",type:'multi',opts:[{t:"Non, toute rupture unilatérale d'un contrat d'apprentissage donne lieu à indemnité",c:false},{t:"Oui, les 2 premiers mois sont une période d'essai — rupture possible sans indemnité",c:true},{t:"Oui, mais uniquement avec l'accord des parents de l'apprenti",c:false},{t:"Non, le maître ne peut jamais rompre unilatéralement",c:false}],diff:'med',piege:false,expl:"Les deux premiers mois du contrat d'apprentissage constituent une période d'essai pendant laquelle chacune des parties peut résilier sans indemnité de résiliation.",ref:"Chap. 6 › III.2 › Page 33"},
+  {q:"Un litige naît entre M. Zongo et son employeur sur le montant de son salaire. L'inspecteur du travail tente une conciliation mais échoue. Que se passe-t-il ensuite ?",type:'multi',opts:[{t:"L'affaire est directement soumise au conseil d'arbitrage",c:false},{t:"L'inspecteur dresse un PV de non-conciliation et l'affaire est portée au tribunal du travail",c:true},{t:"Le Ministre du travail est saisi pour trancher",c:false},{t:"Le conflit est abandonné faute de solution",c:false}],diff:'med',piege:false,expl:"Pour un conflit INDIVIDUEL, en cas d'échec à l'Inspection du Travail : PV de non-conciliation est dressé, puis action introduite au greffe du tribunal du travail territorialement compétent.",ref:"Partie 2 › Chap. 1 › I › Page 39"},
+  {q:"M. Compaoré, agent de maîtrise, démissionne sans respecter le délai de préavis obligatoire. Son employeur peut exiger :",type:'multi',opts:[{t:"Rien — seul l'employeur peut imposer le préavis",c:false},{t:"Le versement d'une indemnité compensatrice de préavis de 3 mois par le travailleur",c:true},{t:"La continuation du travail pendant 1 mois uniquement",c:false},{t:"Des dommages-intérêts forfaitaires de 500 000 FCFA",c:false}],diff:'hard',piege:false,expl:"Le préavis est réciproque. En cas de démission sans préavis d'un agent de maîtrise (3 mois de préavis), l'employeur est fondé à demander l'indemnité compensatrice correspondante.",ref:"Chap. 5 › I.2 › Page 26"},
+  {q:"Un litige collectif éclate dans une entreprise de BTP ayant des chantiers à Ouagadougou et à Koudougou. À qui le différend doit-il être notifié ?",type:'multi',opts:[{t:"À l'Inspecteur du travail de Ouagadougou uniquement",c:false},{t:"Au Directeur Général du Travail, car le conflit couvre plusieurs ressorts",c:true},{t:"Au Ministre chargé du travail directement",c:false},{t:"Au Conseil d'arbitrage",c:false}],diff:'med',piege:true,expl:"Quand le conflit collectif s'étend sur les ressorts territoriaux de plusieurs inspections du travail, il est notifié au Directeur GÉNÉRAL du Travail (pas à l'Inspecteur, pas au Ministre).",ref:"Partie 2 › Chap. 2 › I › Page 42"},
+  {q:"Mme Kabré est embauchée en CDD pour un an. À l'arrivée du terme, son employeur lui dit qu'elle ne bénéficiera pas d'indemnité compensatrice de préavis. A-t-il raison ?",type:'multi',opts:[{t:"Non, tout contrat donne droit au préavis",c:false},{t:"Oui, l'absence de préavis à l'arrivée du terme est précisément un inconvénient du CDD pour le travailleur",c:true},{t:"Non, elle a droit au préavis si elle a plus d'1 an d'ancienneté",c:false},{t:"Oui, mais seulement si c'est stipulé dans le contrat",c:false}],diff:'med',piege:false,expl:"C'est un inconvénient classique du CDD : la cessation des relations de travail à l'arrivée du terme prive le travailleur de la MESURE DE PROTECTION PAR LE PRÉAVIS.",ref:"Chap. 2 › I.1.b › Page 15"},
+  {q:"Une infirmière travaille dans une clinique privée. Son horaire de présence est de 45h/semaine. Peut-elle prétendre à des heures supplémentaires ?",type:'multi',opts:[{t:"Oui, car 45h > 40h légales",c:false},{t:"Non, car 45h est la durée d'équivalence applicable à son secteur (hôpitaux/cliniques)",c:true},{t:"Oui, pour les 5 heures dépassant les 40h légales",c:false},{t:"Non, car les heures supplémentaires ne s'appliquent pas au secteur de la santé",c:false}],diff:'hard',piege:true,expl:"Pour les hôpitaux, cliniques et dispensaires, 45h de présence est considérée équivalente à 40h de travail effectif. Il n'y a donc pas d'heures supplémentaires à partir de 45h dans ce secteur.",ref:"Partie 3 › Chap. 1 › I › Page 47"},
+  {q:"M. Diallo est engagé comme représentant commercial exclusif d'une seule société, avec un horaire et une discipline imposés. Son contrat est :",type:'multi',opts:[{t:"Un contrat de mandat car il représente la société",c:false},{t:"Un contrat de travail car il est soumis à subordination",c:true},{t:"Un contrat d'entreprise car il est rémunéré à la commission",c:false},{t:"Un contrat d'apprentissage",c:false}],diff:'med',piege:true,expl:"Si le représentant travaille pour UNE SEULE société et est assujetti à un horaire + discipline → contrat de travail. Si plusieurs entreprises + large indépendance → contrat de mandat.",ref:"Chap. 1 › I.1.1 › Page 11"},
+  {q:"Une entreprise de BTP décide de mettre ses ouvriers en chômage technique pendant 6 mois. M. Ilboudo refuse les nouvelles conditions. Qui est responsable de la rupture ?",type:'multi',opts:[{t:"M. Ilboudo car il refuse de s'adapter",c:false},{t:"L'entreprise, car le chômage technique est une modification substantielle",c:true},{t:"Les deux parties à égalité",c:false},{t:"Personne, c'est un cas de force majeure",c:false}],diff:'hard',piege:false,expl:"Le chômage technique constitue une modification substantielle des clauses du contrat. Si le travailleur refuse les nouvelles conditions, la rupture est du FAIT DE L'EMPLOYEUR.",ref:"Chap. 4 › II › Page 23"},
+  {q:"Un ouvrier payé à l'heure est malade pendant 14 mois. Son employeur peut-il le licencier ?",type:'multi',opts:[{t:"Non, la maladie suspend le contrat sans limite de durée",c:false},{t:"Oui, après 1 an de suspension pour maladie non professionnelle, avec respect des formalités de licenciement",c:true},{t:"Oui, dès le premier jour d'absence",c:false},{t:"Non, jamais pendant une maladie",c:false}],diff:'hard',piege:true,expl:"Art.93-3 CTB : la suspension pour maladie non professionnelle est limitée à 1 an (prorogé jusqu'au remplacement du malade). Au-delà, l'employeur peut procéder à un licenciement dans les formes légales.",ref:"Chap. 3 › a › Page 18"},
+  {q:"M. Nikiema effectue 10 heures supplémentaires de jour un samedi (jour ouvrable ordinaire). Quel taux de majoration s'applique-t-il pour les 8 premières heures ?",type:'multi',opts:[{t:"60% car c'est le week-end",c:false},{t:"15% car c'est dans la limite des 8 premières heures",c:true},{t:"35% car c'est un samedi",c:false},{t:"50% car il dépasse les 8 heures",c:false}],diff:'med',piege:true,expl:"Le samedi est un JOUR OUVRABLE ordinaire (juridiquement). Le repos hebdomadaire = dimanche par principe. Donc : 15% pour les 8 premières heures supp. de jour, et 35% pour les 2 heures suivantes.",ref:"Partie 3 › Chap. 2 › II.1 › Page 52"},
+  {q:"Un CDD est conclu avec une clause permettant à l'une ou l'autre partie de rompre avec préavis. Quelle est la nature réelle de ce contrat ?",type:'multi',opts:[{t:"CDD normal avec une souplesse supplémentaire",c:false},{t:"CDI à terme maximum",c:true},{t:"Contrat d'entreprise",c:false},{t:"CDD nul car la clause est illicite",c:false}],diff:'hard',piege:true,expl:"Un CDD contenant une clause de rupture avec préavis est en réalité un CDI À TERME MAXIMUM. La possibilité de rupture unilatérale est caractéristique du CDI, pas du CDD.",ref:"Chap. 2 › I.1.b › Page 15"},
+  {q:"Une secrétaire (salaire mensuel) est licenciée après 7 ans dans l'entreprise, avec un salaire global mensuel moyen de 120 000 FCFA. Quel est le montant de son indemnité pour les années 6 et 7 ?",type:'multi',opts:[{t:"25% × 120 000 × 2 = 60 000 FCFA",c:false},{t:"30% × 120 000 × 2 = 72 000 FCFA",c:true},{t:"40% × 120 000 × 2 = 96 000 FCFA",c:false},{t:"35% × 120 000 × 2 = 84 000 FCFA",c:false}],diff:'hard',piege:false,expl:"CCIP Art.35 : années 6 à 10 = 30% par année. Pour 2 années (6ème et 7ème) : 30% × 120 000 × 2 = 72 000 FCFA. Les 5 premières années sont à 25%.",ref:"Chap. 5 › II › Page 29"},
+  {q:"Un entrepreneur individuel reçoit une lettre de mission pour animer 3 jours de formation. Il organise son travail à sa guise. Quel type de contrat le lie à l'entreprise ?",type:'multi',opts:[{t:"Contrat de travail à durée déterminée",c:false},{t:"Contrat de mandat",c:false},{t:"Contrat d'entreprise",c:true},{t:"Contrat d'apprentissage",c:false}],diff:'med',piege:false,expl:"Tâche déterminée + exécution de sa propre initiative + pas de subordination permanente + rémunération forfaitaire = CONTRAT D'ENTREPRISE (exemple-type du cours : séminaire animé par un consultant).",ref:"Chap. 1 › I.1.1.a › Page 10"},
+  {q:"M. Bélem, gardien de nuit dans un immeuble de bureaux, est présent 72h par semaine. Doit-il recevoir des heures supplémentaires ?",type:'multi',opts:[{t:"Oui, 32 heures supplémentaires (72 - 40)",c:false},{t:"Non, 72h est la durée d'équivalence légale pour les gardiens de nuit",c:true},{t:"Oui, 22 heures supplémentaires (72 - 50)",c:false},{t:"Oui, 12 heures supplémentaires (72 - 60)",c:false}],diff:'med',piege:false,expl:"Arrêté 2007-004 : pour les gardiens de jour et de nuit, 72 heures de présence hebdomadaire est considérée équivalente à 40 heures de travail effectif. Pas d'heures supplémentaires donc.",ref:"Partie 3 › Chap. 1 › I › Page 47"},
+  {q:"Un conflit individuel est porté à l'Inspection du Travail. L'inspecteur rédige un PV de conciliation partielle. Qu'advient-il ?",type:'multi',opts:[{t:"Le PV partiel n'a aucune valeur juridique",c:false},{t:"Les points d'accord valent titre exécutoire ; le reste fait l'objet d'un PV de non-conciliation",c:true},{t:"L'affaire repart intégralement devant le tribunal",c:false},{t:"L'employeur peut ignorer les points d'accord",c:false}],diff:'hard',piege:false,expl:"En cas de conciliation partielle : le PV signé vaut titre exécutoire pour les points d'accord. Un PV de non-conciliation est dressé pour le surplus, permettant l'action judiciaire sur les points restants.",ref:"Partie 2 › Chap. 1 › I › Page 39"},
+  {q:"Un travailleur est détenu pour motifs politiques. Son contrat est :",type:'multi',opts:[{t:"Automatiquement rompu dès le premier jour de détention",c:false},{t:"Suspendu pendant la durée de la détention",c:true},{t:"Transformé en CDD pendant la détention",c:false},{t:"Maintenu mais sans salaire uniquement 30 jours",c:false}],diff:'med',piege:false,expl:"Art.93-13 CTB : la détention pour motifs politiques est un cas de suspension du contrat de travail. Le contrat n'est pas rompu.",ref:"Chap. 3 › a › Page 19"},
+  {q:"M. Ouattara, directeur technique, démissionne du jour au lendemain sans respecter son préavis de 3 mois. L'employeur subit un préjudice réel. Que peut faire l'employeur ?",type:'multi',opts:[{t:"Rien, le travailleur a le droit de démissionner librement",c:false},{t:"Qualifier la démission d'abusive et réclamer des dommages-intérêts",c:true},{t:"Forcer le travailleur à rester jusqu'au terme du préavis",c:false},{t:"Obtenir automatiquement une indemnité égale à 6 mois de salaire",c:false}],diff:'hard',piege:false,expl:"Quand la démission cause un préjudice à l'employeur, elle peut être qualifiée d'ABUSIVE, ce qui permet à l'employeur de réclamer des dommages-intérêts (mais pas de forcer le salarié à rester).",ref:"Chap. 5 › I › Page 29"},
+  {q:"Un maître artisan a 10 salariés. Combien d'apprentis peut-il accueillir au maximum ?",type:'multi',opts:[{t:"5 apprentis (moitié des salariés)",c:true},{t:"10 apprentis (autant que de salariés)",c:false},{t:"3 apprentis maximum légal absolu",c:false},{t:"Pas de limite légale fixée",c:false}],diff:'med',piege:false,expl:"Le maître ne doit pas avoir un nombre d'apprentis supérieur à la MOITIÉ de l'effectif de ses salariés dans le métier objet de l'apprentissage. 10 salariés → maximum 5 apprentis.",ref:"Chap. 6 › II.1 › Page 33"},
+  {q:"La sentence arbitrale d'un conflit collectif peut faire l'objet de :",type:'multi',opts:[{t:"Un appel devant la Cour d'Appel",c:false},{t:"Un pourvoi devant la Chambre Sociale de la Cour de Cassation",c:true},{t:"Un recours devant le Ministre du Travail uniquement",c:false},{t:"Aucun recours — la sentence est définitive et irrévocable",c:false}],diff:'hard',piege:false,expl:"La sentence arbitrale peut faire l'objet d'un pourvoi (recours en cassation) devant la CHAMBRE SOCIALE de la COUR DE CASSATION. Si annulée, l'affaire est renvoyée au Ministre pour désigner un nouveau conseil d'arbitrage.",ref:"Partie 2 › Chap. 2 › I › Page 44"},
+  {q:"Un travailleur licencié pour baisse de rendement conteste son licenciement. Ce licenciement est-il abusif ?",type:'multi',opts:[{t:"Oui, car la baisse de rendement n'est pas un motif légitime",c:false},{t:"Non, la baisse de rendement est un motif professionnel légitime (incompétence, inaptitude)",c:true},{t:"Oui, car le travailleur n'a pas eu droit à un avertissement préalable",c:false},{t:"Cela dépend du secteur d'activité",c:false}],diff:'med',piege:true,expl:"La baisse de rendement est un motif d'ordre PROFESSIONNEL (inaptitude professionnelle) qui constitue un motif LÉGITIME de licenciement. Ce n'est donc pas un licenciement abusif.",ref:"Chap. 5 › I.2 › Page 28"},
+  {q:"M. Tapsoba travaille comme chauffeur de taxi pour le compte d'un propriétaire de véhicule, sous sa dépendance et avec salaire. Sa situation est :",type:'multi',opts:[{t:"Contrat de louage de chose car il utilise le véhicule d'autrui",c:false},{t:"Contrat de travail car il est salarié et sous dépendance du propriétaire",c:true},{t:"Contrat de mandat car il représente le propriétaire",c:false},{t:"Pas de contrat — relation informelle",c:false}],diff:'med',piege:true,expl:"Si le chauffeur de taxi perçoit un salaire ET se trouve sous la dépendance du propriétaire → CONTRAT DE TRAVAIL. Le lien de subordination prime sur le fait qu'il utilise le véhicule d'autrui.",ref:"Chap. 1 › I.1.1 › Page 12"},
+  {q:"Un conflit collectif est soumis à l'arbitrage. Les parties refusent la sentence. Quel est le délai pour notifier ce refus ?",type:'multi',opts:[{t:"24 heures après la notification",c:false},{t:"48 heures après la notification",c:true},{t:"7 jours après la notification",c:false},{t:"15 jours après la notification",c:false}],diff:'hard',piege:false,expl:"Les parties peuvent refuser l'application de la sentence en notifiant leur refus dans les 48 HEURES qui suivent la notification au Ministre chargé du travail.",ref:"Partie 2 › Chap. 2 › I › Page 43"},
+  {q:"Pendant l'exécution du préavis, le travailleur licencié est autorisé à s'absenter pour rechercher un emploi :",type:'multi',opts:[{t:"1 heure par jour ou 1 jour par semaine",c:false},{t:"2 heures par jour ou 2 jours par semaine",c:true},{t:"4 heures par jour uniquement",c:false},{t:"Aucune absence autorisée pendant le préavis",c:false}],diff:'med',piege:false,expl:"CCIP : pendant le préavis (licenciement ou démission), le travailleur est autorisé à s'absenter 2 heures par jour OU 2 jours par semaine pour chercher un nouvel emploi. Les jours peuvent être bloqués en fin de préavis.",ref:"Chap. 5 › I.2.a › Page 26"},
+  {q:"Mme Bonkoungou démissionne car son employeur lui a proposé une importante mutation non prévue au contrat qu'elle a refusée. Comment qualifier juridiquement cette situation ?",type:'multi',opts:[{t:"Démission simple : elle choisit de partir",c:false},{t:"Démission forcée assimilée à un licenciement du fait de l'employeur",c:true},{t:"Faute de l'employeur sans conséquence juridique",c:false},{t:"Accord mutuel des parties",c:false}],diff:'hard',piege:true,expl:"Quand la démission est PROVOQUÉE par le comportement de l'employeur (modification substantielle non prévue refusée), la jurisprudence qualifie cela de DÉMISSION FORCÉE et l'assimile à un licenciement.",ref:"Chap. 4 › II + Chap. 5 › I › Page 23"},
+  {q:"Un apprenti mineur de 13 ans se présente pour signer un contrat d'apprentissage. Ce contrat peut-il être valide ?",type:'multi',opts:[{t:"Oui, avec l'accord des parents",c:false},{t:"Non, l'apprenti ne peut pas être engagé avant l'âge de 14 ans",c:true},{t:"Oui, si l'Inspecteur du Travail donne son accord",c:false},{t:"Oui, si c'est pour une profession non dangereuse",c:false}],diff:'med',piege:false,expl:"Le CTB est formel : l'apprenti ne peut être engagé avant l'âge de 14 ans. En dessous de cet âge, le contrat d'apprentissage ne peut pas être valablement conclu.",ref:"Chap. 6 › I › Page 31"},
+  {q:"Un établissement de vente de denrées alimentaires au détail souhaite ne pas accorder le repos dominical à tout son personnel. Quelle règle s'applique ?",type:'multi',opts:[{t:"Impossible : le dimanche est toujours le jour de repos",c:false},{t:"Possible avec réduction à une demi-journée et repos compensateur par roulement",c:true},{t:"Possible sans aucune condition",c:false},{t:"Possible uniquement avec l'accord de tous les employés",c:false}],diff:'hard',piege:false,expl:"Dans les établissements de vente de denrées alimentaires au détail, le repos peut être réduit à une demi-journée, avec un repos compensateur d'une journée accordé par roulement pour deux réductions d'une demi-journée.",ref:"Partie 3 › Chap. 2 › II.2 › Page 56"},
+  {q:"M. Sanou veut déposer une plainte contre son employeur devant le tribunal du travail. Quels tribunaux sont compétents (plusieurs réponses) ?",type:'multi',opts:[{t:"Le tribunal du lieu du travail",c:true},{t:"Le tribunal du lieu de résidence du travailleur",c:true},{t:"Le tribunal de commerce",c:false},{t:"Le tribunal de grande instance",c:false}],diff:'med',piege:false,expl:"En cas de licenciement, le travailleur a le choix entre le tribunal du lieu du travail OU celui du lieu de sa résidence. C'est un choix accordé au travailleur.",ref:"Partie 2 › Chap. 1 › I › Page 39"},
+  {q:"Un employeur effectue des heures supplémentaires pendant plus de 6 mois consécutifs. Quelle formalité s'impose ?",type:'multi',opts:[{t:"Obtenir l'autorisation du Ministre du Travail",c:false},{t:"Consulter les représentants du personnel et informer l'Inspection du Travail",c:true},{t:"Payer une taxe spéciale au Trésor",c:false},{t:"Aucune formalité particulière",c:false}],diff:'hard',piege:false,expl:"Pour une période d'heures supplémentaires ≥ 6 mois, l'employeur doit consulter les représentants du personnel sur les modalités pratiques, et les résultats de cette consultation doivent être portés à la connaissance de l'Inspection du Travail.",ref:"Partie 3 › Chap. 2 › Page 50"},
+  {q:"M. Coulibaly était responsable de caisse avant de démissionner. Peut-il quitter immédiatement son poste ?",type:'multi',opts:[{t:"Oui, la démission prend effet immédiatement à sa notification",c:false},{t:"Non, il doit d'abord rendre ses comptes de gestion",c:true},{t:"Non, il doit attendre 6 mois",c:false},{t:"Oui, si l'employeur libère expressément",c:false}],diff:'med',piege:false,expl:"Le travailleur responsable d'un service, d'une caisse ou d'un stock qui résilie son contrat ne peut quitter son emploi sans avoir RENDU SES COMPTES.",ref:"Chap. 5 › I.2.a › Page 27"},
+  {q:"Les indemnités suivantes sont EXCLUES du calcul de l'indemnité compensatrice de préavis (plusieurs réponses) :",type:'multi',opts:[{t:"Indemnité de transport",c:true},{t:"Indemnité de logement",c:true},{t:"Prime d'ancienneté",c:false},{t:"Prime de rendement",c:true}],diff:'hard',piege:true,expl:"Sont EXCLUS : indemnités de transport, logement, primes de rendement, d'assiduité (= remboursements de frais ou primes non liées à la nature du travail). INCLUS : salaire catégoriel, prime d'ancienneté, heures supplémentaires, indemnités de fonction.",ref:"Chap. 5 › I.2.c › Page 27"},
+  {q:"Un travailleur est absent 2 mois pour soigner son conjoint malade (cas 17 de l'Art.93). Son contrat est-il compté dans son ancienneté ?",type:'multi',opts:[{t:"Oui, toutes les suspensions comptent pour l'ancienneté",c:false},{t:"Non, ce cas de suspension (n°17) n'est pas compté comme temps de service",c:true},{t:"Oui, car il s'agit d'une cause personnelle",c:false},{t:"Oui, si la durée est inférieure à 3 mois",c:false}],diff:'hard',piege:false,expl:"Le point 17 (absence pour soigner le conjoint malade, limite 3 mois) figure parmi les cas de suspension qui ne sont PAS considérés comme temps de service pour l'ancienneté (liste : points 1, 6, 12, 13, 14, 15, 16, 17, 18).",ref:"Chap. 3 › a › Page 19"},
+  {q:"Un syndicat de travailleurs d'une usine obtient une sentence arbitrale favorable. L'employeur refuse d'appliquer la sentence. Après un refus valide, qui désigne le nouveau conseil d'arbitrage ?",type:'multi',opts:[{t:"Le Directeur Général du Travail",c:false},{t:"Le Ministre chargé du travail",c:true},{t:"La Chambre Sociale de la Cour de Cassation",c:false},{t:"Les parties se mettent d'accord elles-mêmes",c:false}],diff:'hard',piege:false,expl:"Si la sentence est annulée suite à un pourvoi, l'affaire est renvoyée au MINISTRE chargé du travail, qui désignera un NOUVEAU conseil d'arbitrage, autrement composé.",ref:"Partie 2 › Chap. 2 › I › Page 44"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (sujet PDF UE8 — 20 questions dans l'ordre)
+const serie3 = [
+  {q:"Le lock-out est une décision par laquelle un employeur interdit :",type:'multi',opts:[{t:"Aux clients l'accès de l'entreprise à l'occasion d'un conflit collectif de travail",c:false},{t:"Aux salariés l'accès de l'entreprise à l'occasion d'un conflit collectif de travail",c:true},{t:"Aux partenaires financiers et techniques de l'entreprise à l'occasion d'un conflit collectif de travail",c:false},{t:"À une équipe de contrôle de l'inspection du travail à l'occasion d'un conflit collectif de travail",c:false}],diff:'easy',piege:true,expl:"Définition exacte du lock-out (Glossaire CTB) : l'employeur interdit aux SALARIÉS l'accès de l'entreprise lors d'un conflit collectif. Aucune des autres catégories n'est visée.",ref:"Glossaire CTB › Page 59"},
+  {q:"La caractéristique essentielle du contrat de travail à durée indéterminée est :",type:'multi',opts:[{t:"Le caractère indéterminé du contrat",c:false},{t:"La faculté de résiliation de commun accord entre les parties au contrat",c:false},{t:"L'interdiction de la rupture unilatérale du contrat",c:false},{t:"La faculté de résiliation unilatérale et réciproque laissée à chacun des contractants",c:true}],diff:'med',piege:true,expl:"La caractéristique ESSENTIELLE du CDI est la faculté de résiliation UNILATÉRALE et RÉCIPROQUE. Attention : le 'caractère indéterminé' décrit la durée mais ne définit pas l'essence du contrat.",ref:"Chap. 5 › I › Page 26"},
+  {q:"Le contrat de travail à durée déterminée présente l'inconvénient suivant pour le travailleur :",type:'multi',opts:[{t:"La cessation des relations de travail à l'arrivée du terme le prive de ses droits légaux",c:false},{t:"La cessation des relations de travail à l'arrivée du terme le prive de son renouvellement",c:false},{t:"La cessation des relations de travail à l'arrivée du terme le prive de la mesure de protection par le préavis",c:true},{t:"La cessation des relations de travail à l'arrivée du terme le prive de l'indemnité compensatrice de congé",c:false}],diff:'med',piege:true,expl:"L'inconvénient précis du CDD est la privation de la PROTECTION PAR LE PRÉAVIS. Le travailleur ne perd pas tous ses droits légaux, ni l'indemnité compensatrice de congé. C'est uniquement le préavis qui ne s'applique pas.",ref:"Chap. 2 › I.1.b › Page 15"},
+  {q:"Le différend individuel du travail est le conflit qui oppose :",type:'multi',opts:[{t:"Un groupement de travailleurs à un groupement d'employeurs",c:false},{t:"Un groupement de travailleurs à un employeur",c:false},{t:"Un ou plusieurs travailleurs à leurs employeurs à l'occasion de l'exécution du contrat de travail pour la reconnaissance d'un droit individuel",c:true},{t:"Un groupement d'employeurs à un ou plusieurs travailleurs d'un secteur d'activité donné",c:false}],diff:'easy',piege:false,expl:"Art.319 CTB : le différend individuel oppose un ou plusieurs travailleurs à LEURS employeurs, à l'occasion de l'exécution du contrat de travail, pour la reconnaissance d'un DROIT INDIVIDUEL.",ref:"Partie 2 › Chap. 1 › Page 38"},
+  {q:"Le licenciement est dit irrégulier :",type:'multi',opts:[{t:"Lorsqu'il est fondé sur l'appartenance religieuse du travailleur",c:false},{t:"Lorsqu'il est motivé par son appartenance ou non à un syndicat",c:false},{t:"Lorsqu'il est motivé par les opinions du travailleur",c:false},{t:"Lorsque la procédure n'a pas été respectée",c:true}],diff:'med',piege:true,expl:"Irrégulier = problème de PROCÉDURE (forme). Abusif = motif illégitime (religion, syndicat, opinions). Les options a, b, c décrivent des cas de licenciement ABUSIF, pas irrégulier.",ref:"Chap. 5 › I.2 › Page 28"},
+  {q:"La durée de la période d'essai pour les agents de maîtrise, les cadres et assimilés est de :",type:'multi',opts:[{t:"5 mois",c:false},{t:"3 mois",c:true},{t:"4 mois",c:false},{t:"2 mois",c:false}],diff:'easy',piege:true,expl:"CCIP Art.12 : agents de maîtrise, techniciens, ingénieurs et assimilés = 3 mois maximum. Les durées de 4, 5 mois n'existent pas dans le texte.",ref:"Chap. 2 › II.2 › Page 16"},
+  {q:"Tout conflit collectif circonscrit dans le ressort territorial d'une Inspection du Travail doit être immédiatement notifié au :",type:'multi',opts:[{t:"Secrétaire Général du ministère chargé du travail",c:false},{t:"L'inspecteur ou le contrôleur du travail du ressort",c:true},{t:"Ministre chargé du travail",c:false},{t:"Ministre chargé de l'emploi",c:false}],diff:'med',piege:true,expl:"Si le conflit est limité à un seul ressort territorial → INSPECTEUR ou CONTRÔLEUR DU TRAVAIL du ressort. Plusieurs ressorts → Directeur Général du Travail.",ref:"Partie 2 › Chap. 2 › I › Page 42"},
+  {q:"S'il survient une modification dans la situation juridique de l'employeur :",type:'multi',opts:[{t:"Tous les contrats de travail en cours sont suspendus par le nouvel employeur",c:false},{t:"Tous les contrats de travail en cours sont rompus par le nouvel employeur",c:false},{t:"Tous les contrats de travail en cours subissent une modification",c:false},{t:"Tous les contrats de travail en cours subsistent",c:true}],diff:'med',piege:true,expl:"Art.91 CTB : en cas de modification juridique de l'employeur (vente, fusion, succession…), tous les contrats en cours SUBSISTENT avec le nouvel employeur. Ni rupture, ni suspension, ni modification automatique.",ref:"Chap. 4 › I › Page 21"},
+  {q:"Dans la procédure du règlement du conflit collectif du travail, le conseil d'arbitrage est désigné par :",type:'multi',opts:[{t:"Le Directeur Général du Travail",c:false},{t:"Le Ministre chargé du travail",c:true},{t:"Le Ministre chargé de l'emploi",c:false},{t:"L'inspecteur ou le contrôleur du travail du ressort",c:false}],diff:'med',piege:true,expl:"C'est le MINISTRE CHARGÉ DU TRAVAIL qui désigne le conseil d'arbitrage. À distinguer du Directeur Général (conciliation multi-ressorts) et de l'Inspecteur (conciliation un seul ressort).",ref:"Partie 2 › Chap. 2 › I › Page 43"},
+  {q:"La source du droit désigne :",type:'multi',opts:[{t:"L'ensemble des règles applicables aux cadres dans une entreprise donnée",c:false},{t:"L'ensemble des règles applicables au monde du travail",c:false},{t:"L'ensemble des règles applicables aux travailleurs étrangers",c:false},{t:"L'ensemble des règles applicables dans un État à un moment donné",c:true}],diff:'easy',piege:true,expl:"La 'source du droit' est une notion générale de droit qui désigne l'ensemble des règles applicables dans un État à un moment donné. Le 'droit du travail' lui, ne couvre que les relations de travail.",ref:"Introduction › Page 6"},
+  {q:"En cas de démission, le travailleur démissionnaire peut prétendre à (plusieurs réponses) :",type:'multi',opts:[{t:"Son indemnité de fin de contrat s'il a une ancienneté de plus de 20 ans",c:false},{t:"Son certificat de travail",c:true},{t:"Son salaire de présence",c:true},{t:"Son indemnité compensatrice de préavis",c:false}],diff:'hard',piege:true,expl:"En cas de démission : droit au salaire de présence (jours travaillés) + certificat de travail. Pas d'indemnité compensatrice de préavis (c'est lui qui part). L'option indemnité de fin de contrat à 20 ans d'ancienneté est piège — ce n'est pas la règle standard.",ref:"Chap. 5 › II › Page 29"},
+  {q:"L'arrivée du terme du contrat de travail à durée déterminée donne droit au travailleur (plusieurs réponses) :",type:'multi',opts:[{t:"Le bénéfice d'une indemnité de fin de contrat",c:true},{t:"Le bénéfice d'une bonification d'échelon s'il a 15 ans d'ancienneté",c:false},{t:"Le bénéfice d'une indemnité compensatrice de congés s'il en existe",c:true},{t:"Le bénéfice d'une indemnité compensatrice de préavis",c:false}],diff:'hard',piege:true,expl:"À l'arrivée du terme du CDD : indemnité de fin de contrat + indemnité compensatrice de congé (si droits acquis). PAS d'indemnité compensatrice de préavis (c'est l'inconvénient du CDD). La bonification d'échelon à 15 ans est un piège inventé.",ref:"Chap. 2 › I.1.b + Chap. 5 › II › Page 29"},
+  {q:"Le préavis a pour objet de permettre aux parties au contrat :",type:'multi',opts:[{t:"D'apprécier les conditions de travail",c:false},{t:"D'apprécier l'employeur",c:false},{t:"D'apprécier les compétences du travailleur",c:false},{t:"De donner à l'autre partie un certain délai pour prendre les mesures propres à pallier les conséquences de la rupture",c:true}],diff:'easy',piege:false,expl:"L'objet précis du préavis (selon le cours) est de donner à l'autre partie le temps de prendre les mesures propres à PALLIER LES CONSÉQUENCES DE LA RUPTURE.",ref:"Chap. 5 › I.2 › Page 26"},
+  {q:"Toute femme enceinte dont l'état a dûment été constaté, a le droit de :",type:'multi',opts:[{t:"Demander de l'aide à un autre travailleur",c:false},{t:"De s'absenter sans l'autorisation préalable de son employeur",c:false},{t:"Demander une augmentation de salaire à son employeur pour les efforts fournis",c:false},{t:"De suspendre son contrat de travail sur prescription médicale",c:true}],diff:'med',piege:true,expl:"Art.144 CTB : droit de SUSPENDRE le contrat sur PRESCRIPTION MÉDICALE sans que cela soit une cause de rupture. Ce n'est pas un droit d'absence non autorisée ni une augmentation automatique.",ref:"Chap. 5 › I.2.d › Page 28"},
+  {q:"La caractéristique essentielle du contrat de travail est :",type:'multi',opts:[{t:"Le caractère personnel (intuiti personae) du contrat",c:false},{t:"La subordination juridique",c:true},{t:"Le caractère bilatéral ou synallagmatique du contrat",c:false},{t:"Le caractère onéreux du contrat",c:false}],diff:'easy',piege:true,expl:"La SUBORDINATION JURIDIQUE est le critère essentiel du contrat de travail. L'intuiti personae, le caractère bilatéral et onéreux sont des caractéristiques présentes aussi dans d'autres contrats.",ref:"Chap. 1 › I.1 › Page 10"},
+  {q:"Lorsque le conflit collectif s'étend sur plusieurs ressorts territoriaux, il est immédiatement notifié :",type:'multi',opts:[{t:"À l'inspecteur ou au contrôleur du travail",c:false},{t:"Au conseil d'arbitrage",c:false},{t:"Au Ministre chargé du travail",c:false},{t:"Au Directeur Général du Travail",c:true}],diff:'med',piege:true,expl:"Si le conflit collectif dépasse un seul ressort territorial → DIRECTEUR GÉNÉRAL DU TRAVAIL. Le Ministre n'est compétent qu'au stade de l'arbitrage (désignation du conseil).",ref:"Partie 2 › Chap. 2 › I › Page 42"},
+  {q:"La durée de la période de préavis pour le personnel payé à l'heure ou à la journée est de :",type:'multi',opts:[{t:"8 heures",c:false},{t:"1 mois",c:false},{t:"8 jours",c:true},{t:"3 mois",c:false}],diff:'easy',piege:true,expl:"CCIP Art.30 : personnel à salaire non mensuel (heure, journée) = 8 JOURS de préavis. Attention au piège '8 heures' — la durée est en jours, pas en heures.",ref:"Chap. 5 › I.2.a › Page 26"},
+  {q:"Dans le contrat d'entreprise une personne est engagée :",type:'multi',opts:[{t:"Pour une tâche déterminée qu'elle exécutera sous la direction et l'autorité d'une autre personne",c:false},{t:"Pour une tâche déterminée qu'elle exécutera au nom d'un groupe de personnes",c:false},{t:"Pour une tâche déterminée qu'elle exécutera en recevant quotidiennement les directives d'une autre personne",c:false},{t:"Pour une tâche déterminée qu'elle exécutera de sa propre initiative en ne recevant des directives que pour l'orientation générale du travail",c:true}],diff:'med',piege:true,expl:"Dans le contrat d'entreprise, c'est l'ABSENCE DE SUBORDINATION qui est le critère : exécution de sa propre initiative, avec directives uniquement pour l'orientation générale — pas de contrôle quotidien.",ref:"Chap. 1 › I.1.1.a › Page 10"},
+  {q:"Le conflit collectif est un différend qui naît en cours d'exécution du contrat de travail et qui oppose :",type:'multi',opts:[{t:"Plusieurs travailleurs à un employeur",c:false},{t:"Un groupement de travailleurs à un groupement d'employeurs ou à un employeur pris isolément dans lequel des intérêts collectifs sont en jeu",c:true},{t:"Plusieurs travailleurs à un employeur à l'occasion de l'interprétation d'une clause du contrat de travail",c:false},{t:"Un groupement de travailleurs à un groupement d'employeurs ou à un employeur pris isolément dans lequel des intérêts individuels sont en jeu",c:false}],diff:'hard',piege:true,expl:"Le conflit collectif requiert 2 éléments : groupement de travailleurs ET intérêts COLLECTIFS en jeu. L'option d avec 'intérêts individuels' est le piège classique de cet examen.",ref:"Partie 2 › Chap. 2 › Page 41"},
+  {q:"Le licenciement est dit abusif (plusieurs réponses) :",type:'multi',opts:[{t:"Lorsqu'il est motivé par la baisse de rendement du travailleur",c:false},{t:"Lorsqu'il est motivé par la grossesse de la travailleuse",c:true},{t:"Lorsqu'il est fondé sur des injures avérées à l'endroit de l'employeur",c:false},{t:"Lorsqu'il est motivé par le dépôt d'une plainte du travailleur ou de tout recours contre l'employeur et/ou des autorités administratives",c:true}],diff:'hard',piege:true,expl:"Licenciement abusif = motif illégitime. Grossesse (b) et dépôt de plainte (d) sont des motifs clairement abusifs. La baisse de rendement est un motif LÉGITIME. Les injures avérées à l'employeur sont une FAUTE LOURDE → rupture légitime.",ref:"Chap. 5 › I.2 › Page 28"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M20';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-Pièges Fréquents</div>
+    <span class="piege-word">intérêts INDIVIDUELS</span>
+    <span class="piege-word">contrats rompus</span>
+    <span class="piege-word">contrats suspendus</span>
+    <span class="piege-word">clients / partenaires</span>
+    <span class="piege-word">Ministre (conciliation)</span>
+    <span class="piege-word">5 mois d'essai</span>
+    <span class="piege-word">irrégulier = religion</span>
+    <span class="piege-word">8 heures de préavis</span>
+    <div class="piege-box" style="margin-top:10px"><div class="piege-title">⚠ Confusion ABUSIF / IRRÉGULIER</div><div class="piege-text"><strong>Irrégulier</strong> = vice de FORME (procédure non respectée)<br><strong>Abusif</strong> = vice de FOND (motif illégitime : religion, syndicat, grossesse, opinion, plainte)</div></div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">📊 Chiffres-Clés à Mémoriser</div>
+    <table class="chiffres-table">
+      <tr><th>Référence</th><th>Valeur</th></tr>
+      <tr><td>Durée légale hebdo</td><td>40h/semaine</td></tr>
+      <tr><td>Heures sup max/semaine</td><td>20h</td></tr>
+      <tr><td>Équivalent mensuel</td><td>173,33h/mois</td></tr>
+      <tr><td>Préavis ouvrier</td><td>8 jours</td></tr>
+      <tr><td>Préavis mensuel</td><td>1 mois</td></tr>
+      <tr><td>Préavis cadres</td><td>3 mois</td></tr>
+      <tr><td>Essai cadres</td><td>3 mois</td></tr>
+      <tr><td>Essai employés</td><td>1 mois</td></tr>
+      <tr><td>Essai ouvriers</td><td>8 jours</td></tr>
+      <tr><td>CDD max (national)</td><td>2 ans</td></tr>
+      <tr><td>CDD max (étranger)</td><td>3 ans</td></tr>
+      <tr><td>Apprentissage max</td><td>3 ans</td></tr>
+      <tr><td>Susp. maladie non pro.</td><td>1 an</td></tr>
+      <tr><td>Force majeure susp.</td><td>5 mois × 1</td></tr>
+      <tr><td>Refus sentence arbitrale</td><td>48h</td></tr>
+    </table>
+  </div>
+</div>
+<div class="methode-card" style="margin-top:12px">
+  <div class="methode-card-title">💰 Barème Indemnité de Licenciement (CCIP Art.35)</div>
+  <table class="chiffres-table">
+    <tr><th>Période</th><th>Taux / an</th><th>Base de calcul</th></tr>
+    <tr><td>Années 1 à 5</td><td>25%</td><td rowspan="3">Salaire global mensuel moyen des 6 derniers mois (hors remboursements de frais)</td></tr>
+    <tr><td>Années 6 à 10</td><td>30%</td></tr>
+    <tr><td>Au-delà de 10 ans</td><td>40%</td></tr>
+  </table>
+  <div class="key-box"><div class="key-title">Exemple de calcul (Exercice cours)</div><div class="key-text">M. OUEDRAOGO — 10/02/2000 au 11/11/2011 = 11 ans et 9 mois ≈ 11,75 ans<br>Salaire global = 85 000 + (4% × 85 000) = 85 000 + 3 400 = 88 400 FCFA<br>Indemnité = (5 × 25% × 88 400) + (5 × 30% × 88 400) + (1,75 × 40% × 88 400)<br>= 11 050 × 5 + 13 260 × 5 + 35 360 × 1,75 = 55 250 + 66 300 + 61 880 = <strong>183 430 FCFA</strong></div></div>
+</div>
+<div class="methode-card" style="margin-top:12px">
+  <div class="methode-card-title">🔄 Schéma de Décision — Conflit Individuel vs Collectif</div>
+  <div class="schema-step"><div class="schema-num">?</div><div class="schema-text"><strong>Question clé :</strong> les intérêts en jeu sont-ils collectifs ou individuels ?</div></div>
+  <div class="def-grid">
+    <div class="def-item">
+      <div class="def-term">→ INDIVIDUELS</div>
+      <div class="def-text">Conflit INDIVIDUEL (Art.319)<br>Procédure : Délégués → Inspection → Tribunal du Travail</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">→ COLLECTIFS</div>
+      <div class="def-text">Conflit COLLECTIF (Art.367)<br>Procédure : Conciliation (Inspecteur ou DG du Travail) → Arbitrage (Ministre) → Cour de Cassation</div>
+    </div>
+  </div>
+</div>
+<div class="methode-card" style="margin-top:12px">
+  <div class="methode-card-title">🏗 Schéma — Qui notifier pour un conflit collectif ?</div>
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Conflit sur 1 seul ressort territorial</strong> → INSPECTEUR (ou contrôleur) du travail du ressort → tente la conciliation dans 15 jours</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Conflit sur plusieurs ressorts</strong> → DIRECTEUR GÉNÉRAL DU TRAVAIL → tente la conciliation</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Conciliation échoue</strong> → MINISTRE DU TRAVAIL désigne le conseil d'ARBITRAGE (dans 10 jours)</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Refus de la sentence (dans 48h)</strong> → Possibilité de pourvoi devant la CHAMBRE SOCIALE de la COUR DE CASSATION</div></div>
+</div>
+<div class="methode-card" style="margin-top:12px">
+  <div class="methode-card-title">📋 Majorations Heures Supplémentaires — Tableau de Référence</div>
+  <table class="chiffres-table">
+    <tr><th>Situation</th><th>Majoration</th></tr>
+    <tr><td>8 premières heures sup. de JOUR (jours ordinaires)</td><td>+15%</td></tr>
+    <tr><td>Heures sup. au-delà des 8h, de JOUR (jours ordinaires)</td><td>+35%</td></tr>
+    <tr><td>Heures sup. de JOUR — jour de repos ou férié</td><td>+60%</td></tr>
+    <tr><td>Heures sup. de NUIT — jours ordinaires</td><td>+50%</td></tr>
+    <tr><td>Heures sup. de NUIT — jour de repos ou férié</td><td>+120%</td></tr>
+    <tr><td>Heures de RÉCUPÉRATION (autorisées par Inspecteur)</td><td>Taux NORMAL (0%)</td></tr>
+  </table>
+  <div class="piege-box"><div class="piege-title">⚠ Samedi ≠ Jour de repos</div><div class="piege-text">Le samedi est un JOUR OUVRABLE ordinaire. Seul le dimanche est le jour de repos hebdomadaire par principe. Les majorations de 60% et 120% ne s'appliquent pas au samedi sauf dérogation.</div></div>
+</div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>
