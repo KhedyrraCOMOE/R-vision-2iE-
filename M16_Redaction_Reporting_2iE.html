@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M16 — Rédaction du Reporting · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; margin-top: 12px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; background: rgba(255,140,66,0.15); color: var(--orange); border: 1px solid rgba(255,140,66,0.4); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 56px; color: var(--accent); }
+.score-label { font-size: 14px; color: var(--text2); margin: 8px 0 20px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 12px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 18px; min-width: 70px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); }
+.score-stat.red { border-color: rgba(255,77,106,0.4); }
+.score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M16</div>
+  <div class="header-title">Rédaction du Reporting — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '👥',
+    title: 'Les intervenants du chantier',
+    subtitle: 'Chapitre 1 — Triangle classique et acteurs étendus',
+    content: `
+      <div class="memo-section-title">🔺 Triangle classique (3 acteurs)</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Maître de l'ouvrage (MOA)</div><div class="def-text">Personne physique ou morale pour le compte de qui les travaux sont exécutés. Initiateur de la commande. Définit le programme et assure le financement. (NF P 03-001)</div></div>
+        <div class="def-item"><div class="def-term">Maître d'œuvre (MOE)</div><div class="def-text">Chargé par le MOA de diriger l'exécution du marché et de proposer la réception et le règlement des travaux. Ex : architecte (bâtiment) ou BET (travaux publics).</div></div>
+        <div class="def-item"><div class="def-term">Entrepreneur / Entreprise générale</div><div class="def-text">Réalise les travaux sans lien de subordination. Obligation de résultat → livraison de l'ouvrage. Rôle de conseil vis-à-vis du MOA.</div></div>
+        <div class="def-item"><div class="def-term">Contrôleur technique</div><div class="def-text">Personne agréée qui intervient à la demande du MOA. Avis sur aspects techniques (solidité, sécurité). Prévient les dysfonctionnements. Liaison contractuelle avec le MOA.</div></div>
+      </div>
+      <div class="memo-section-title">➕ Acteurs étendus (grands projets)</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">MOA délégué</div><div class="def-text">Mandaté par le MOA. Exerce tout ou partie des attributions du MOA.</div></div>
+        <div class="def-item"><div class="def-term">Liaisons</div><div class="def-text"><strong>Contractuelle</strong> = liés par un contrat.<br><strong>Opérationnelle</strong> = relation de travail sans contrat direct.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges fréquents</div><div class="piege-text">• Dans un projet bâtiment : le premier acteur recruté par le MOA est <strong>l'architecte</strong> (pas le BET, pas le contrôleur).<br>• Architecte–MOA : liaison <strong>contractuelle</strong>. Architecte–Entreprise : liaison <strong>opérationnelle</strong>.<br>• BET et architecte : liaison <strong>opérationnelle</strong> (pas contractuelle entre eux).</div></div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'Documents contractuels du marché',
+    subtitle: 'Chapitre 1 — Pièces constitutives',
+    content: `
+      <div class="memo-section-title">📑 Les 6 pièces contractuelles (marchés publics)</div>
+      <table class="chiffres-table">
+        <thead><tr><th>Sigle</th><th>Intitulé complet</th><th>Rôle clé</th></tr></thead>
+        <tbody>
+          <tr><td>Acte d'engagement</td><td>Document prioritaire</td><td>Parties contractantes, prix, délai</td></tr>
+          <tr><td>CCTP</td><td>Cahier des Clauses Techniques Particulières</td><td>Descriptifs techniques par lot</td></tr>
+          <tr><td>Plans d'exécution</td><td>Architecte + BET</td><td>Plus ou moins élaborés selon mission</td></tr>
+          <tr><td>CCTG</td><td>Cahier des Clauses Techniques Générales</td><td>Comprend les DTU</td></tr>
+          <tr><td>CCAP</td><td>Cahier des Clauses Administratives Particulières</td><td>Complète le CCAG pour chaque entrepreneur</td></tr>
+          <tr><td>CCAG</td><td>Cahier des Clauses Administratives Générales</td><td>Clauses générales</td></tr>
+        </tbody>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Piège CCAP vs CCAG</div><div class="piege-text">Le <strong>CCAP complète le CCAG</strong> (pas l'inverse). Le CCAP impose des clauses particulières au chantier et à chaque entrepreneur.</div></div>
+    `
+  },
+  {
+    icon: '🏗️',
+    title: 'Documents préalables à l\'exécution',
+    subtitle: 'Chapitre 2 — TRC, Permis, OS, Plans',
+    content: `
+      <div class="memo-section-title">🛡️ Assurance Tous Risques Chantier (TRC)</div>
+      <div class="key-box"><div class="key-title">📌 Caractéristiques essentielles</div><div class="key-text"><ul><li>Souscrite par le <strong>maître de l'ouvrage</strong> (ou toute personne avec intérêt global sur le chantier)</li><li>Document <strong>facultatif</strong> (non obligatoire)</li><li>Couvre jusqu'à la <strong>réception provisoire</strong> : dégâts des eaux, incendie, effondrement, vol, erreur de conception, force majeure…</li><li>NE couvre PAS après la réception définitive</li></ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège TRC</div><div class="piege-text">La TRC couvre jusqu'à la <strong>réception provisoire</strong>, pas définitive. Elle est <strong>facultative</strong>. Elle peut être souscrite par le MOA, l'entreprise, ou toute personne avec intérêt sur le chantier (pas le bailleur de fond ni sous-traitant seul).</div></div>
+      <div class="memo-section-title">📄 Permis de construire</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Qui le délivre ?</div><div class="def-text">Une <strong>administration</strong> (autorisation administrative obligatoire)</div></div>
+        <div class="def-item"><div class="def-term">Obligatoire ?</div><div class="def-text"><strong>OUI</strong> — même si des ingénieurs qualifiés sont présents. Aucune dérogation.</div></div>
+      </div>
+      <div class="memo-section-title">📢 Ordre de Service de commencer les travaux (OS)</div>
+      <div class="key-box"><div class="key-title">📌 Délai NF P 03-001</div><div class="key-text">L'OS doit être notifié entre <strong>15 et 30 jours</strong> avant la date fixée comme origine du délai contractuel.<br>Il est établi par le <strong>maître d'ouvrage</strong> et destiné à <strong>l'entreprise</strong>.<br>Il mentionne la <strong>date de début du délai contractuel</strong>.</div></div>
+      <div class="memo-section-title">📐 Les 3 plans préalables</div>
+      <table class="chiffres-table">
+        <thead><tr><th>Plan</th><th>Établi par</th><th>Objet</th></tr></thead>
+        <tbody>
+          <tr><td>Plan d'implantation</td><td>MOE (avec géomètre-expert)</td><td>Implanter les ouvrages selon les plans MOE</td></tr>
+          <tr><td>Plan d'installation de chantier</td><td>Entrepreneur</td><td>Approuvé par MOE. Matériel, aménagement, organisation</td></tr>
+          <tr><td>Plans d'exécution</td><td>Corps d'état</td><td>Approuvés par contrôle/organisme maîtrise des risques — un par corps d'état</td></tr>
+        </tbody>
+      </table>
+    `
+  },
+  {
+    icon: '📝',
+    title: 'Le Procès-Verbal (PV) de chantier',
+    subtitle: 'Chapitre 3 — Réunion, rédaction, types de PV',
+    content: `
+      <div class="memo-section-title">🤝 La réunion de chantier</div>
+      <div class="key-box"><div class="key-title">📌 Caractéristiques</div><div class="key-text"><ul><li>Organisée de façon <strong>hebdomadaire</strong></li><li>Convoquée et animée par le <strong>maître d'œuvre</strong> (ou contrôle technique)</li><li>La présence de <strong>l'entreprise est obligatoire</strong> en marchés publics et privés</li><li>Le maître d'ouvrage peut être <strong>absent</strong> (réunion peut se tenir quand même)</li><li>Le bureau de suivi et de contrôle ne peut être absent</li></ul></div></div>
+      <div class="memo-section-title">✍️ Rédaction du PV</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Qui rédige ?</div><div class="def-text">Le <strong>maître d'œuvre</strong> ou le <strong>bureau de contrôle / chef de mission</strong> (pas le conducteur de travaux, pas le chef de chantier)</div></div>
+        <div class="def-item"><div class="def-term">Objet principal</div><div class="def-text">Constater l'<strong>application des clauses du marché</strong>. Acter ce qui s'est dit lors de la réunion.</div></div>
+      </div>
+      <div class="memo-section-title">📋 Contenu du PV (éléments obligatoires)</div>
+      <div class="key-box"><div class="key-title">📌 Informations clés du PV</div><div class="key-text"><ul><li>Nom du projet</li><li><strong>Numéro du marché</strong> ou du bon de commande</li><li>Numéro chronologique du PV</li><li>Date de la réunion</li><li>Intervenants présents + signatures</li><li>Pagination</li><li>Liste des <strong>moyens humains</strong></li><li>Liste des <strong>moyens matériels</strong> et approvisionnements</li><li><strong>Taux d'avancement</strong> des travaux (en %)</li><li>État de mise en œuvre des observations précédentes</li><li>Nouvelles observations</li></ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège : l'heure d'arrivée</div><div class="piege-text">L'heure d'arrivée des acteurs <strong>ne figure PAS</strong> dans le PV de chantier. C'est un piège récurrent en QCM.</div></div>
+      <div class="memo-section-title">📄 Les 3 types de PV</div>
+      <table class="chiffres-table">
+        <thead><tr><th>Type de PV</th><th>Moment</th><th>Points clés</th></tr></thead>
+        <tbody>
+          <tr><td>PV remise de site</td><td>Démarrage travaux</td><td>Remise du site à l'entrepreneur adjudicataire. Signé MOA/MOE/Mission contrôle</td></tr>
+          <tr><td>PV réception provisoire</td><td>Fin de chantier</td><td>Signé : entrepreneur + MOE + MOA. Peut être avec ou sans réserves. Rédigé EN PRÉSENCE de l'entrepreneur</td></tr>
+          <tr><td>PV réception définitive</td><td>1 an après levée des réserves</td><td>Conditionne le paiement de la <strong>retenue de garantie</strong>. Libère l'entrepreneur de ses obligations</td></tr>
+        </tbody>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges réception</div><div class="piege-text">• PV provisoire : établi AVANT le définitif (logique chronologique).<br>• PV définitif : conditionne la <strong>retenue de garantie</strong> (ou déblocage de la caution bancaire).<br>• La réception provisoire sans réserve n'est PAS facultative → le définitif reste nécessaire.</div></div>
+    `
+  },
+  {
+    icon: '📓',
+    title: 'Le Journal de Chantier',
+    subtitle: 'Chapitre 3 — Tenu au quotidien',
+    content: `
+      <div class="key-box"><div class="key-title">📌 Caractéristiques essentielles</div><div class="key-text"><ul><li>Tenu à l'initiative du <strong>maître d'œuvre</strong> ou du <strong>bureau de suivi et contrôle</strong></li><li>Contenu <strong>journalier</strong> : temps de travail, effectifs, avancement, pannes, approvisionnements, remarques d'exécution</li><li>Accessible à <strong>toutes les personnes liées au chantier</strong> (pas seulement MOE ou entreprise)</li><li>L'original reste sur le chantier ; le double va au secrétariat du MOE</li><li>Le MOA conserve le journal <strong>après la réception</strong></li></ul></div></div>
+      <div class="memo-section-title">📌 Rôle du journal de chantier</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Centraliser</div><div class="def-text">Informations liées à l'exécution du chantier</div></div>
+        <div class="def-item"><div class="def-term">Historique</div><div class="def-text">Retrouver l'historique en cas de <strong>contestations</strong></div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège accessibilité</div><div class="piege-text">Le journal de chantier est accessible à <strong>toutes les personnes liées au chantier</strong> — pas seulement MOE et entreprise, pas seulement le jour de la réunion. Toute personne peut y annoter ses observations.</div></div>
+    `
+  },
+  {
+    icon: '📊',
+    title: 'Le Rapport Mensuel d\'Avancement',
+    subtitle: 'Chapitre 3 — Bilan mensuel des activités',
+    content: `
+      <div class="key-box"><div class="key-title">📌 Définition et caractéristiques</div><div class="key-text"><ul><li>Établi par le <strong>maître d'œuvre</strong> ou le bureau de suivi et contrôle</li><li>Destiné principalement au <strong>maître d'ouvrage</strong></li><li><strong>N'est pas</strong> un document contractuel du marché</li><li>Traite de façon <strong>brève et succincte</strong> (pas en détail)</li><li>Périodicité : <strong>mensuelle</strong></li></ul></div></div>
+      <div class="memo-section-title">📋 Les 5 parties du rapport mensuel</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Présentation du projet</strong> : noms MOA, MOE, entreprise(s), consultants, bailleur de fond</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Revue des activités importantes</strong> : réceptions partielles avec dates et PV, réunions hebdomadaires, résultats d'études (béton, sol, sable), courriers échangés</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>État d'avancement / situation des travaux</strong> : taux d'avancement global + évolution hebdomadaire</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Problèmes, progrès, recommandations</strong> : tableau problèmes → solutions → répercussions</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Situation financière</strong> : paiements, décomptes, cautions, avances de démarrage, taux d'avancement financier</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges rapport mensuel</div><div class="piege-text">• Rédigé par MOE/bureau contrôle, <strong>PAS par l'entreprise</strong>.<br>• Destiné au <strong>MOA</strong>, pas au MOE ni à l'assureur.<br>• Ce <strong>n'est pas</strong> un document contractuel du marché.<br>• Il recense les <strong>réceptions partielles d'ouvrages</strong> (avec dates et PV) → piège : "date d'achèvement projetée" est aussi mentionnée.</div></div>
+      <div class="memo-section-title">📊 Exemple tableau taux d'exécution</div>
+      <table class="chiffres-table">
+        <thead><tr><th>Semaine</th><th>Taux global</th><th>Évolution hebdo</th></tr></thead>
+        <tbody>
+          <tr><td>26-06 au 03-07</td><td>1,5%</td><td>—</td></tr>
+          <tr><td>03-07 au 10-07</td><td>1,88%</td><td>+0,38%</td></tr>
+          <tr><td>10-07 au 17-07</td><td>2,15%</td><td>+0,27%</td></tr>
+          <tr><td>17-07 au 24-07</td><td>2,70%</td><td>+0,55%</td></tr>
+          <tr><td>24-07 au 31-07</td><td>3,53%</td><td>+0,83%</td></tr>
+        </tbody>
+      </table>
+    `
+  },
+  {
+    icon: '🗂️',
+    title: 'Tableau comparatif des 3 documents de chantier',
+    subtitle: 'Synthèse — PV / Journal / Rapport mensuel',
+    content: `
+      <table class="chiffres-table">
+        <thead><tr><th>Critère</th><th>PV de chantier</th><th>Journal de chantier</th><th>Rapport mensuel</th></tr></thead>
+        <tbody>
+          <tr><td>Périodicité</td><td>Hebdomadaire</td><td>Journalière</td><td>Mensuelle</td></tr>
+          <tr><td>Rédigé par</td><td>MOE / bureau contrôle</td><td>MOE / bureau contrôle</td><td>MOE / bureau contrôle</td></tr>
+          <tr><td>Destinataire</td><td>Tous intervenants + MOA</td><td>Toutes personnes liées</td><td>Principalement MOA</td></tr>
+          <tr><td>Contenu approvisionnements</td><td>✅ Oui</td><td>✅ Oui</td><td>❌ Non (en détail)</td></tr>
+          <tr><td>Contient N° marché</td><td>✅ Oui</td><td>❌ Non</td><td>✅ Oui (indirectement)</td></tr>
+          <tr><td>Contient taux avancement</td><td>✅ Oui</td><td>✅ Oui (partiel)</td><td>✅ Oui</td></tr>
+          <tr><td>Observations</td><td>✅ Toutes parties</td><td>✅ Toutes personnes</td><td>✅ Récapitulatif</td></tr>
+          <tr><td>Situation financière</td><td>❌ Non</td><td>❌ Non</td><td>✅ Oui</td></tr>
+          <tr><td>Document établi par l'entreprise</td><td>❌ Non</td><td>❌ Non</td><td>❌ Non</td></tr>
+        </tbody>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Piège clé : qui établit quoi en cours de chantier ?</div><div class="piege-text">• <strong>Entreprise</strong> → Planning d'exécution des travaux (pas le PV, pas le rapport mensuel)<br>• <strong>Bureau de contrôle</strong> → Rapport mensuel d'avancement + PV de chantier<br>• <strong>Document contenant à la fois N° marché ET taux avancement</strong> → PV de chantier ET rapport mensuel (les deux)</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Selon la norme NF P 03-001, qui est désigné comme maître de l'ouvrage ?",type:'multi',opts:[{t:"La personne physique ou morale pour le compte de qui les travaux sont exécutés",c:true},{t:"La personne qui dirige l'exécution du marché",c:false},{t:"L'entrepreneur qui réalise les travaux",c:false},{t:"Le contrôleur technique agréé",c:false}],diff:'easy',piege:false,expl:"Le maître de l'ouvrage est défini par la norme NF P 03-001 comme la personne physique ou morale pour le compte de qui les travaux sont exécutés. Il est l'initiateur de la commande.",ref:"Chapitre 1 › Section I › Page 5"},
+  {q:"Dans un projet de construction de bâtiment, quel est le premier acteur recruté par le maître de l'ouvrage ?",type:'multi',opts:[{t:"L'architecte",c:true},{t:"L'entrepreneur",c:false},{t:"Le bureau d'étude technique",c:false},{t:"Le contrôleur technique",c:false}],diff:'med',piege:true,expl:"Dans un projet de construction de bâtiment, c'est l'architecte qui est recruté en premier (il est le maître d'œuvre principal). Le BET intervient ensuite en appui technique.",ref:"Chapitre 1 › Section I › Page 5-6"},
+  {q:"Le trio classique des intervenants principaux d'un chantier de construction est :",type:'multi',opts:[{t:"Le maître d'ouvrage, le maître d'œuvre, l'entreprise",c:true},{t:"Le maître d'ouvrage, le contrôle technique, l'entreprise",c:false},{t:"Le maître d'ouvrage, le maître d'ouvrage délégué, l'entreprise",c:false},{t:"Le maître d'ouvrage, le maître d'œuvre, le contrôle technique",c:false}],diff:'easy',piege:true,expl:"Le triangle classique = MOA + MOE + Entrepreneur. Le contrôleur technique et le MOA délégué sont des acteurs étendus pour les grands projets.",ref:"Chapitre 1 › Section I › Page 5"},
+  {q:"La liaison entre l'architecte et le maître de l'ouvrage est de type :",type:'multi',opts:[{t:"Contractuelle",c:true},{t:"Opérationnelle",c:false},{t:"Fonctionnelle",c:false},{t:"Hiérarchique",c:false}],diff:'med',piege:false,expl:"L'architecte est lié au MOA par un contrat de maîtrise d'œuvre → liaison contractuelle. La liaison architecte-entreprise est opérationnelle (relation de travail sans contrat direct entre eux).",ref:"Chapitre 1 › Section I › Page 6-7"},
+  {q:"La liaison entre l'architecte et le bureau d'étude technique est de type :",type:'multi',opts:[{t:"Opérationnelle",c:true},{t:"Contractuelle",c:false},{t:"Hierarchique",c:false},{t:"Administrative",c:false}],diff:'med',piege:true,expl:"L'architecte et le BET travaillent ensemble dans la maîtrise d'œuvre mais n'ont pas de contrat direct entre eux → liaison opérationnelle.",ref:"Chapitre 1 › Section I › Page 6-7"},
+  {q:"Lequel des documents du marché constitue un complément au CCAG ?",type:'multi',opts:[{t:"Le CCAP",c:true},{t:"L'acte d'engagement",c:false},{t:"Le CCTP",c:false},{t:"Le CCTG",c:false}],diff:'med',piege:true,expl:"Le CCAP (Cahier des Clauses Administratives Particulières) complète le CCAG en imposant des clauses particulières au chantier et à chaque entrepreneur. Retenir : CCAP complète CCAG.",ref:"Chapitre 1 › Section II › Page 7"},
+  {q:"L'acte d'engagement est qualifié de :",type:'multi',opts:[{t:"Document prioritaire précisant les parties contractantes, le prix et le délai",c:true},{t:"Document définissant les clauses techniques particulières",c:false},{t:"Document précisant les clauses administratives générales",c:false},{t:"Plan de mise en œuvre des ouvrages",c:false}],diff:'easy',piege:false,expl:"L'acte d'engagement est le document prioritaire qui précise principalement les parties contractantes, le prix et le délai.",ref:"Chapitre 1 › Section II › Page 7"},
+  {q:"Le CCTG comprend :",type:'multi',opts:[{t:"L'ensemble des cahiers des clauses techniques générales et des cahiers des charges des DTU",c:true},{t:"Uniquement les documents techniques unifiés",c:false},{t:"Les clauses administratives propres à chaque entrepreneur",c:false},{t:"Les plans d'exécution de l'architecte",c:false}],diff:'med',piege:false,expl:"Le CCTG (Cahier des Clauses Techniques Générales) comprend l'ensemble des CCTG et des cahiers des charges des DTU (Documents Techniques Unifiés).",ref:"Chapitre 1 › Section II › Page 7"},
+  {q:"L'assurance tous risques chantier (TRC) est :",type:'multi',opts:[{t:"Un document facultatif",c:true},{t:"Souscrite obligatoirement par l'entrepreneur",c:false},{t:"Un document contractuel obligatoire du marché",c:false},{t:"Délivrée par l'administration",c:false}],diff:'med',piege:true,expl:"La TRC est FACULTATIVE. Elle est souscrite par le MOA ou toute personne avec intérêt global sur le chantier — mais elle n'est pas obligatoire.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"L'assurance TRC couvre les dommages :",type:'multi',opts:[{t:"Jusqu'à la réception provisoire",c:true},{t:"Jusqu'à la réception définitive",c:false},{t:"Pendant 10 ans après la réception définitive",c:false},{t:"Uniquement pendant la phase de gros œuvre",c:false}],diff:'med',piege:true,expl:"La garantie TRC s'entend jusqu'à la réception PROVISOIRE pour tous les dommages matériels. Elle ne couvre pas après la réception définitive.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"Le permis de construire est délivré par :",type:'multi',opts:[{t:"Une administration",c:true},{t:"Le maître de l'ouvrage",c:false},{t:"Un géomètre expert",c:false},{t:"Le bureau de contrôle technique",c:false}],diff:'easy',piege:false,expl:"Le permis de construire est une autorisation administrative obligatoire. Il est délivré par une administration et non par le MOA ou un prestataire privé.",ref:"Chapitre 2 › Section II › Page 12"},
+  {q:"Le permis de construire est-il nécessaire si des ingénieurs qualifiés sont présents sur le chantier ?",type:'multi',opts:[{t:"Oui, il reste obligatoire dans tous les cas",c:true},{t:"Non, la présence d'ingénieurs qualifiés le remplace",c:false},{t:"Seulement pour les projets de plus de 500 m²",c:false},{t:"Il est facultatif si le MOA est une personne morale de droit public",c:false}],diff:'med',piege:true,expl:"Le permis de construire est une autorisation administrative OBLIGATOIRE sans exception. La présence d'ingénieurs qualifiés ne dispense en aucun cas de l'obtenir.",ref:"Chapitre 2 › Section II › Page 12"},
+  {q:"Selon la norme NF P 03-001, l'ordre de service de démarrage des travaux doit être notifié :",type:'multi',opts:[{t:"Entre 15 et 30 jours avant la date fixée comme origine du délai contractuel",c:true},{t:"Entre 0 et 15 jours avant le début du délai contractuel",c:false},{t:"Entre 16 et 31 jours avant le début du délai contractuel",c:false},{t:"Entre 0 et 24 jours avant le début du délai contractuel",c:false}],diff:'med',piege:true,expl:"La norme NF P 03-001 fixe que l'OS de démarrage doit être notifié entre 30 et 15 jours avant la date d'origine du délai. Soit : entre 15 et 30 jours.",ref:"Chapitre 2 › Section III › Page 12-13"},
+  {q:"L'ordre de service de commencer les travaux est établi par :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"Le service administratif de l'État",c:false},{t:"Le bureau de contrôle",c:false},{t:"L'architecte",c:false}],diff:'easy',piege:false,expl:"L'OS de commencer les travaux est établi par le maître d'ouvrage. Il est adressé à l'entreprise pour déclencher contractuellement le délai d'exécution.",ref:"Chapitre 2 › Section III › Page 12"},
+  {q:"L'ordre de service de commencer les travaux est établi pour :",type:'multi',opts:[{t:"L'entreprise",c:true},{t:"Le service administratif de l'État",c:false},{t:"L'assureur",c:false},{t:"Le bureau de contrôle",c:false}],diff:'easy',piege:false,expl:"L'OS est adressé à l'entreprise pour lui signifier la date de démarrage contractuel des travaux.",ref:"Chapitre 2 › Section III › Page 12"},
+  {q:"Le plan d'installation de chantier est établi par :",type:'multi',opts:[{t:"L'entrepreneur",c:true},{t:"L'architecte",c:false},{t:"Le contrôle technique",c:false},{t:"Le maître d'ouvrage délégué",c:false}],diff:'easy',piege:false,expl:"Le plan d'installation de chantier est établi par l'entreprise, puis approuvé par le maître d'œuvre.",ref:"Chapitre 2 › Section IV › Page 13"},
+  {q:"La date contractuelle de démarrage des travaux est mentionnée sur :",type:'multi',opts:[{t:"L'ordre de service de commencer les travaux",c:true},{t:"Le plan d'implantation",c:false},{t:"Les plans d'exécution",c:false},{t:"Le contrat entre le MOA et l'entreprise",c:false}],diff:'med',piege:true,expl:"C'est l'OS de commencer les travaux qui mentionne la date de début du délai contractuel. L'acte d'engagement précise le délai global mais c'est l'OS qui fixe le point de départ.",ref:"Chapitre 2 › Section III › Page 12-13"},
+  {q:"La réunion de chantier est organisée en général de façon :",type:'multi',opts:[{t:"Hebdomadaire",c:true},{t:"Mensuelle",c:false},{t:"Bimensuelle",c:false},{t:"Trimestrielle",c:false}],diff:'easy',piege:false,expl:"La réunion de chantier (ou rendez-vous de chantier) est organisée en général de façon hebdomadaire pour régler les problèmes administratifs, techniques et matériels.",ref:"Chapitre 3 › Section I.1 › Page 18"},
+  {q:"La réunion de chantier peut se tenir malgré l'absence :",type:'multi',opts:[{t:"Du maître d'ouvrage",c:true},{t:"De l'entreprise",c:false},{t:"Du bureau de suivi et de contrôle",c:false},{t:"Du maître d'œuvre",c:false}],diff:'med',piege:true,expl:"La présence de l'entreprise est obligatoire. La réunion peut se tenir même si le MOA est absent (il reçoit le PV quand même). Le bureau de suivi/contrôle et le MOE sont aussi indispensables.",ref:"Chapitre 3 › Section I.1.c › Page 19"},
+  {q:"Le procès-verbal de chantier a pour objet principal de :",type:'multi',opts:[{t:"Constater l'application des clauses du marché",c:true},{t:"Fixer le prix des travaux supplémentaires",c:false},{t:"Autoriser le démarrage des travaux",c:false},{t:"Recevoir provisoirement les ouvrages",c:false}],diff:'easy',piege:false,expl:"Le PV a pour objet principal de constater l'application des clauses du marché et d'acter ce qui s'est dit lors de la réunion.",ref:"Chapitre 3 › Section I.2.a › Page 19-20"},
+  {q:"Lors d'une réunion hebdomadaire, qui rédige le PV de chantier ?",type:'multi',opts:[{t:"Le chef de mission du bureau de contrôle ou le maître d'œuvre",c:true},{t:"Le conducteur des travaux de l'entreprise",c:false},{t:"Le chef de chantier de l'entreprise",c:false},{t:"Le maître d'ouvrage ou son représentant",c:false}],diff:'med',piege:true,expl:"C'est en général le maître d'œuvre ou le contrôle technique (chef de mission du bureau de contrôle) qui est chargé de convoquer, animer la réunion et établir le PV. Jamais l'entreprise.",ref:"Chapitre 3 › Section I.2.a › Page 20"},
+  {q:"Le PV de chantier doit obligatoirement comporter :",type:'multi',opts:[{t:"Le numéro du marché ou bon de commande",c:true},{t:"Les observations de la mission de contrôle",c:true},{t:"Les observations du maître d'ouvrage",c:true},{t:"L'heure d'arrivée des différents acteurs",c:false}],diff:'hard',piege:true,expl:"Le PV comporte : nom du projet, N° PV, N° marché, date, intervenants, signatures, pagination, observations de toutes les parties. L'heure d'arrivée n'est PAS une mention requise → piège classique.",ref:"Chapitre 3 › Section I.2.b-c › Page 20-21"},
+  {q:"Le PV de remise de site est établi :",type:'multi',opts:[{t:"Au démarrage des travaux pour remettre le site à l'entrepreneur",c:true},{t:"À la fin des travaux avant la réception provisoire",c:false},{t:"Un an après la réception provisoire",c:false},{t:"Lors de la première réunion de chantier",c:false}],diff:'med',piege:false,expl:"Le PV de remise de site est spécifique au démarrage. Il formalise la remise physique du site à l'entrepreneur adjudicataire.",ref:"Chapitre 3 › Section I.3.a › Page 21"},
+  {q:"La réception définitive a lieu :",type:'multi',opts:[{t:"Généralement un an après la levée de toutes les réserves de la réception provisoire",c:true},{t:"Immédiatement après la réception provisoire sans réserve",c:false},{t:"Six mois après la fin des travaux",c:false},{t:"Deux ans après la réception provisoire",c:false}],diff:'med',piege:true,expl:"La réception définitive a lieu généralement 1 an après la levée de toutes les réserves formulées lors de la réception provisoire.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Le PV de réception définitive conditionne :",type:'multi',opts:[{t:"Le paiement de la retenue de garantie (ou son déblocage si caution bancaire)",c:true},{t:"Le début du délai contractuel",c:false},{t:"Le paiement du premier acompte à l'entreprise",c:false},{t:"La délivrance du permis de construire",c:false}],diff:'med',piege:false,expl:"La réception définitive permet le versement de la retenue de garantie ou son déblocage si elle avait été fournie sous forme de caution bancaire.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Le journal de chantier est tenu à l'initiative de :",type:'multi',opts:[{t:"Le maître d'œuvre ou le bureau de suivi et de contrôle",c:true},{t:"L'entreprise uniquement",c:false},{t:"Le maître d'ouvrage",c:false},{t:"Le contrôleur technique agréé",c:false}],diff:'easy',piege:false,expl:"Le journal de chantier est tenu à l'initiative du maître d'œuvre ou du bureau de suivi et de contrôle.",ref:"Chapitre 3 › Section II › Page 22"},
+  {q:"Le journal de chantier est accessible :",type:'multi',opts:[{t:"À toutes les personnes liées au chantier",c:true},{t:"À l'entreprise et au maître d'œuvre uniquement",c:false},{t:"À l'entreprise et au maître d'ouvrage uniquement",c:false},{t:"Uniquement le jour de la réunion hebdomadaire",c:false}],diff:'med',piege:true,expl:"Le journal de chantier est accessible à toutes les personnes liées au chantier. Toute personne peut y annoter ses observations. L'original reste sur le chantier.",ref:"Chapitre 3 › Section II › Page 22-23"},
+  {q:"Le rapport mensuel d'avancement est établi par :",type:'multi',opts:[{t:"Le maître d'œuvre ou le bureau de suivi et de contrôle",c:true},{t:"L'entreprise",c:false},{t:"Le maître d'ouvrage",c:false},{t:"L'assureur",c:false}],diff:'easy',piege:true,expl:"Le rapport mensuel est établi par le MOE ou le bureau de suivi et contrôle. L'entreprise n'établit PAS ce rapport — c'est un piège fréquent.",ref:"Chapitre 3 › Section III › Page 23"},
+  {q:"Le rapport mensuel d'avancement est établi principalement pour :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"Le maître d'œuvre",c:false},{t:"L'assureur",c:false},{t:"L'entreprise",c:false}],diff:'easy',piege:false,expl:"Le rapport mensuel d'avancement est destiné principalement au maître d'ouvrage pour l'informer des progrès et difficultés.",ref:"Chapitre 3 › Section III › Page 23"},
+  {q:"Le rapport mensuel d'avancement des travaux est :",type:'multi',opts:[{t:"Un document non contractuel rédigé par le MOE/bureau contrôle",c:true},{t:"Un document contractuel du marché",c:false},{t:"Rédigé par l'entreprise",c:false},{t:"Un document permettant le paiement du maître d'œuvre",c:false}],diff:'med',piege:true,expl:"Le rapport mensuel n'est PAS un document contractuel du marché. Il est rédigé par le MOE/bureau contrôle (pas l'entreprise) et ne sert pas directement au paiement.",ref:"Chapitre 3 › Section III › Page 23"},
+  {q:"Quels sont les documents en cours de chantier établis par le bureau de contrôle technique ?",type:'multi',opts:[{t:"Le rapport mensuel d'avancement",c:true},{t:"Le procès-verbal de chantier",c:true},{t:"Le planning d'exécution des travaux",c:false}],diff:'med',piege:true,expl:"Le bureau de contrôle établit le rapport mensuel d'avancement ET le PV de chantier. Le planning d'exécution des travaux est établi par l'entreprise.",ref:"Chapitre 3 › Sections I-III › Page 18-25"},
+  {q:"Le document établi par l'entreprise en cours de chantier est :",type:'multi',opts:[{t:"Le planning d'exécution des travaux",c:true},{t:"Le rapport mensuel d'avancement",c:false},{t:"Le procès-verbal de chantier",c:false}],diff:'med',piege:true,expl:"L'entreprise établit le planning d'exécution des travaux. Le PV et le rapport mensuel sont établis par le MOE ou le bureau de contrôle.",ref:"Chapitre 3 › Sections I-III › Page 18-25"},
+  {q:"Le rapport mensuel d'avancement recense :",type:'multi',opts:[{t:"Les réceptions partielles d'ouvrages avec dates et référence des PV",c:true},{t:"La liste des engins présents chaque jour",c:false},{t:"Le détail de chaque réunion hebdomadaire",c:false},{t:"Les salaires de l'ensemble du personnel",c:false}],diff:'med',piege:false,expl:"Dans la section 'Revue des activités importantes', le rapport mensuel recense les réceptions partielles d'ouvrages avec les dates, les acteurs présents et les références des PV.",ref:"Chapitre 3 › Section III.2 › Page 23"},
+  {q:"Dans quel(s) document(s) de chantier peut-on retrouver à la fois le numéro du marché et le taux d'avancement des travaux ?",type:'multi',opts:[{t:"Le procès-verbal de chantier",c:true},{t:"Le rapport mensuel d'avancement des travaux",c:true},{t:"Le journal de chantier",c:false}],diff:'hard',piege:true,expl:"Le PV comporte le N° de marché et l'état d'avancement (%). Le rapport mensuel contient aussi ces deux informations. Le journal de chantier ne comporte pas systématiquement le N° de marché.",ref:"Chapitre 3 › Sections I.2 et III › Page 20-24"},
+  {q:"Les réunions de chantier ont pour but :",type:'multi',opts:[{t:"D'informer et de prendre des décisions vis-à-vis des actions à engager",c:true},{t:"De permettre aux acteurs de discuter les meilleurs moyens pour la réalisation de l'ouvrage",c:true},{t:"De permettre le paiement de l'entrepreneur",c:false},{t:"De permettre aux acteurs de modifier les termes du contrat",c:false}],diff:'med',piege:true,expl:"Les réunions de chantier visent à informer, prendre des décisions, et rechercher les meilleurs moyens. Elles ne servent PAS à payer l'entrepreneur ni à modifier le contrat.",ref:"Chapitre 3 › Section I.1 › Page 18"},
+  {q:"Pour la préparation d'une réunion hebdomadaire, il est nécessaire de disposer des informations sur :",type:'multi',opts:[{t:"Les moyens humains déployés par l'entreprise",c:true},{t:"Les moyens matériels déployés par l'entreprise",c:true},{t:"La présence effective des participants à la réunion",c:true},{t:"Les moyens financiers de l'entreprise",c:false}],diff:'med',piege:true,expl:"Pour préparer la réunion : liste des membres présents, moyens humains, moyens matériels, taux d'exécution. Les moyens financiers de l'entreprise ne font pas partie des informations requises pour la préparation.",ref:"Chapitre 3 › Section I.1.a › Page 19"},
+  {q:"Le PV de réception provisoire est :",type:'multi',opts:[{t:"Établi avant le PV de réception définitive",c:true},{t:"Signé au minimum par l'entrepreneur, le MOA et le MOE",c:true},{t:"Facultatif si l'entreprise a fourni toutes les garanties",c:false},{t:"Rédigé en l'absence de l'entreprise pour relever les malfaçons",c:false}],diff:'hard',piege:true,expl:"Le PV provisoire est toujours établi AVANT le définitif. Il est signé par l'entrepreneur + MOE + MOA (minimum). Il ne peut pas être rédigé en l'absence de l'entrepreneur.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Lors du PV de remise d'ouvrage, à partir de quand le MOA prend-il la charge de l'ouvrage ?",type:'multi',opts:[{t:"À dater de la remise formelle par le PV",c:true},{t:"Un an après la réception provisoire",c:false},{t:"Au moment de la réception définitive",c:false},{t:"Lors de la signature de l'acte d'engagement",c:false}],diff:'med',piege:false,expl:"À dater de la remise formalisée dans le PV de remise d'ouvrage, la garde et la charge de l'ouvrage sont transférées au maître d'ouvrage.",ref:"Chapitre 3 › Section I.3.b › Page 21-22"},
+  {q:"Le contenu journalier du journal de chantier comprend :",type:'multi',opts:[{t:"Le temps de travail et les journées d'intempérie",c:true},{t:"Les effectifs des entreprises et l'avancement du chantier",c:true},{t:"Les pannes d'engins et les approvisionnements",c:true},{t:"La situation financière mensuelle",c:false}],diff:'med',piege:false,expl:"Le journal comporte : constatations générales (temps de travail, effectifs, avancement), observations ponctuelles (pannes, approvisionnements, remarques d'exécution). La situation financière est dans le rapport mensuel.",ref:"Chapitre 3 › Section II › Page 22"},
+  {q:"Le rapport mensuel d'avancement traite des activités du projet de façon :",type:'multi',opts:[{t:"Brève et succincte",c:true},{t:"Exhaustive et très détaillée",c:false},{t:"Uniquement chiffrée sans commentaires",c:false},{t:"Uniquement narrative sans données chiffrées",c:false}],diff:'easy',piege:false,expl:"Le rapport mensuel ne traite pas de façon détaillée l'avancement du projet, mais de façon brève et succincte. L'objectif est d'informer le MOA, pas de produire un rapport exhaustif.",ref:"Chapitre 3 › Section III › Page 23"},
+  {q:"L'assurance TRC peut être souscrite par :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"L'entreprise (toute personne avec intérêt global)",c:true},{t:"Le bailleur de fond",c:false},{t:"Un sous-traitant seul",c:false}],diff:'hard',piege:true,expl:"La TRC est souscrite par le MOA ou à sa demande ou par toute autre personne qui a un intérêt global sur le chantier. Le bailleur de fond et le sous-traitant seul n'entrent pas dans cette catégorie selon le cours.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"En fin de chantier, quels documents le MOA doit-il s'attendre à recevoir du contrôle et/ou de l'entreprise ?",type:'multi',opts:[{t:"Le journal de chantier",c:true},{t:"Les plans de recollements",c:true},{t:"Le plan d'installation du chantier",c:false},{t:"La caution d'avance de démarrage",c:false}],diff:'hard',piege:true,expl:"Le MOA reçoit : le journal de chantier (il le conserve après réception) + les plans de recollements + les DOE (dossiers des ouvrages exécutés). Le plan d'installation et la caution d'avance ne sont pas remis au MOA en fin de chantier.",ref:"Chapitre 3 › Section I.3.b et II › Page 21-23"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"Sur le chantier de construction d'un barrage à Ouagadougou, M. Kaboré représente la structure qui finance et commande les travaux. Il est responsable du financement et a défini le programme. Quel est son rôle ?",type:'multi',opts:[{t:"Maître d'ouvrage",c:true},{t:"Maître d'œuvre",c:false},{t:"Entrepreneur",c:false},{t:"Contrôleur technique",c:false}],diff:'easy',piege:false,expl:"M. Kaboré correspond à la définition du MOA : il finance, a défini le programme, et est l'initiateur de la commande.",ref:"Chapitre 1 › Section I › Page 5"},
+  {q:"Sur un chantier de construction d'école, l'architecte DIALLO reçoit chaque mardi un rapport de l'ingénieur du BET sur les fondations. Ce type d'échange entre l'architecte et le BET relève d'une liaison :",type:'multi',opts:[{t:"Opérationnelle",c:true},{t:"Contractuelle",c:false},{t:"Légale",c:false},{t:"Administrative",c:false}],diff:'med',piege:false,expl:"L'architecte et le BET collaborent sans contrat direct entre eux → liaison opérationnelle. L'architecte a un contrat avec le MOA ; le BET peut aussi en avoir un avec le MOA mais pas avec l'architecte directement.",ref:"Chapitre 1 › Section I › Page 6-7"},
+  {q:"La société SOGEA souhaite construire un entrepôt logistique de 2 000 m². Le responsable sécurité de SOGEA demande si un permis de construire est nécessaire, étant donné que leur chef de projet est un ingénieur génie civil expérimenté. Que lui répondez-vous ?",type:'multi',opts:[{t:"Oui, le permis est obligatoire quelle que soit la qualification des personnes présentes",c:true},{t:"Non, la présence d'un ingénieur qualifié dispense du permis",c:false},{t:"Seulement si le projet dépasse 5 000 m²",c:false},{t:"Le permis est facultatif pour les entrepôts industriels",c:false}],diff:'med',piege:true,expl:"Le permis de construire est une autorisation administrative OBLIGATOIRE. Aucune qualification professionnelle ne peut s'y substituer.",ref:"Chapitre 2 › Section II › Page 12"},
+  {q:"Le 1er juillet, le MOA envoie un OS de démarrage des travaux en indiquant que le délai contractuel commence le 20 juillet. Cet OS est-il conforme à la norme NF P 03-001 ?",type:'multi',opts:[{t:"Oui, car il y a 19 jours entre l'envoi et le démarrage, ce qui est dans la fourchette 15-30 jours",c:true},{t:"Non, il aurait dû être envoyé le 5 juillet au plus tard",c:false},{t:"Non, l'OS doit être envoyé exactement 15 jours avant",c:false},{t:"Non, l'OS est établi par l'architecte, pas le MOA",c:false}],diff:'hard',piege:true,expl:"19 jours se situe entre 15 et 30 jours → conforme. La norme NF P 03-001 exige une notification entre 15 et 30 jours avant l'origine du délai. L'OS est bien établi par le MOA.",ref:"Chapitre 2 › Section III › Page 12-13"},
+  {q:"Le chantier de construction du siège de la mairie de Kaya a débuté il y a 3 semaines. Un incendie se déclare dans la zone de stockage des matériaux. L'assurance TRC souscrite avant le démarrage prendra-t-elle en charge ce sinistre ?",type:'multi',opts:[{t:"Oui, car l'incendie est survenu avant la réception provisoire",c:true},{t:"Non, l'incendie n'est pas couvert par la TRC",c:false},{t:"Oui, mais seulement si l'entrepreneur est reconnu fautif",c:false},{t:"Non, la TRC ne couvre que les effondrements structurels",c:false}],diff:'med',piege:false,expl:"La TRC couvre l'incendie jusqu'à la réception provisoire des travaux. Un incendie 3 semaines après le démarrage est bien dans la période de couverture.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"La réception provisoire du chantier de la route nationale RN2 a eu lieu le 15 mars 2023 avec 3 réserves. Toutes les réserves ont été levées le 30 avril 2023. Quand peut avoir lieu la réception définitive ?",type:'multi',opts:[{t:"Vers le 30 avril 2024 (1 an après la levée des réserves)",c:true},{t:"Vers le 15 mars 2024 (1 an après la réception provisoire)",c:false},{t:"Immédiatement après la levée de la dernière réserve",c:false},{t:"Deux ans après la réception provisoire",c:false}],diff:'hard',piege:true,expl:"La réception définitive a lieu généralement 1 an après la LEVÉE DES RÉSERVES, pas 1 an après la réception provisoire. Ici : levée le 30 avril 2023 → définitive vers le 30 avril 2024.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Lors de la réunion de chantier du mardi 10 octobre, le MOA est retenu à Ouagadougou pour une réunion d'urgence. Peut-on tenir la réunion de chantier en son absence ?",type:'multi',opts:[{t:"Oui, la réunion peut se tenir et le MOA recevra le PV",c:true},{t:"Non, la réunion ne peut pas se tenir sans le MOA",c:false},{t:"Oui, mais aucun PV ne peut être rédigé en son absence",c:false},{t:"Non, il faut reporter d'au moins 72h",c:false}],diff:'med',piege:true,expl:"La réunion peut se tenir en l'absence du MOA. Le PV lui sera diffusé ensuite. Seule la présence de l'entreprise est obligatoire en marchés publics et privés.",ref:"Chapitre 3 › Section I.1.c › Page 19"},
+  {q:"L'entreprise BATIBUR conteste un retard qui lui est imputé. Pour prouver qu'elle était en attente d'approvisionnements fournis par le MOA, quel document permet de retrouver l'historique de cette situation ?",type:'multi',opts:[{t:"Le journal de chantier",c:true},{t:"Le plan d'installation de chantier",c:false},{t:"L'acte d'engagement",c:false},{t:"Le CCTP",c:false}],diff:'med',piege:false,expl:"Le journal de chantier sert à centraliser les informations liées à l'exécution et à retrouver l'historique en cas de contestations. C'est son rôle clé.",ref:"Chapitre 3 › Section II › Page 23"},
+  {q:"Le chef de mission du bureau de contrôle SOCOTEC rédige chaque semaine le PV de réunion de chantier. Le conducteur de travaux de l'entreprise EDIFICIO lui demande pourquoi c'est lui qui le rédige. Quelle est la bonne réponse ?",type:'multi',opts:[{t:"Car c'est en général le maître d'œuvre ou le bureau de contrôle qui convoque, anime et rédige le PV",c:true},{t:"Car l'entreprise a demandé à ne plus le rédiger",c:false},{t:"Car le MOA a délégué cette tâche au bureau de contrôle par avenant",c:false},{t:"Car le CCAG impose que seul le bureau de contrôle rédige les PV",c:false}],diff:'med',piege:false,expl:"C'est en général le MOE ou le bureau de contrôle qui est chargé de convoquer, animer la réunion et établir le PV. Ce n'est pas une décision arbitraire, c'est la règle générale.",ref:"Chapitre 3 › Section I.2.a › Page 20"},
+  {q:"Pour le projet de construction d'un château d'eau à Koudougou, le bureau de contrôle doit produire son rapport de fin de mois. Ce rapport doit inclure :",type:'multi',opts:[{t:"Les réceptions partielles d'ouvrages avec dates et références des PV",c:true},{t:"Les réunions hebdomadaires avec dates et PV",c:true},{t:"La situation financière du projet",c:true},{t:"Les heures de présence de chaque ouvrier",c:false}],diff:'med',piege:false,expl:"Le rapport mensuel comprend : présentation projet, activités importantes (réceptions partielles, réunions), état d'avancement, problèmes/recommandations, situation financière. Le détail des heures de chaque ouvrier n'en fait pas partie.",ref:"Chapitre 3 › Section III › Page 23-25"},
+  {q:"Après une réunion de chantier, l'entreprise AFRIBUILD conteste une observation qui lui a été adressée oralement. Quel document fait foi pour prouver que cette observation a bien été formulée ?",type:'multi',opts:[{t:"Le procès-verbal de chantier",c:true},{t:"Le planning d'exécution",c:false},{t:"Le rapport mensuel d'avancement",c:false},{t:"L'acte d'engagement",c:false}],diff:'med',piege:false,expl:"Le PV de chantier permet d'acter ce qui s'est dit lors de la réunion, y compris les observations adressées à l'entreprise. C'est le document de référence pour les contestations immédiates.",ref:"Chapitre 3 › Section I.2.a › Page 19-20"},
+  {q:"La réception provisoire des travaux de construction d'un lycée a eu lieu avec 2 réserves. L'entrepreneur TRAORÉ demande à être libéré de ses obligations. Quand cela est-il possible ?",type:'multi',opts:[{t:"Après la réception définitive qui suit la levée de toutes les réserves",c:true},{t:"Immédiatement après la réception provisoire",c:false},{t:"Après le paiement du dernier décompte",c:false},{t:"Dès la signature du PV de réception provisoire",c:false}],diff:'med',piege:true,expl:"L'entrepreneur est libéré de ses obligations après la réception définitive (qui a lieu 1 an après la levée de toutes les réserves). La réception provisoire avec réserves ne libère pas l'entrepreneur.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Sur le chantier d'un immeuble de bureaux à Ouagadougou, le MOA souhaite connaître le taux d'avancement global au 15 du mois. Il consulte le PV de la réunion du 12. Il y trouve un taux de 45%. Ce taux représente :",type:'multi',opts:[{t:"L'évaluation de l'état d'avancement global de tous les postes entamés, exprimé en % par rapport à l'ouvrage entier",c:true},{t:"Le pourcentage du montant déjà payé à l'entreprise",c:false},{t:"Le nombre de jours travaillés sur le nombre total prévu",c:false},{t:"Le ratio postes terminés / postes prévus",c:false}],diff:'hard',piege:false,expl:"Le taux d'exécution général est obtenu en rapportant l'avancement des postes entamés à la réalisation de l'ouvrage tout entier, exprimé en pourcentage.",ref:"Chapitre 3 › Section I.2.c › Page 21"},
+  {q:"Le MOA du projet de barrage hydroélectrique reçoit en janvier le rapport mensuel d'avancement de décembre. Il constate que le taux physique est de 38% mais que le taux financier (paiements effectués) est de 52%. Quelle partie du rapport mensuel contient l'information sur les paiements ?",type:'multi',opts:[{t:"La situation financière",c:true},{t:"La présentation du projet",c:false},{t:"La revue des activités importantes",c:false},{t:"L'état d'avancement des travaux",c:false}],diff:'med',piege:false,expl:"La situation financière est la 5ème partie du rapport mensuel. Elle récapitule l'ensemble des paiements, décomptes, cautions et avances.",ref:"Chapitre 3 › Section III.5 › Page 24-25"},
+  {q:"Le directeur des travaux de l'entreprise BÂTI-SAHEL veut consulter le journal de chantier pour vérifier une date d'approvisionnement litigieuse. L'agent du bureau de contrôle lui refuse l'accès. A-t-il le droit de refuser ?",type:'multi',opts:[{t:"Non, le journal de chantier est accessible à toutes les personnes liées au chantier",c:true},{t:"Oui, seul le MOE y a accès",c:false},{t:"Oui, l'accès est réservé au bureau de contrôle et au MOA",c:false},{t:"Non, mais seulement les jours de réunion hebdomadaire",c:false}],diff:'med',piege:false,expl:"Le journal de chantier est accessible à toutes les personnes liées au chantier. L'agent du bureau de contrôle ne peut pas en refuser l'accès.",ref:"Chapitre 3 › Section II › Page 22"},
+  {q:"L'entreprise CONSTRUKTA est adjudicataire d'un marché de construction d'un pont. Avant le démarrage, elle doit établir un plan indiquant l'organisation générale du chantier, l'emplacement des engins et des zones de stockage. De quel document s'agit-il ?",type:'multi',opts:[{t:"Le plan d'installation de chantier",c:true},{t:"Le plan d'implantation des ouvrages",c:false},{t:"Le plan d'exécution",c:false},{t:"Le CCTP",c:false}],diff:'easy',piege:false,expl:"Le plan d'installation de chantier est établi par l'entrepreneur. Il prévoit le matériel nécessaire, l'aménagement des lieux et donne une vision globale de l'organisation du chantier.",ref:"Chapitre 2 › Section IV › Page 13"},
+  {q:"Suite à un sinistre sur le chantier du barrage de Bagré causé par une crue exceptionnelle (force majeure), le MOA se demande si la TRC couvre ce type de dommage. Que lui répondez-vous ?",type:'multi',opts:[{t:"Oui, la TRC couvre les dommages causés par des forces majeures (comme les inondations) jusqu'à la réception provisoire",c:true},{t:"Non, la force majeure exonère toutes les assurances",c:false},{t:"Oui, mais seulement si l'ouvrage est déjà à 50% d'avancement",c:false},{t:"Non, la TRC ne couvre que les malfaçons de l'entreprise",c:false}],diff:'med',piege:false,expl:"La TRC couvre l'ensemble des dommages matériels causés aux ouvrages en cours d'exécution, y compris ceux provenant de forces majeures.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"Le rapport mensuel de mars d'un chantier de construction de logements sociaux indique une évolution hebdomadaire des taux : sem1=1,5%, sem2=1,88%, sem3=2,15%, sem4=2,70%. Quel est le taux d'avancement global à la fin de la 4ème semaine ?",type:'multi',opts:[{t:"2,70% (taux cumulé à la fin de la sem4)",c:true},{t:"8,23% (somme de toutes les semaines)",c:false},{t:"0,55% (évolution de la dernière semaine)",c:false},{t:"2,15% (taux de la semaine précédente)",c:false}],diff:'hard',piege:true,expl:"Le taux global est le taux cumulé. À la sem4, il est de 2,70%. Les 1,5%, 1,88% etc. sont des taux GLOBAUX et non des évolutions. L'évolution hebdomadaire (la différence) est une information distincte.",ref:"Chapitre 3 › Section III.3 › Page 24"},
+  {q:"Lors de la réception provisoire d'un bâtiment administratif, le MOA constate plusieurs défauts de carrelage. Il refuse la réception. L'entrepreneur conteste. Dans quel document ces faits seront-ils officiellement consignés ?",type:'multi',opts:[{t:"Le procès-verbal de réception provisoire (avec réserves ou refus)",c:true},{t:"Le journal de chantier",c:false},{t:"Le rapport mensuel d'avancement",c:false},{t:"L'ordre de service de commencer les travaux",c:false}],diff:'med',piege:false,expl:"La réception des travaux fait l'objet d'un PV de réception. En cas de malfaçons, la réception peut être refusée ou acceptée avec réserves, tout cela consigné dans le PV.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Le bureau de contrôle BETSAFE signale dans le PV de la réunion du 5 novembre que les armatures des poteaux ne sont pas conformes aux plans. Cette observation est adressée à l'entreprise. Où doit figurer l'état de mise en œuvre de cette observation lors de la réunion suivante ?",type:'multi',opts:[{t:"Dans la section 'État de mise en œuvre des observations' du PV de la réunion suivante",c:true},{t:"Dans un rapport d'inspection spécifique",c:false},{t:"Dans le rapport mensuel uniquement",c:false},{t:"Dans un avenant au marché",c:false}],diff:'med',piege:false,expl:"À chaque réunion, les observations de la réunion précédente sont passées en revue pour apprécier leur application. Cette section s'appelle 'État de mise en œuvre des observations'.",ref:"Chapitre 3 › Section I.2.c › Page 21"},
+  {q:"Le MOA d'un projet de station d'eau potable demande à l'entreprise HYDROCONSTRUCT de lui remettre, à la fin des travaux, tous les documents nécessaires à l'exploitation et à la maintenance des ouvrages. Parmi les documents ci-dessous, lesquels correspondent à cette demande ?",type:'multi',opts:[{t:"Les plans de recollements",c:true},{t:"Le journal de chantier",c:true},{t:"Les dossiers des ouvrages exécutés (DOE)",c:true},{t:"Le planning d'exécution prévisionnel",c:false}],diff:'hard',piege:false,expl:"Le PV de remise d'ouvrage doit être accompagné des DOE, plans de recollements, et tous documents permettant l'exploitation et l'entretien. Le journal de chantier est aussi conservé par le MOA. Le planning prévisionnel ne fait pas partie des livrables finaux.",ref:"Chapitre 3 › Section I.3.b › Page 21-22"},
+  {q:"À l'issue d'une réunion de chantier, le chef de chantier de l'entreprise AFRICABAT demande à rédiger lui-même le PV car 'il était le plus présent'. Le bureau de contrôle refuse. Qui a raison ?",type:'multi',opts:[{t:"Le bureau de contrôle a raison : c'est lui (ou le MOE) qui rédige le PV",c:true},{t:"Le chef de chantier a raison : n'importe qui peut rédiger le PV",c:false},{t:"Le chef de chantier a raison si le MOE est absent",c:false},{t:"Le MOA doit trancher ce différend",c:false}],diff:'med',piege:false,expl:"Le PV est rédigé par le MOE ou le bureau de contrôle, qui en ont la charge. La présence physique ne confère pas ce rôle à l'entreprise.",ref:"Chapitre 3 › Section I.2.a › Page 20"},
+  {q:"Un nouveau technicien arrive sur le chantier. Son chef lui dit que les informations sur les pannes de l'excavatrice de la semaine dernière sont consignées quelque part. Où doit-il chercher ?",type:'multi',opts:[{t:"Dans le journal de chantier",c:true},{t:"Dans le procès-verbal de chantier hebdomadaire",c:true},{t:"Dans le rapport mensuel d'avancement",c:false},{t:"Dans le CCTP",c:false}],diff:'med',piege:false,expl:"Les pannes d'engins sont des observations ponctuelles qui figurent dans le journal de chantier (quotidien) et peuvent aussi figurer dans le PV de chantier (hebdomadaire) si elles ont impacté l'avancement.",ref:"Chapitre 3 › Sections I et II › Page 20-22"},
+  {q:"Dans le cadre d'un marché public de construction d'un hôpital, l'entreprise principale veut sous-traiter les travaux d'électricité. Lors des réunions hebdomadaires, la présence du sous-traitant électricité est :",type:'multi',opts:[{t:"Possible car le MOE peut convoquer ceux dont la participation est jugée nécessaire",c:true},{t:"Impossible car seuls les acteurs contractuels principaux participent",c:false},{t:"Obligatoire en vertu du CCAG",c:false},{t:"Laissée à la discrétion de l'entreprise principale uniquement",c:false}],diff:'hard',piege:false,expl:"Le MOE convoque les personnes visées dans les documents contractuels ou celles dont la participation est jugée nécessaire, ce qui peut inclure les sous-traitants.",ref:"Chapitre 3 › Section I.1.c › Page 19"},
+  {q:"Le chantier de construction d'une école primaire à Bobo-Dioulasso est terminé. Le MOA veut savoir si la retenue de garantie de 5% du marché peut être libérée. Quelle est la condition préalable ?",type:'multi',opts:[{t:"La signature du PV de réception définitive",c:true},{t:"La signature du PV de réception provisoire",c:false},{t:"La levée de toutes les réserves de la réception provisoire",c:false},{t:"Le paiement du dernier décompte mensuel",c:false}],diff:'med',piege:true,expl:"La retenue de garantie est conditionnée par la réception DÉFINITIVE (pas provisoire). La levée des réserves est nécessaire pour déclencher le délai menant à la réception définitive, mais c'est bien la réception définitive qui libère la retenue.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"L'ingénieur superviseur du projet de route bitumée BOAD-RN4 prépare le rapport mensuel d'août. Il doit mentionner toutes les réunions de chantier tenues en août. Dans quelle section les place-t-il ?",type:'multi',opts:[{t:"Revue des activités importantes",c:true},{t:"Présentation du projet",c:false},{t:"Problèmes et recommandations",c:false},{t:"Situation financière",c:false}],diff:'med',piege:false,expl:"Les réunions hebdomadaires de chantier (avec dates et PV) sont recensées dans la section 'Revue des activités importantes' du rapport mensuel.",ref:"Chapitre 3 › Section III.2 › Page 23"},
+  {q:"Le technicien du bureau de contrôle CONTROL-PRO note chaque jour les effectifs présents, l'avancement et les incidents sur le chantier du centre de santé. Ce document tenu au quotidien est :",type:'multi',opts:[{t:"Le journal de chantier",c:true},{t:"Le procès-verbal de chantier",c:false},{t:"Le rapport mensuel d'avancement",c:false},{t:"Le plan d'installation de chantier",c:false}],diff:'easy',piege:false,expl:"Le journal de chantier est tenu au quotidien et contient les constatations générales (effectifs, avancement) et observations ponctuelles.",ref:"Chapitre 3 › Section II › Page 22"},
+  {q:"Lors de la remise de site pour la construction d'un château d'eau, qui peut signer le PV de remise de site ?",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"Le maître d'œuvre",c:true},{t:"La mission de contrôle",c:true},{t:"L'assureur TRC",c:false}],diff:'med',piege:false,expl:"La remise est faite par le MOA, le MOA délégué ou l'autorité en charge de la passation. Le MOE et la mission de contrôle peuvent être associés et signataires. L'assureur n'est pas partie au PV de remise de site.",ref:"Chapitre 3 › Section I.3.a › Page 21"},
+  {q:"Le MOA d'un projet PNUD demande au bureau de contrôle si le rapport mensuel d'avancement devra mentionner la date d'achèvement prévue du projet. Est-ce bien une information du rapport mensuel ?",type:'multi',opts:[{t:"Oui, cette information peut figurer dans la section état d'avancement / situation des travaux",c:true},{t:"Non, la date d'achèvement prévue ne figure jamais dans le rapport mensuel",c:false},{t:"Seulement si le projet accuse du retard",c:false},{t:"Uniquement dans le rapport annuel",c:false}],diff:'hard',piege:true,expl:"Selon les sujets d'examen, la date d'achèvement projetée peut figurer dans le rapport mensuel. Il recense aussi les réceptions partielles. Les deux informations peuvent coexister.",ref:"Chapitre 3 › Section III.3 › Page 24"},
+  {q:"L'entreprise TEKBAT conteste l'état d'avancement de 32% mentionné dans le PV du 14 mars. Elle affirme que le taux réel est de 40%. Quelle procédure doit-on suivre ?",type:'multi',opts:[{t:"Inscrire les observations de l'entreprise dans le PV suivant et revoir le taux contradictoirement",c:true},{t:"Annuler le PV du 14 mars et en produire un nouveau",c:false},{t:"Saisir immédiatement le tribunal administratif",c:false},{t:"Modifier le taux dans le rapport mensuel sans changer le PV",c:false}],diff:'hard',piege:false,expl:"Le PV sert à acter les observations de toutes les parties. L'entreprise peut exprimer son désaccord dans la section 'Observations' du PV suivant, et le taux est revu contradictoirement lors de la réunion suivante.",ref:"Chapitre 3 › Section I.2.c › Page 21"},
+  {q:"La caution bancaire remise par l'entreprise BATIPRO en lieu et place de la retenue de garantie sera débloquée :",type:'multi',opts:[{t:"Après la réception définitive des travaux",c:true},{t:"Après la réception provisoire sans réserve",c:false},{t:"Après le paiement du dernier décompte",c:false},{t:"6 mois après la réception provisoire",c:false}],diff:'med',piege:false,expl:"La réception définitive permet le versement de la retenue de garantie ou son déblocage si elle avait été fournie sous forme de caution bancaire.",ref:"Chapitre 3 › Section I.3.c › Page 22"},
+  {q:"Sur le chantier du centre administratif régional, l'équipe du lundi matin constate que le journal de chantier a disparu. Quelle mesure préventive aurait permis d'éviter ce problème ?",type:'multi',opts:[{t:"Réaliser régulièrement des photocopies du journal",c:true},{t:"Numériser les PV hebdomadaires",c:false},{t:"Remettre le journal au MOA chaque semaine",c:false},{t:"Ne tenir le journal que lors des réunions hebdomadaires",c:false}],diff:'med',piege:false,expl:"Pour pallier la perte fréquente du journal de chantier (accessible à tous et donc exposé), il est recommandé d'en établir régulièrement des photocopies.",ref:"Chapitre 3 › Section II › Page 23"},
+  {q:"Le rapport mensuel du mois de mai d'un chantier d'adduction d'eau indique : taux physique 58%, mais le taux financier (paiements effectués) n'est que de 35%. Ce décalage reflète probablement :",type:'multi',opts:[{t:"Des retards de paiement ou des décomptes non encore réglés par le MOA",c:true},{t:"Une erreur dans le calcul du taux physique",c:false},{t:"Une avance de démarrage trop élevée",c:false},{t:"Un problème dans les plans d'exécution",c:false}],diff:'hard',piege:false,expl:"Un taux physique plus élevé que le taux financier indique que les travaux avancent plus vite que les paiements, ce qui peut signaler des retards de paiement ou des décomptes en attente de règlement.",ref:"Chapitre 3 › Section III.5 › Page 24-25"},
+  {q:"Le MOE convoque la réunion de chantier du 3 novembre en invitant le MOA, l'entreprise principale, le BET et le bureau de contrôle. Le MOA ne peut pas venir. L'entreprise envoie uniquement le chef de chantier au lieu du conducteur des travaux. La réunion peut-elle se tenir ?",type:'multi',opts:[{t:"Oui, le MOA peut être absent ; la présence de l'entreprise (même via le chef de chantier) permet la tenue de la réunion",c:true},{t:"Non, le conducteur de travaux est obligatoire",c:false},{t:"Non, le MOA doit impérativement être présent",c:false},{t:"Oui, mais aucune décision ne peut être prise sans le conducteur de travaux",c:false}],diff:'hard',piege:true,expl:"La réunion peut se tenir sans le MOA. L'entreprise doit être représentée (présence obligatoire), mais le cours ne précise pas que seul le conducteur de travaux est accepté — la présence de l'entreprise est satisfaite.",ref:"Chapitre 3 › Section I.1.c › Page 19"},
+  {q:"Le bureau de contrôle doit préparer le rapport mensuel d'octobre pour le MOA d'un projet de 500 logements sociaux. Pour structurer son rapport, il doit respecter les 5 parties standards. Dans quel ordre logique doivent-elles apparaître ?",type:'multi',opts:[{t:"Présentation → Activités importantes → État d'avancement → Problèmes/Recommandations → Situation financière",c:true},{t:"Situation financière → Présentation → Activités → Avancement → Problèmes",c:false},{t:"État d'avancement → Présentation → Problèmes → Activités → Finances",c:false},{t:"Présentation → Situation financière → Activités → Avancement → Problèmes",c:false}],diff:'med',piege:false,expl:"Les 5 parties du rapport mensuel dans l'ordre : 1. Présentation du projet, 2. Revue des activités importantes, 3. État d'avancement/Situation des travaux, 4. Problèmes/Progrès/Recommandations, 5. Situation financière.",ref:"Chapitre 3 › Section III › Page 23-25"},
+  {q:"L'entrepreneur CONSTRUBF remet au MOA à la fin des travaux les documents suivants : plans de recollements, journal de chantier, DOE. Il prétend avoir tout remis. Le bureau de contrôle estime que quelque chose manque. Qu'est-ce qui manque ?",type:'multi',opts:[{t:"Tous les documents permettant l'exploitation, l'entretien et le bon fonctionnement de l'ouvrage",c:true},{t:"Le planning d'exécution des travaux",c:false},{t:"Les PV de réunion hebdomadaire",c:false},{t:"Le plan d'installation du chantier",c:false}],diff:'hard',piege:false,expl:"Le PV de remise d'ouvrage doit être accompagné de tous les documents permettant l'exploitation, l'entretien et le bon fonctionnement de l'ouvrage — pas seulement plans de recollements et journal. Il peut manquer des notices de maintenance, schémas de fonctionnement, etc.",ref:"Chapitre 3 › Section I.3.b › Page 21-22"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (questions des sujets PDF dans l'ordre)
+const serie3 = [
+  {q:"Le rapport mensuel d'avancement est établi pour :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"Le maître d'œuvre",c:false},{t:"L'assureur",c:false},{t:"L'entreprise",c:false}],diff:'easy',piege:false,expl:"Le rapport mensuel d'avancement est établi par le MOE ou le bureau de suivi et contrôle, à destination principalement du maître d'ouvrage.",ref:"Chapitre 3 › Section III › Page 23"},
+  {q:"Quels sont les documents, en cours de chantier, établis par l'entreprise ?",type:'multi',opts:[{t:"Le planning d'exécution des travaux",c:true},{t:"Le rapport mensuel d'avancement",c:false},{t:"Le procès-verbal de chantier",c:false}],diff:'med',piege:true,expl:"L'entreprise établit le planning d'exécution des travaux. Le rapport mensuel et le PV de chantier sont établis par le MOE ou le bureau de contrôle.",ref:"Chapitre 3 › Sections I-III › Page 18-25"},
+  {q:"Le rapport d'avancement mensuel des travaux :",type:'multi',opts:[{t:"Recense les réceptions partielles d'ouvrages",c:true},{t:"Est un document contractuel du marché",c:false},{t:"Permet le paiement du maître d'œuvre",c:false},{t:"Est rédigé par l'entreprise",c:false}],diff:'med',piege:true,expl:"Le rapport mensuel recense les réceptions partielles d'ouvrages (dans la section 'Revue des activités importantes'). Ce n'est pas un document contractuel, pas rédigé par l'entreprise, ne sert pas directement à payer le MOE.",ref:"Chapitre 3 › Section III.2 › Page 23"},
+  {q:"Pour la préparation d'une réunion hebdomadaire de chantier, il est nécessaire de disposer des informations :",type:'multi',opts:[{t:"Sur la présence effective des participants à la réunion",c:true},{t:"Sur les moyens humains déployés par l'entreprise au cours de la semaine",c:true},{t:"Sur les moyens matériels déployés par l'entreprise au cours de la semaine",c:true},{t:"Sur les moyens financiers de l'entreprise",c:false}],diff:'med',piege:true,expl:"Pour préparer la réunion : liste des membres présents, moyens humains et matériels. Les moyens financiers de l'entreprise ne font pas partie des informations requises pour la préparation de la réunion.",ref:"Chapitre 3 › Section I.1.a › Page 19"},
+  {q:"Le journal de chantier peut être rédigé par :",type:'multi',opts:[{t:"Le bureau de suivi et de contrôle",c:true},{t:"Le maître d'œuvre",c:true},{t:"L'entreprise",c:false},{t:"Le maître d'ouvrage",c:false}],diff:'med',piege:true,expl:"Le journal de chantier est tenu à l'initiative du maître d'œuvre ou du bureau de suivi et de contrôle. Si toute personne peut y annoter des observations, la tenue à jour relève du MOE/bureau contrôle. L'entreprise peut annoter mais ne 'rédige' pas le journal.",ref:"Chapitre 3 › Section II › Page 22"},
+  {q:"Dans quel document de chantier peut-on retrouver à la fois le numéro du marché ou du bon de commande et le taux d'avancement des travaux ?",type:'multi',opts:[{t:"Le procès-verbal de chantier",c:true},{t:"Le rapport mensuel d'avancement des travaux",c:true},{t:"Le journal de chantier",c:false}],diff:'hard',piege:true,expl:"Le PV de chantier contient le N° du marché et le taux d'avancement. Le rapport mensuel contient aussi ces deux informations. Le journal de chantier ne contient pas systématiquement le N° de marché.",ref:"Chapitre 3 › Sections I.2 et III › Page 20-24"},
+  {q:"Le journal de chantier est accessible :",type:'multi',opts:[{t:"À toutes les personnes liées au chantier",c:true},{t:"À l'entreprise et au maître d'ouvrage uniquement",c:false},{t:"À l'entreprise et au maître d'œuvre uniquement",c:false},{t:"Que le jour de la réunion hebdomadaire de chantier",c:false}],diff:'med',piege:true,expl:"Le journal de chantier est accessible à toutes les personnes liées au chantier. Si toute personne peut y annoter, toute personne peut aussi en prendre connaissance.",ref:"Chapitre 3 › Section II › Page 22-23"},
+  {q:"Le rapport mensuel d'avancement des travaux donne des informations sur :",type:'multi',opts:[{t:"Les dates des réceptions partielles d'ouvrages",c:true},{t:"La date d'achèvement projetée du projet de construction",c:false}],diff:'med',piege:true,expl:"Le rapport mensuel recense dans sa section 'Revue des activités importantes' les réceptions partielles avec leurs dates. La date d'achèvement projetée peut également y figurer dans l'état d'avancement, mais la réponse attendue selon le sujet est les réceptions partielles.",ref:"Chapitre 3 › Section III.2 › Page 23"},
+  {q:"Lors d'une réunion de chantier hebdomadaire, quel intervenant a la charge de la rédaction du procès-verbal ?",type:'multi',opts:[{t:"Le chef de mission du bureau de contrôle",c:true},{t:"Le conducteur des travaux de l'entreprise",c:false},{t:"Le chef de chantier de l'entreprise",c:false},{t:"Le maître d'ouvrage ou son représentant",c:false}],diff:'med',piege:true,expl:"C'est en général le maître d'œuvre ou le contrôle technique (chef de mission du bureau de contrôle) qui rédige le PV. Jamais l'entreprise (conducteur de travaux ou chef de chantier).",ref:"Chapitre 3 › Section I.2.a › Page 20"},
+  {q:"Le procès-verbal de rendez-vous hebdomadaire de chantier fait ressortir :",type:'multi',opts:[{t:"L'approvisionnement en matériaux durant la semaine",c:true},{t:"Les observations du maître d'ouvrage",c:true},{t:"Le nombre de sous-traitants sur le chantier durant la semaine",c:false}],diff:'med',piege:true,expl:"Le PV contient les approvisionnements en matériaux (liste contradictoire des approvisionnements) et les observations de toutes les parties dont le MOA. Le nombre de sous-traitants n'est pas une mention standardisée du PV.",ref:"Chapitre 3 › Section I.2.c › Page 20-21"},
+  {q:"Il n'est pas nécessaire dans un projet de construction de disposer d'un permis de construire si le projet prévoit la présence sur le chantier d'ingénieurs qualifiés pour la mise en œuvre et le contrôle de la construction ?",type:'multi',opts:[{t:"Faux",c:true},{t:"Vrai",c:false}],diff:'easy',piege:true,expl:"FAUX. Le permis de construire est une autorisation administrative OBLIGATOIRE sans exception. La présence d'ingénieurs qualifiés ne dispense pas de l'obtenir.",ref:"Chapitre 2 › Section II › Page 12"},
+  {q:"En fin de chantier, quels sont les documents que le maître d'ouvrage doit s'attendre à recevoir de la part du contrôle et/ou de l'entreprise ?",type:'multi',opts:[{t:"Le journal de chantier",c:true},{t:"Les plans de recollements",c:true},{t:"Le plan d'installation du chantier",c:false},{t:"La caution d'avance de démarrage",c:false}],diff:'hard',piege:true,expl:"Le MOA reçoit le journal de chantier (il le conserve après réception) et les plans de recollements (indispensables à l'exploitation). Le plan d'installation n'est pas un livrable final au MOA. La caution d'avance est restituée à l'entreprise.",ref:"Chapitre 3 › Sections I.3.b et II › Page 21-23"},
+  {q:"L'ordre de service de commencer les travaux est établi par :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"Le service administratif de l'État en charge des constructions",c:false}],diff:'easy',piege:false,expl:"L'OS est établi par le maître d'ouvrage. Il est adressé à l'entreprise et porte la date contractuelle de démarrage des travaux.",ref:"Chapitre 2 › Section III › Page 12"},
+  {q:"Quels sont les documents, en cours de chantier, établis par le bureau de contrôle technique ?",type:'multi',opts:[{t:"Le rapport mensuel d'avancement",c:true},{t:"Le procès-verbal de chantier",c:true},{t:"Le planning d'exécution des travaux",c:false}],diff:'med',piege:true,expl:"Le bureau de contrôle établit le rapport mensuel d'avancement ET le PV de chantier. Le planning d'exécution est établi par l'entreprise.",ref:"Chapitre 3 › Sections I-III › Page 18-25"},
+  {q:"L'assurance tous risques chantiers peut être souscrite par :",type:'multi',opts:[{t:"Le maître d'ouvrage",c:true},{t:"L'entreprise",c:true},{t:"Le bailleur de fond",c:false},{t:"Un sous-traitant de l'entreprise",c:false}],diff:'hard',piege:true,expl:"La TRC est souscrite par le MOA ou toute personne ayant un intérêt global sur le chantier, ce qui inclut l'entreprise. Le bailleur de fond et le sous-traitant seul ne correspondent pas à cette définition selon le cours.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"La réunion de chantier ne peut se tenir en l'absence du :",type:'multi',opts:[{t:"Le bureau de suivi et de contrôle",c:true},{t:"L'entreprise",c:true},{t:"Le bailleur de fond",c:false},{t:"Le maître d'ouvrage",c:false}],diff:'med',piege:true,expl:"La réunion ne peut se tenir sans l'entreprise (présence obligatoire) ni sans le bureau de suivi et contrôle. Le MOA peut être absent. Le bailleur de fond n'est pas un participant obligatoire.",ref:"Chapitre 3 › Section I.1.c › Page 19"},
+  {q:"Le procès-verbal de chantier rédigé après une réunion hebdomadaire de chantier comporte :",type:'multi',opts:[{t:"Les observations de la mission de contrôle",c:true},{t:"Les observations du maître d'ouvrage",c:true},{t:"Le numéro du marché",c:true},{t:"L'heure d'arrivée des différents acteurs du projet",c:false}],diff:'hard',piege:true,expl:"Le PV comporte : observations de toutes les parties (y compris mission de contrôle et MOA), N° du marché, N° du PV, date, intervenants. L'heure d'arrivée des acteurs n'est PAS une mention requise → piège classique.",ref:"Chapitre 3 › Section I.2.b-c › Page 20-21"},
+  {q:"Les réunions de chantier ont pour but :",type:'multi',opts:[{t:"D'informer et de prendre des décisions vis-à-vis des actions à engager",c:true},{t:"De permettre aux acteurs du projet de discuter les meilleurs moyens pour la réalisation optimum de l'ouvrage",c:true},{t:"De permettre le paiement de l'entrepreneur",c:false},{t:"De permettre aux acteurs de modifier les termes du contrat si besoin est",c:false}],diff:'med',piege:true,expl:"Les réunions de chantier visent à informer, prendre des décisions et rechercher les meilleurs moyens. Elles ne servent PAS à payer l'entrepreneur ni à modifier le contrat.",ref:"Chapitre 3 › Section I.1 › Page 18"},
+  {q:"L'assurance tous risques chantier souscrite au début d'un projet de construction permet :",type:'multi',opts:[{t:"La prise en charge par l'assureur des dommages causés par un incendie avant la réception provisoire des travaux",c:true},{t:"La prise en charge par l'assureur des dommages causés par un incendie après la réception provisoire des travaux",c:false},{t:"La prise en charge par l'assureur des dégâts survenus sur l'ouvrage après la réception définitive des travaux",c:false},{t:"La prise en charge par l'assureur des dégâts survenus sur l'ouvrage après la réception provisoire des travaux",c:false}],diff:'med',piege:true,expl:"La TRC couvre jusqu'à la réception PROVISOIRE. Un incendie avant la réception provisoire est donc pris en charge. Après la réception provisoire, la couverture TRC cesse.",ref:"Chapitre 2 › Section I › Page 12"},
+  {q:"L'ordre de service de commencer les travaux est établi pour :",type:'multi',opts:[{t:"L'entreprise",c:true},{t:"Le service administratif de l'état en charge des constructions",c:false},{t:"L'assureur",c:false},{t:"Le bureau de contrôle",c:false}],diff:'easy',piege:false,expl:"L'OS de commencer les travaux est établi par le MOA et adressé à l'entreprise pour déclencher contractuellement le délai d'exécution.",ref:"Chapitre 2 › Section III › Page 12"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M16';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+  <div style="margin-bottom:20px">
+    <div class="memo-section-title">⚠ MOTS-PIÈGES — M16 Rédaction du Reporting</div>
+    <div class="methode-card" style="margin-bottom:12px">
+      <div class="methode-card-title">🚨 Mots-pièges à surveiller en QCM</div>
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text3)">Ces mots dans une réponse = méfiance !</div>
+      <span class="piege-word">OBLIGATOIRE (TRC)</span>
+      <span class="piege-word">ENTREPRISE rédige le PV</span>
+      <span class="piege-word">ENTREPRENEUR rédige rapport mensuel</span>
+      <span class="piege-word">HEURE D'ARRIVÉE dans le PV</span>
+      <span class="piege-word">CONDUCTEUR DE TRAVAUX rédige PV</span>
+      <span class="piege-word">RÉCEPTION DÉFINITIVE (TRC)</span>
+      <span class="piege-word">0 à 15 jours (délai OS)</span>
+      <span class="piege-word">BAILLEUR DE FOND (TRC)</span>
+      <span class="piege-word">SOUS-TRAITANT seul (TRC)</span>
+      <span class="piege-word">MOA absent = réunion impossible</span>
+      <span class="piege-word">CONTRACTUEL (rapport mensuel)</span>
+      <span class="piege-word">JOURNAL = seulement MOE et entreprise</span>
+      <span class="piege-word">RÉCEPTION PROVISOIRE libère entrepreneur</span>
+    </div>
+  </div>
+
+  <div class="methode-grid">
+    <div class="methode-card">
+      <div class="methode-card-title">📊 Chiffres-clés à retenir</div>
+      <table class="chiffres-table">
+        <thead><tr><th>Valeur</th><th>Contexte</th></tr></thead>
+        <tbody>
+          <tr><td>15 à 30 jours</td><td>Délai OS avant démarrage contractuel (NF P 03-001)</td></tr>
+          <tr><td>1 an</td><td>Délai entre levée des réserves et réception définitive</td></tr>
+          <tr><td>3</td><td>Nombre de chapitres du cours M16</td></tr>
+          <tr><td>5</td><td>Nombre de parties du rapport mensuel d'avancement</td></tr>
+          <tr><td>6</td><td>Pièces constitutives d'un marché public (CCAG, CCAP, CCTP, CCTG, acte engagement, plans)</td></tr>
+          <tr><td>3</td><td>Types de PV : remise de site, réception provisoire, réception définitive</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="methode-card">
+      <div class="methode-card-title">🔄 Confusions classiques</div>
+      <div class="piege-box"><div class="piege-title">⚠ CCAP vs CCAG</div><div class="piege-text">CCAP <strong>complète</strong> le CCAG (jamais l'inverse). CCAP = clauses particulières à chaque entrepreneur. CCAG = clauses générales.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ TRC : facultatif vs obligatoire</div><div class="piege-text">La TRC est <strong>FACULTATIVE</strong>. Elle couvre jusqu'à la <strong>réception provisoire</strong>. Souscrite par MOA ou toute personne avec intérêt global (ni bailleur de fond seul, ni sous-traitant seul).</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Réception provisoire vs définitive</div><div class="piege-text">Provisoire → levée des réserves → définitive (1 an après). La retenue de garantie est libérée à la <strong>réception définitive</strong>.</div></div>
+    </div>
+  </div>
+
+  <div class="methode-grid">
+    <div class="methode-card">
+      <div class="methode-card-title">🗂️ Schéma décisionnel — Qui rédige quoi ?</div>
+      <div class="schema-step"><div class="schema-num">MOE</div><div class="schema-text"><strong>PV de chantier</strong> (hebdo) · <strong>Rapport mensuel d'avancement</strong> · <strong>Journal de chantier</strong> (initiative)</div></div>
+      <div class="schema-step"><div class="schema-num">ENT</div><div class="schema-text"><strong>Planning d'exécution des travaux</strong> · Plan d'installation de chantier (approuvé par MOE)</div></div>
+      <div class="schema-step"><div class="schema-num">MOA</div><div class="schema-text"><strong>Ordre de service</strong> de commencer les travaux · Souscription TRC · Conservation journal après réception</div></div>
+      <div class="schema-step"><div class="schema-num">ADM</div><div class="schema-text"><strong>Permis de construire</strong> (autorisation administrative obligatoire)</div></div>
+    </div>
+    <div class="methode-card">
+      <div class="methode-card-title">📋 Schéma — Contenu du PV hebdomadaire</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>En-tête</strong> : Nom projet, N° PV, N° marché, date, lieu</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Présents</strong> : Liste des intervenants (signatures en fin)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Moyens</strong> : Humains (personnel clé) + Matériels + Approvisionnements</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Avancement</strong> : Taux d'exécution général en % (postes entamés)</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Observations précédentes</strong> : État de mise en œuvre</div></div>
+      <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Nouvelles observations</strong> : MOE, entreprise, contrôle, MOA</div></div>
+      <div class="piege-box" style="margin-top:8px"><div class="piege-title">⚠ ABSENT du PV</div><div class="piege-text">L'heure d'arrivée des acteurs ≠ contenu PV</div></div>
+    </div>
+  </div>
+
+  <div class="methode-card" style="margin-top:12px">
+    <div class="methode-card-title">🔗 Tableau synthèse liaisons contractuelles / opérationnelles</div>
+    <table class="chiffres-table">
+      <thead><tr><th>Liaison</th><th>Type</th><th>Explication</th></tr></thead>
+      <tbody>
+        <tr><td>MOA ↔ Architecte/MOE</td><td style="color:var(--green)">Contractuelle</td><td>Contrat de maîtrise d'œuvre</td></tr>
+        <tr><td>MOA ↔ Entrepreneur</td><td style="color:var(--green)">Contractuelle</td><td>Contrat d'entreprise (marché)</td></tr>
+        <tr><td>MOA ↔ Contrôleur technique</td><td style="color:var(--green)">Contractuelle</td><td>Contrat d'agrément/mission</td></tr>
+        <tr><td>Architecte ↔ BET</td><td style="color:var(--orange)">Opérationnelle</td><td>Collaboration sans contrat direct</td></tr>
+        <tr><td>Architecte ↔ Entrepreneur</td><td style="color:var(--orange)">Opérationnelle</td><td>Coordination de chantier sans contrat direct</td></tr>
+        <tr><td>BET ↔ Entrepreneur</td><td style="color:var(--orange)">Opérationnelle</td><td>Échanges techniques sans contrat direct</td></tr>
+      </tbody>
+    </table>
+  </div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M10 — Suivi-Contrôle des Ouvrages de Génie Civil · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 8px; border-radius: 4px; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: default; }
+.btn-secondary { padding: 10px 20px; border-radius: var(--r2); border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; border-radius: var(--r2); border: 1px solid rgba(255,107,53,0.4); background: rgba(255,107,53,0.1); color: var(--orange); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 20px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 64px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.score-label { font-size: 14px; color: var(--text2); margin-bottom: 20px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 16px; min-width: 70px; }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.score-stat.green .score-stat-val { color: var(--green); }
+.score-stat.red .score-stat-val { color: var(--red); }
+.score-stat.orange .score-stat-val { color: var(--orange); }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M10</div>
+  <div class="header-title">Suivi-Contrôle des Ouvrages de Génie Civil — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '🏗️',
+    title: 'Intervenants dans un projet de construction',
+    subtitle: 'Chapitre I — Définitions & rôles',
+    content: `
+      <div class="memo-section-title">👥 Les acteurs clés</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Maître d'Ouvrage (MOA)</div><div class="def-text">Personne physique ou morale pour le compte de qui les travaux sont exécutés. Responsable financier, technique et sécurité. Seul décideur. Ne peut pas déléguer TOUTES ses responsabilités.</div></div>
+        <div class="def-item"><div class="def-term">Maître d'Ouvrage Délégué</div><div class="def-text">Mandataire exclusif du MOA. Assure la direction depuis la conception jusqu'à la réception définitive. Ne peut pas cumuler MOA délégué ET maître d'œuvre simultanément.</div></div>
+        <div class="def-item"><div class="def-term">Maître d'Œuvre (MOE)</div><div class="def-text">Chargé par le MOA de diriger l'exécution du marché et de proposer la réception et le règlement des travaux. Responsabilité technique uniquement — ne peut PAS prendre d'engagements financiers.</div></div>
+        <div class="def-item"><div class="def-term">Entrepreneur</div><div class="def-text">Réalise les travaux sans lien de subordination. Exécute conformément aux plans, normes et règles. Nécessite un agrément technique délivré par le ministère compétent.</div></div>
+        <div class="def-item"><div class="def-term">Bureau de Suivi-Contrôle (BET)</div><div class="def-text">Organisation permanente pluridisciplinaire. Établit plans techniques, notes de calcul, DCE. Assure le suivi technique des travaux exécutés.</div></div>
+        <div class="def-item"><div class="def-term">Laboratoire</div><div class="def-text">Assure la qualité des matériaux. Contrôle la mise en œuvre. Fournit aux assureurs les infos pour la garantie décennale. Réalise études de sols, auscultation sur ouvrages.</div></div>
+        <div class="def-item"><div class="def-term">Bureau de Contrôle Technique</div><div class="def-text">Entreprise habilitée (SOCOTEC, BUREAU VERITAS). Vérifie la conformité des plans BET avec la réglementation et leur mise en œuvre sur chantier. Engage sa responsabilité au même titre que le MOE.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGES FRÉQUENTS</div><div class="piege-text">
+        ❌ Le MOE ne prend PAS d'engagements financiers (rôle technique uniquement)<br>
+        ❌ Le BET ne peut pas être simultanément MOA délégué ET maître d'œuvre<br>
+        ❌ Le MOA ne peut pas déléguer TOUTES ses responsabilités<br>
+        ❌ C'est le LABORATOIRE qui assure la qualité des matériaux, pas la mission de contrôle<br>
+        ❌ La mission de contrôle en vue de l'assurance est réservée aux bureaux AGRÉES (SOCOTEC, BUREAU VERITAS)
+      </div></div>
+    `
+  },
+  {
+    icon: '🎯',
+    title: 'Objectifs & Organisation de la Mission de Contrôle',
+    subtitle: 'Chapitre II — MDC',
+    content: `
+      <div class="memo-section-title">🎯 Objectifs généraux de la MDC</div>
+      <div class="key-box"><div class="key-title">Ce que garantit la mission de contrôle</div><div class="key-text"><ul>
+        <li>Qualité des travaux et durabilité des infrastructures</li>
+        <li>Suivi de l'évolution des travaux</li>
+        <li>Respect des délais et prescriptions techniques</li>
+        <li>Rapportage régulier de l'évolution</li>
+        <li>Mise à disposition d'un dossier de recollement conforme</li>
+      </ul></div></div>
+      <div class="memo-section-title">👷 Composition d'une MDC</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Chef de Mission</div><div class="def-text">Ingénieur Travaux Publics. Dirige l'ensemble, coordonne, préside les réunions de chantier, vérifie et soumet les décomptes au MOA.</div></div>
+        <div class="def-item"><div class="def-term">Ingénieur Géotechnicien</div><div class="def-text">Responsable du contrôle géotechnique. Supervise programme de contrôle qualité, vérifie matériaux gisements d'emprunt, assiste aux réceptions provisoires.</div></div>
+        <div class="def-item"><div class="def-term">Ingénieur OA/Assainissement</div><div class="def-text">Études hydrauliques, hydrologiques, conception et calcul des ouvrages d'art, participation au contrôle des travaux.</div></div>
+        <div class="def-item"><div class="def-term">Contrôleur des travaux</div><div class="def-text">Surveillance et contrôle à pied d'œuvre, métrés, avant-métrés. Assistance au chef de mission.</div></div>
+        <div class="def-item"><div class="def-term">Chef équipe topographique</div><div class="def-text">Contrôle topographique, réception topographique, détermination des cubatures.</div></div>
+        <div class="def-item"><div class="def-term">Environnementaliste</div><div class="def-text">Mise en œuvre du PGES, suivi des impacts environnementaux positifs et négatifs.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Autorité de la MDC</div><div class="piege-text">La MDC est soumise à l'autorité de l'Administration qui conserve la DIRECTION du contrôle. La MDC ne décide pas seule : elle est responsable vis-à-vis de l'Administration.</div></div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'Approbation des plans & Contrôle des travaux',
+    subtitle: 'Chapitre III — Canevas de travail',
+    content: `
+      <div class="memo-section-title">📄 Approbation des plans d'exécution</div>
+      <div class="key-box"><div class="key-title">3 mentions possibles sur un plan</div><div class="key-text"><ul>
+        <li><strong>APPROUVÉ</strong> : peut être utilisé directement sur le chantier</li>
+        <li><strong>APPROUVÉ COMME INDIQUÉ</strong> : après tenir compte des observations, peut être distribué</li>
+        <li><strong>RETOURNÉ POUR CORRECTION</strong> : corrections à faire, puis re-soumission complète</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ RÈGLE ABSOLUE</div><div class="piege-text">Seuls les plans et documents portant la mention « APPROUVÉ » peuvent être utilisés sur le chantier pour exécution.</div></div>
+      <div class="memo-section-title">🔍 Types de contrôle</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Contrôle de qualité</div><div class="def-text">Observation directe + essais de laboratoire. En cas de doute sur qualité : arrêt partiel des travaux + nouveaux essais. Si carence confirmée : remplacement des matériaux défectueux.</div></div>
+        <div class="def-item"><div class="def-term">Contrôle des quantités</div><div class="def-text">Prise en attachement contradictoire et journalière. Mesures sur le terrain → fiches de quantités par prix unitaire → décomptes provisoires.</div></div>
+        <div class="def-item"><div class="def-term">Points de contrôle</div><div class="def-text">Phase sensible d'une tâche → mesures de conformité consignées sur document type (interne à l'entreprise).</div></div>
+        <div class="def-item"><div class="def-term">Points clés</div><div class="def-text">Vérification par un intervenant DIFFÉRENT de l'exécutant direct avant poursuite (supérieur hiérarchique ou équipe consultant).</div></div>
+        <div class="def-item"><div class="def-term">Points d'arrêt</div><div class="def-text">Points de contrôle particuliers, irréversibles. Doivent impérativement être réalisés sous réserve par le contrôle AVANT poursuite. Document visé par le contrôle obligatoire.</div></div>
+        <div class="def-item"><div class="def-term">Contrôle topographique</div><div class="def-text">Implantation sous responsabilité de l'entreprise, contrôlée par la MDC. Tolérances : ±0,02m (terrassements/voirie), ±0,015m altimétrie drainage.</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '📓',
+    title: 'Journal de chantier & Procès-verbaux',
+    subtitle: 'Chapitre IV — Fiches synoptiques',
+    content: `
+      <div class="memo-section-title">📓 Journal de chantier</div>
+      <div class="key-box"><div class="key-title">Contenu minimum obligatoire</div><div class="key-text"><ul>
+        <li>Conditions atmosphériques</li>
+        <li>Travaux exécutés + effectif + qualification du personnel + matériel employé</li>
+        <li>Avancement précis des travaux</li>
+        <li>Prescriptions imposées à l'entrepreneur</li>
+        <li>Détail des quantités de travaux</li>
+        <li>Travaux de laboratoire programmés (j+1)</li>
+        <li>Incidents, accidents, évènements remarquables</li>
+        <li>Travaux de protection environnementale</li>
+        <li>Situation des emplois créés</li>
+        <li>Visites officielles (MOA ou tiers)</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Qui rédige le journal ?</div><div class="piege-text">Le journal de chantier est rédigé par l'ENTREPRENEUR (pas la MDC), qui le présente à la MDC pour approbation. Il est signé CHAQUE JOUR par la MDC ET l'entreprise. Il devient propriété du MAÎTRE D'OUVRAGE en fin de chantier.</div></div>
+      <div class="memo-section-title">📑 Procès-verbaux & Rapports</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">PV de réunion de chantier</div><div class="def-text">Réunions hebdomadaires obligatoires. PV signés par tous les participants. Consignent les engagements de chaque partie.</div></div>
+        <div class="def-item"><div class="def-term">Rapport mensuel d'avancement</div><div class="def-text">Avancement physique et financier, matériel/personnel, difficultés, programmation mois suivant. Adressé au Maître d'Ouvrage.</div></div>
+        <div class="def-item"><div class="def-term">Rapports spéciaux</div><div class="def-text">Difficultés techniques, modifications importantes, résultats d'experts. Établis autant que de besoin.</div></div>
+        <div class="def-item"><div class="def-term">Rapport final</div><div class="def-text">Au plus tard 1 MOIS après la réception provisoire. Bilan complet des travaux : financier, technique, réclamations, suggestions.</div></div>
+        <div class="def-item"><div class="def-term">DOE</div><div class="def-text">Dossier des Ouvrages Exécutés — constitué en fin de chantier par la MDC. Pièces admin, comptables et techniques d'exécution.</div></div>
+        <div class="def-item"><div class="def-term">Rapport confidentiel</div><div class="def-text">Établi après achèvement de la mission. Analyse financière et critique. Adressé en version unique sous pli scellé "CONFIDENTIEL" au MOA.</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '📅',
+    title: 'Planning des travaux & Plans d\'exécution (PEO)',
+    subtitle: 'Chapitre IV — Planning & PEO',
+    content: `
+      <div class="memo-section-title">📅 Le planning des travaux</div>
+      <div class="key-box"><div class="key-title">Rôle du planning</div><div class="key-text"><ul>
+        <li>Prévoir et établir les programmes d'action situés dans le temps</li>
+        <li>Organiser et mettre en place les moyens nécessaires</li>
+        <li>Commander et déclencher l'exécution des différentes phases</li>
+        <li>Coordonner et relier les différentes phases entre elles</li>
+        <li>Contrôler que la réalisation est conforme aux prévisions</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Définition du planning</div><div class="piege-text">Le planning est un ordonnancement synchronisé des tâches et activités dans le temps. Ce n'est PAS simplement « le délai imparti pour les travaux ». C'est bien plus : c'est un outil de pilotage complet.</div></div>
+      <div class="memo-section-title">📐 Plans d'Exécution des Ouvrages (PEO)</div>
+      <div class="key-box"><div class="key-title">Qui établit les PEO ?</div><div class="key-text"><ul>
+        <li>Le maître d'œuvre, OU</li>
+        <li>Les bureaux d'études concepteurs, OU</li>
+        <li>L'entreprise</li>
+      </ul>Nécessitent approbation des personnes habilitées → mention « BON POUR EXÉCUTION ».</div></div>
+      <div class="key-box"><div class="key-title">Vérification des PEO</div><div class="key-text"><ul>
+        <li>Cohérence entre plans architecturaux et plans techniques</li>
+        <li>Cohérence entre plans des différents lots spécialisés (réservations, emplacements appareils)</li>
+      </ul></div></div>
+    `
+  },
+  {
+    icon: '💰',
+    title: 'Suivi financier & Décomptes',
+    subtitle: 'Chapitre IV — Suivi financier',
+    content: `
+      <div class="memo-section-title">💰 Décomptes et attachements</div>
+      <div class="key-box"><div class="key-title">Tâches financières de la MDC</div><div class="key-text"><ul>
+        <li>Établir les métrés et prendre les attachements</li>
+        <li>Établir les situations mensuelles</li>
+        <li>Certifier les décomptes de l'entreprise</li>
+        <li>Vérifier la situation financière du chantier</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Définition du décompte</div><div class="piege-text">Le décompte est le montant de l'attachement fait par la mission de contrôle au MAÎTRE D'OUVRAGE. Ce montant est versé dans le compte de L'ENTREPRISE (pas dans le compte de la mission). Erreur classique à l'examen !</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Prix unitaires dans un attachement</div><div class="piege-text">Les prix unitaires DOIVENT inclure les frais qui interviennent à la fin du chantier (repli du matériel, nettoyage du chantier…). Affirmer qu'ils ne doivent pas les inclure est FAUX.</div></div>
+      <div class="memo-section-title">🏦 Documents bancaires et garanties</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Avance de démarrage</div><div class="def-text">Fournie par la banque pour permettre à l'entreprise de démarrer les travaux.</div></div>
+        <div class="def-item"><div class="def-term">Garantie d'exécution</div><div class="def-text">Émise par la banque. Garantit que l'entrepreneur exécutera le marché.</div></div>
+        <div class="def-item"><div class="def-term">Garantie d'attribution</div><div class="def-text">Garantit que le soumissionnaire acceptera le marché s'il est retenu.</div></div>
+        <div class="def-item"><div class="def-term">Caution de réception partielle</div><div class="def-text">Garantit pendant la période entre réception provisoire et réception définitive.</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '🏁',
+    title: 'Réceptions & Garanties',
+    subtitle: 'Chapitres III & IV — Réceptions',
+    content: `
+      <div class="memo-section-title">🏁 Types de réceptions</div>
+      <table class="chiffres-table">
+        <tr><th>Réception</th><th>Moment</th><th>Conséquences</th></tr>
+        <tr><td>Réception provisoire</td><td>Fin des travaux physiques</td><td>Début de la période de garantie. L'entrepreneur peut corriger les réserves soulevées. Il peut exiger paiement total si caution de garantie remise au MOA.</td></tr>
+        <tr><td>Réception définitive</td><td>1 AN après réception provisoire</td><td>Libération de la caution, paiement final de la retenue. Fin des obligations de garantie de l'entrepreneur.</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Réception provisoire</div><div class="piege-text">Après réception provisoire, l'entrepreneur N'EST PAS libéré de toute responsabilité. Il peut (et doit) encore intervenir pour corriger les réserves soulevées par le bureau de contrôle. La réception DÉFINITIVE intervient 1 an après la PROVISOIRE (pas après la réception partielle).</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Plans d'exécution approuvés</div><div class="piege-text">Même après approbation des plans d'exécution, l'entreprise est toujours tenue de demander les réceptions techniques des parties d'ouvrages. L'approbation des plans ne dispense PAS des réceptions techniques.</div></div>
+      <div class="memo-section-title">🔐 Garantie de parfait achèvement</div>
+      <div class="key-box"><div class="key-title">Tâches MDC pendant la période de garantie</div><div class="key-text"><ul>
+        <li>Surveiller les travaux et essais nécessaires</li>
+        <li>Contrôler les engagements de l'entrepreneur</li>
+        <li>Préparer les instructions pour les opérations d'approbation</li>
+        <li>Approuver et remettre au MOA les dessins rectificatifs</li>
+      </ul></div></div>
+    `
+  },
+  {
+    icon: '🔬',
+    title: 'Contrôle des matériaux & Essais',
+    subtitle: 'Chapitre V — Contrôle matériaux',
+    content: `
+      <div class="memo-section-title">🔬 Types d'essais</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Essais d'agrément</div><div class="def-text">Portent sur les sols, agrégats in situ (emprunts, carrières), matériaux fournis (ciment, fer à béton), formulations de béton. Réalisés avant mise en œuvre.</div></div>
+        <div class="def-item"><div class="def-term">Essais de convenance</div><div class="def-text">Vérifient que les dispositions techniques de l'entreprise sont compatibles avec les spécifications. Réalisés à chaque démarrage de nouvelle production.</div></div>
+        <div class="def-item"><div class="def-term">Essais de conformité</div><div class="def-text">Vérifient que les matériaux mis en place possèdent effectivement les caractéristiques requises (géotechniques, compacité, résistance compression béton).</div></div>
+      </div>
+      <div class="memo-section-title">⚙️ Instruments de contrôle</div>
+      <table class="chiffres-table">
+        <tr><th>Instrument</th><th>Usage</th><th>Norme</th></tr>
+        <tr><td>Scléromètre</td><td>Mesure de dureté de surface du béton par rebondissement (contrôle qualité béton en cas de doute)</td><td>NF P 18-417</td></tr>
+        <tr><td>Cône d'ABRAMS</td><td>Mesure d'affaissement (consistance béton frais)</td><td>NF P 18-451</td></tr>
+        <tr><td>Essai Proctor/CBR</td><td>Compactage sols (corps de chaussée)</td><td>NF P 94-093/94-078</td></tr>
+        <tr><td>Essai Los Angeles</td><td>Résistance à l'usure des granulats</td><td>NF P 18-573</td></tr>
+        <tr><td>Essai Marshall / Duriez</td><td>Formulation enrobés bitumineux</td><td>NF T 98-251</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Scléromètre</div><div class="piege-text">Le scléromètre mesure la DURETÉ DE SURFACE par rebondissement pour contrôler la qualité du béton en cas de doute. Il ne mesure PAS directement le taux d'acier (ça c'est un pachomètre/covermètre).</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Qui réalise les essais ?</div><div class="piege-text">C'est le LABORATOIRE qui réalise les essais sur la qualité des matériaux (Proctor, CBR, etc.), pas la mission de contrôle ni le maître d'œuvre. La MDC sous-traite au laboratoire si elle n'en dispose pas.</div></div>
+    `
+  },
+  {
+    icon: '🚀',
+    title: 'Démarrage des travaux & Implantation',
+    subtitle: 'Chapitre V — Démarrage & Implantation',
+    content: `
+      <div class="memo-section-title">🚀 Séquence de démarrage</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Ordre de Service</strong> — La MDC prépare l'OS pour le MOA qui notifie formellement l'entreprise.</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Mobilisation MDC</strong> — Réunion interne de l'équipe, établissement agenda, réunion de démarrage avec le MOA.</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Mise à disposition du site</strong> — En collaboration avec le MOA ou son représentant.</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Plan d'installation de chantier</strong> — Fourni par l'entreprise : aires de stockage, stationnement, ateliers, signalisation, panneau de chantier, laboratoire de chantier…</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Vérification dossiers</strong> — Étude technique détaillée + dossiers d'exécution de l'entreprise.</div></div>
+      <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Implantation</strong> — Piquetage général par l'entrepreneur, contrôlé par la MDC.</div></div>
+      <div class="memo-section-title">📏 Tolérances d'implantation</div>
+      <table class="chiffres-table">
+        <tr><th>Catégorie</th><th>Planimétrie</th><th>Altimétrie</th></tr>
+        <tr><td>Terrassements</td><td>±0,02 m</td><td>±0,02 m</td></tr>
+        <tr><td>Voirie</td><td>±0,02 m</td><td>±0,02 m</td></tr>
+        <tr><td>Drainage</td><td>±0,03 m</td><td>±0,015 m</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">Règle fond de fouille</div><div class="key-text">Béton de propreté mis en place DÈS réception du fond de fouille par l'Ingénieur. Compactage à 90% OPM sur les 30 derniers centimètres si l'Ingénieur le juge utile. Aucun dépôt en amont de l'ouvrage ; dépôts en aval à ≥ 50 m du cours d'eau.</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quelle est la définition du Maître d'Ouvrage selon la norme NF P 03-001 ?",type:'multi',opts:[{t:"Personne physique ou morale désignée dans les documents du marché, pour le compte de qui les travaux sont exécutés",c:true},{t:"Personne chargée de diriger l'exécution du marché et de proposer la réception des travaux",c:false},{t:"Bureau d'études techniques pluridisciplinaire chargé du suivi des travaux",c:false},{t:"Mandataire exclusif qui assure la direction de l'exécution depuis la conception jusqu'à la réception définitive",c:false}],diff:'easy',piege:false,expl:"La norme NF P 03-001 définit le maître d'ouvrage comme la personne physique ou morale désignée par ce terme dans les documents du marché et pour le compte de qui les travaux sont exécutés. La définition de maître d'œuvre est souvent confondue.",ref:"Chapitre I › I. › Page 3"},
+  {q:"Le Maître d'Ouvrage peut-il déléguer toutes ses responsabilités ?",type:'multi',opts:[{t:"Non, le MOA ne peut pas déléguer TOUTES ses responsabilités",c:true},{t:"Oui, il peut tout déléguer au MOA délégué",c:false},{t:"Oui, mais uniquement les responsabilités financières",c:false},{t:"Oui, si un contrat de mandat est signé",c:false}],diff:'med',piege:true,expl:"Le cours précise explicitement : 'Le maître d'ouvrage ne peut pas déléguer toutes ses responsabilités.' C'est une règle de droit importante.",ref:"Chapitre I › I. › Page 4"},
+  {q:"Quelle est la différence fondamentale entre le Maître d'Œuvre et le Maître d'Ouvrage ?",type:'multi',opts:[{t:"Le MOE engage sa responsabilité technique mais ne peut pas prendre d'engagements financiers",c:true},{t:"Le MOA engage sa responsabilité technique, le MOE prend des décisions financières",c:false},{t:"Le MOE est le décideur, le MOA est le conseiller",c:false},{t:"Il n'y a pas de différence fondamentale, ils ont le même rôle",c:false}],diff:'med',piege:true,expl:"Le maître d'œuvre engage sa responsabilité TECHNIQUE uniquement et ne peut pas prendre d'engagements financiers. C'est le MOA qui est le seul décideur, et le MOE est son conseiller unique.",ref:"Chapitre I › I. › Page 5"},
+  {q:"Un Bureau d'Études Techniques (BET) peut-il remplir simultanément les rôles de Maître d'Ouvrage Délégué et de Maître d'Œuvre ?",type:'multi',opts:[{t:"Non, ces deux rôles sont incompatibles pour un même BET",c:true},{t:"Oui, si le MOA le lui demande expressément",c:false},{t:"Oui, dans le cadre d'un projet de moins de 5 ans",c:false},{t:"Oui, uniquement pour des petits projets",c:false}],diff:'hard',piege:true,expl:"Le cours précise clairement : 'Dans une telle situation, le BET ne peut pas remplir simultanément le rôle de maître d'ouvrage délégué et de maître d'œuvre.' Ces deux missions sont incompatibles pour la même entité.",ref:"Chapitre I › I. › Page 4"},
+  {q:"Quelle est la mission principale du Laboratoire dans un projet de construction ?",type:'multi',opts:[{t:"Assurer la qualité des matériaux et contrôler leur mise en œuvre",c:true},{t:"Autoriser le paiement de l'entreprise par le maître d'ouvrage",c:false},{t:"Assurer la qualité du matériel de chantier",c:false},{t:"Autoriser le MOA à contracter une assurance décennale",c:false}],diff:'med',piege:true,expl:"Le laboratoire a pour mission principale d'assurer la qualité des matériaux suivant un ensemble d'actions préalables et systématiques, et de contrôler la qualité de leur mise en œuvre. Il joue un rôle important pour la garantie décennale, mais ce n'est pas son autorisation qui permet au MOA de la contracter.",ref:"Chapitre I › I. › Page 6-7"},
+  {q:"Qui assure la mission de contrôle technique en vue de l'assurance décennale ?",type:'multi',opts:[{t:"Uniquement les bureaux de contrôle agréés par les assureurs (SOCOTEC, BUREAU VERITAS)",c:true},{t:"N'importe quel bureau d'études techniques",c:false},{t:"La mission de suivi-contrôle désignée par le MOA",c:false},{t:"Le laboratoire géotechnique",c:false}],diff:'hard',piege:false,expl:"La mission de contrôle en vue de l'assurance est strictement réservée aux bureaux de contrôle agréés par les assureurs, cités dans le cours : SOCOTEC et BUREAU VERITAS.",ref:"Chapitre I › I. › Page 7"},
+  {q:"Quels sont les objectifs généraux que doit garantir la Mission de Contrôle ?",type:'multi',opts:[{t:"La qualité des travaux et la durabilité des infrastructures",c:true},{t:"Le suivi de l'évolution des travaux",c:true},{t:"Le respect des délais et des prescriptions techniques",c:true},{t:"La gestion du budget du maître d'ouvrage",c:false}],diff:'med',piege:false,expl:"Les trois objectifs généraux de la MDC sont : qualité des travaux et durabilité, suivi de l'évolution, respect des délais et prescriptions techniques. La gestion du budget du MOA n'est pas un objectif de la MDC.",ref:"Chapitre II › I. › Page 8"},
+  {q:"La Mission de Contrôle est-elle l'autorité suprême sur le chantier ?",type:'multi',opts:[{t:"Non, la MDC est soumise à l'autorité de l'Administration qui conserve la direction du contrôle",c:true},{t:"Oui, la MDC a une autorité totale sur le chantier",c:false},{t:"Oui, mais uniquement pour les aspects techniques",c:false},{t:"Non, c'est le Maître d'Ouvrage qui a l'autorité directe sur le terrain",c:false}],diff:'med',piege:true,expl:"La MDC est soumise à l'autorité de l'Administration qui conserve la Direction du contrôle. La MDC est responsable vis-à-vis de l'Administration de la totalité des tâches de contrôle et de surveillance.",ref:"Chapitre II › I. › Page 8"},
+  {q:"Quelle est la composition standard du personnel technique d'une Mission de Contrôle ?",type:'multi',opts:[{t:"Chef de Mission, Ingénieur Géotechnicien, Ingénieur OA, Contrôleur des travaux, Chef équipe topographique, Environnementaliste",c:true},{t:"Chef de Mission, Architecte, Économiste, Juriste",c:false},{t:"Chef de Mission, Comptable, Technicien, Chauffeur",c:false},{t:"Directeur de projet, Ingénieur structure, Assistant technique",c:false}],diff:'easy',piege:false,expl:"La MDC comprend typiquement : Chef de Mission (TP), Ingénieur Géotechnicien, Ingénieur spécialiste OA/assainissement, Contrôleur des travaux, Chef d'équipe topographique, Environnementaliste, plus personnel d'appui.",ref:"Chapitre II › II. › Page 9"},
+  {q:"Quelle mention doit porter un plan pour pouvoir être utilisé sur le chantier pour exécution ?",type:'multi',opts:[{t:"APPROUVÉ",c:true},{t:"APPROUVÉ COMME INDIQUÉ",c:false},{t:"RETOURNÉ POUR CORRECTION",c:false},{t:"VALIDÉ PAR LE MOA",c:false}],diff:'med',piege:true,expl:"Seuls les plans portant la mention 'APPROUVÉ' peuvent être utilisés sur le chantier. 'APPROUVÉ COMME INDIQUÉ' implique que des corrections ont été intégrées mais peut aussi être distribué. 'RETOURNÉ POUR CORRECTION' signifie que le plan doit être resoumis.",ref:"Chapitre III › II. › Page 16"},
+  {q:"Que doit faire la Mission de Contrôle en cas de doute sur la qualité des matériaux mis en œuvre ?",type:'multi',opts:[{t:"Exiger l'arrêt partiel des travaux afin de procéder à de nouveaux essais",c:true},{t:"Informer le MOA par écrit et continuer les travaux",c:false},{t:"Autoriser la poursuite des travaux jusqu'aux résultats d'essais",c:false},{t:"Demander à l'entrepreneur de changer de fournisseur sans arrêt",c:false}],diff:'med',piege:false,expl:"En cas de doute sur la qualité des matériaux, le contrôle exige l'arrêt PARTIEL des travaux pour procéder à de nouveaux essais. Si les résultats confirment une carence de qualité, le remplacement des matériaux défectueux est exigé.",ref:"Chapitre III › III. › Page 17"},
+  {q:"Qu'est-ce qu'un 'point d'arrêt' dans le contrôle des travaux ?",type:'multi',opts:[{t:"Un point de contrôle particulier d'irréversibilité, devant être réalisé sous réserve par le contrôle AVANT la poursuite des travaux",c:true},{t:"Un arrêt total du chantier décidé par la Mission de Contrôle",c:false},{t:"Un point de contrôle interne à l'entreprise sans intervention externe",c:false},{t:"Une suspension de travaux pour raisons climatiques",c:false}],diff:'hard',piege:true,expl:"Les points d'arrêt sont des points de contrôle particuliers qui, en raison de l'irréversibilité ou de l'incidence d'une malfaçon sur la pérennité de l'ouvrage, doivent IMPÉRATIVEMENT être réalisés sous réserve par le contrôle avant la poursuite. Ils font obligatoirement l'objet d'un document visé par le contrôle.",ref:"Chapitre III › III. › Page 18"},
+  {q:"Qui rédige le journal de chantier ?",type:'multi',opts:[{t:"L'entrepreneur, qui le présente à la MDC pour approbation",c:true},{t:"Le chef de chantier de la Mission de Contrôle",c:false},{t:"La Mission de Contrôle, signée par l'entrepreneur",c:false},{t:"Le Maître d'Ouvrage",c:false}],diff:'med',piege:true,expl:"Le journal de chantier est rédigé par l'ENTREPRENEUR, qui le présente à la MDC pour approbation. Il doit rester accessible au MOA et deviendra propriété du MOA en fin de chantier. Il est signé chaque jour par la MDC et l'entreprise.",ref:"Chapitre IV › I. › Page 21"},
+  {q:"À qui appartient le journal de chantier en fin de chantier ?",type:'multi',opts:[{t:"Au Maître d'Ouvrage",c:true},{t:"À la Mission de Contrôle",c:false},{t:"À l'entreprise qui l'a rédigé",c:false},{t:"Au Maître d'Œuvre",c:false}],diff:'easy',piege:false,expl:"Le journal de chantier deviendra propriété du MAÎTRE D'OUVRAGE en fin de chantier. Il doit rester accessible à tout moment au MOA.",ref:"Chapitre IV › I. › Page 21"},
+  {q:"Quelle est la fréquence des réunions de chantier organisées par la MDC ?",type:'multi',opts:[{t:"Hebdomadaire",c:true},{t:"Mensuelle",c:false},{t:"Quotidienne",c:false},{t:"Bimensuelle",c:false}],diff:'easy',piege:false,expl:"Des réunions HEBDOMADAIRES de chantier sont régulièrement organisées avec l'entreprise et les représentants du MOA. Elles font systématiquement l'objet de PV signés.",ref:"Chapitre IV › II. › Page 22"},
+  {q:"Quel délai maximum s'écoule entre la réception provisoire et le dépôt du rapport final ?",type:'multi',opts:[{t:"Au plus tard 1 mois après la réception provisoire",c:true},{t:"Au plus tard 3 mois après la réception provisoire",c:false},{t:"Le jour de la réception provisoire",c:false},{t:"Au plus tard 6 mois après la réception définitive",c:false}],diff:'med',piege:false,expl:"Le rapport final est présenté à l'Autorité Contractante au plus tard UN MOIS après la réception provisoire des travaux.",ref:"Chapitre IV › II. › Page 24"},
+  {q:"Le planning des travaux est-il seulement le délai imparti pour les travaux ?",type:'multi',opts:[{t:"Non, c'est un ordonnancement synchronisé des tâches et des activités dans le temps",c:true},{t:"Oui, le planning est uniquement le délai imparti",c:false},{t:"Oui, c'est le calendrier de paiement de l'entreprise",c:false},{t:"Non, c'est uniquement un outil de communication",c:false}],diff:'med',piege:true,expl:"Le planning est bien plus que le simple délai imparti. C'est un ordonnancement synchronisé des tâches et des activités dans le temps, qui permet de prévoir, organiser, commander, coordonner et contrôler les travaux.",ref:"Chapitre IV › IV. › Page 27"},
+  {q:"Dans la période de garantie, quelle est la tâche de la Mission de Contrôle concernant les dessins rectificatifs ?",type:'multi',opts:[{t:"Approuver et remettre au MOA les dessins rectificatifs établis par l'entrepreneur",c:true},{t:"Établir elle-même les dessins rectificatifs",c:false},{t:"Refuser tout dessin rectificatif après réception provisoire",c:false},{t:"Transmettre les dessins directement au bureau de contrôle sans approbation",c:false}],diff:'hard',piege:false,expl:"Pendant la garantie, la MDC approuve et remet au MOA les dessins rectificatifs des travaux exécutés (s'il y a lieu) établis par l'entrepreneur, compte tenu des rectifications exécutées pendant les périodes de garantie.",ref:"Chapitre III › IV. › Page 20-21"},
+  {q:"Qui est responsable de l'implantation des axes et des ouvrages sur le chantier ?",type:'multi',opts:[{t:"L'entreprise, contrôlée par la MDC",c:true},{t:"La Mission de Contrôle seule",c:false},{t:"Le Maître d'Ouvrage",c:false},{t:"Le géomètre expert indépendant",c:false}],diff:'med',piege:false,expl:"L'implantation des axes et des ouvrages est sous la responsabilité de l'ENTREPRISE et sera contrôlée par la MDC. L'entrepreneur doit veiller pendant toute la durée des travaux à la conservation des bornes et piquets.",ref:"Chapitre V › II. › Page 35"},
+  {q:"Quelles sont les tolérances d'implantation pour le drainage en altimétrie ?",type:'multi',opts:[{t:"±0,015 m",c:true},{t:"±0,02 m",c:false},{t:"±0,03 m",c:false},{t:"±0,01 m",c:false}],diff:'hard',piege:true,expl:"Pour le drainage, les tolérances sont ±0,015 m en ALTIMÉTRIE et ±0,03 m en planimétrie. C'est plus strict en altimétrie pour le drainage que pour les terrassements et voirie (±0,02 m).",ref:"Chapitre V › II. › Page 35"},
+  {q:"Quel est l'instrument utilisé pour mesurer la dureté de surface du béton par rebondissement ?",type:'multi',opts:[{t:"Le scléromètre",c:true},{t:"Le pachomètre",c:false},{t:"Le cône d'ABRAMS",c:false},{t:"L'essai Los Angeles",c:false}],diff:'easy',piege:false,expl:"Le scléromètre (norme NF P 18-417) est un instrument utilisé pour la mesure de dureté de surface par rebondissement. Il est utilisé pour contrôler la qualité du béton lorsqu'il y a un doute. Le pachomètre mesure l'enrobage d'armatures.",ref:"Chapitre V › III. › Page 37"},
+  {q:"Quelle norme régit l'essai Proctor ?",type:'multi',opts:[{t:"NF P 94-093",c:true},{t:"NF P 18-417",c:false},{t:"NF P 94-056",c:false},{t:"NF P 18-451",c:false}],diff:'hard',piege:false,expl:"L'essai Proctor (et CBR) est régi par la norme NF P 94-093 (Proctor) et NF P 94-078 (CBR). NF P 18-417 est le scléromètre, NF P 94-056 est l'analyse granulométrique, NF P 18-451 est le cône d'ABRAMS.",ref:"Chapitre V › III. › Page 36"},
+  {q:"Le décompte mensuel est-il versé sur le compte de la Mission de Contrôle ?",type:'multi',opts:[{t:"Non, il est versé sur le compte de l'entreprise",c:true},{t:"Oui, il est versé sur le compte de la MDC",c:false},{t:"Oui, puis redistribué à l'entrepreneur",c:false},{t:"Il est conservé par le Maître d'Ouvrage comme retenue",c:false}],diff:'med',piege:true,expl:"Le décompte est le montant de l'attachement fait par la mission de contrôle au MAÎTRE D'OUVRAGE, et ce montant est versé dans le compte de L'ENTREPRISE (pas de la mission). C'est un piège classique de l'examen.",ref:"Chapitre IV › III. › Page 26"},
+  {q:"Quelle norme régit l'affaissement au cône d'ABRAMS ?",type:'multi',opts:[{t:"NF P 18-451",c:true},{t:"NF P 94-056",c:false},{t:"NF P 18-417",c:false},{t:"NF P 94-093",c:false}],diff:'hard',piege:false,expl:"L'affaissement au cône d'ABRAMS est régi par la norme NF P 18-451. Cette mesure concerne la consistance (maniabilité) du béton frais.",ref:"Chapitre V › III. › Page 36"},
+  {q:"La réception définitive intervient combien de temps après la réception provisoire ?",type:'multi',opts:[{t:"1 an après la réception provisoire",c:true},{t:"6 mois après la réception provisoire",c:false},{t:"2 ans après la réception provisoire",c:false},{t:"1 an après la réception partielle",c:false}],diff:'med',piege:true,expl:"La réception définitive intervient UNE ANNÉE après la réception PROVISOIRE. Attention au piège : ce n'est pas après la réception partielle.",ref:"Chapitre III › IV. › Page 20"},
+  {q:"Après une réception provisoire, que peut faire l'entrepreneur concernant le paiement ?",type:'multi',opts:[{t:"Exiger le paiement total du marché à condition de remettre une caution de garantie jusqu'à réception définitive",c:true},{t:"Exiger le paiement total sans condition",c:false},{t:"Ne peut pas exiger de paiement avant la réception définitive",c:false},{t:"Réclamer uniquement 50% du solde restant",c:false}],diff:'hard',piege:true,expl:"L'entrepreneur peut exiger le paiement total du marché à condition de remettre au maître d'ouvrage une caution de garantie jusqu'à réception définitive. Ce n'est pas un paiement sans condition.",ref:"Sujet d'examen Q8"},
+  {q:"Quels documents les banques élaborent-elles dans le cadre d'un projet de construction ?",type:'multi',opts:[{t:"La garantie d'exécution",c:true},{t:"La garantie d'attribution du marché",c:true},{t:"L'avance de démarrage",c:true},{t:"Le journal de chantier",c:false}],diff:'med',piege:false,expl:"Les banques participent à la vie d'un projet via : la garantie d'exécution, la garantie d'attribution du marché, l'avance de démarrage. Le journal de chantier est rédigé par l'entrepreneur.",ref:"Chapitre IV › III. / Sujet Q15"},
+  {q:"Qui est responsable de la qualité des matériaux et de leur mise en œuvre sur chantier ?",type:'multi',opts:[{t:"Le laboratoire",c:true},{t:"L'entrepreneur seul",c:false},{t:"La Mission de Contrôle directement",c:false},{t:"Le Bureau de Contrôle Technique",c:false}],diff:'med',piege:false,expl:"C'est le LABORATOIRE qui est la structure ayant pour mission d'assurer la qualité des matériaux et le contrôle de leur mise en œuvre. La MDC sous-traite ces prestations au laboratoire si elle n'en dispose pas.",ref:"Chapitre I › I. › Page 6-7"},
+  {q:"Qu'est-ce qu'un 'point clé' dans le contrôle des travaux ?",type:'multi',opts:[{t:"Un point de contrôle particulier devant faire l'objet d'une vérification par un intervenant DIFFÉRENT de l'exécutant direct",c:true},{t:"Un point d'arrêt total du chantier",c:false},{t:"Un point de contrôle interne à l'entreprise uniquement",c:false},{t:"Une étape administrative obligatoire",c:false}],diff:'hard',piege:true,expl:"Les points clés sont des points de contrôle particuliers qui devront faire l'objet, avant poursuite, d'une vérification par un intervenant différent de l'exécutant direct. Cet intervenant peut appartenir à l'entreprise (supérieur hiérarchique) ou à l'équipe du consultant.",ref:"Chapitre III › III. › Page 18"},
+  {q:"Les prix unitaires d'un attachement doivent-ils inclure les frais de repli du matériel et nettoyage du chantier ?",type:'multi',opts:[{t:"Oui, ils doivent les inclure",c:true},{t:"Non, ces frais sont en dehors du bordereau de prix",c:false},{t:"Non, ils font l'objet d'un devis séparé",c:false},{t:"Oui, mais uniquement le nettoyage",c:false}],diff:'med',piege:true,expl:"Contrairement à ce qu'on pourrait penser, les prix unitaires DOIVENT inclure les frais qui interviennent à la fin du chantier (repli du matériel, nettoyage…). Affirmer le contraire est FAUX.",ref:"Chapitre IV › III. / Sujet Q16"},
+  {q:"Qui valide les plans d'exécution réalisés par l'entreprise ?",type:'multi',opts:[{t:"La mission de suivi et de contrôle",c:true},{t:"Le Maître d'Ouvrage directement",c:false},{t:"Le Maître d'Ouvrage délégué uniquement",c:false},{t:"L'assureur de la garantie décennale",c:false}],diff:'med',piege:false,expl:"Les plans d'exécution réalisés par l'entreprise doivent être validés par la MISSION DE SUIVI ET DE CONTRÔLE. La MDC vérifie leur conformité avant d'apposer la mention 'APPROUVÉ'.",ref:"Chapitre III › II. / Sujet Q12"},
+  {q:"Sur quel document peut-on voir le coût global de réalisation de l'ouvrage projeté ?",type:'multi',opts:[{t:"Le devis estimatif",c:true},{t:"Le devis descriptif",c:false},{t:"Le devis quantitatif",c:false},{t:"Le devis financier",c:false}],diff:'med',piege:true,expl:"Le devis ESTIMATIF est le document contractuel qui indique le coût global de réalisation de l'ouvrage projeté. Le devis descriptif décrit les travaux, le devis quantitatif liste les quantités.",ref:"Sujet d'examen Q20"},
+  {q:"Qu'est-ce que le DOE dans le contexte du suivi-contrôle ?",type:'multi',opts:[{t:"Le Dossier des Ouvrages Exécutés, constitué en fin de chantier par la MDC",c:true},{t:"Le Document d'Ordre d'Entreprise",c:false},{t:"Le Dossier des Observations d'Exécution",c:false},{t:"La Direction des Ouvrages d'État",c:false}],diff:'easy',piege:false,expl:"Le DOE (Dossier des Ouvrages Exécutés) est constitué en fin de chantier par la MDC. Il comporte toutes les pièces administratives, comptables et financières d'exécution, ainsi que les pièces techniques.",ref:"Chapitre IV › II. › Page 25-26"},
+  {q:"Qu'est-ce que le 'rapport général confidentiel' de la MDC ?",type:'multi',opts:[{t:"Un rapport établi après achèvement de la mission, adressé sous pli scellé 'CONFIDENTIEL' au MOA en une version unique",c:true},{t:"Un rapport mensuel que la MDC envoie uniquement au bailleur de fonds",c:false},{t:"Un rapport interne de la MDC non destiné au MOA",c:false},{t:"Un rapport hebdomadaire sur les aspects financiers",c:false}],diff:'hard',piege:false,expl:"Le rapport général confidentiel est établi par la MDC après achèvement de l'ensemble de la mission. Il présente une analyse financière du projet et une étude critique des problèmes majeurs. Il est adressé en UNE version unique sous pli scellé 'confidentiel' au Maître d'Ouvrage.",ref:"Chapitre IV › II. › Page 26"},
+  {q:"Que contient le rapport mensuel d'avancement ?",type:'multi',opts:[{t:"L'avancement physique et financier, les mouvements de matériel et personnel, les difficultés et la programmation du mois suivant",c:true},{t:"Uniquement les aspects financiers du chantier",c:false},{t:"Uniquement les incidents sécurité et environnementaux",c:false},{t:"Le bilan final de l'ensemble du projet",c:false}],diff:'easy',piege:false,expl:"Le rapport mensuel fait le point d'avancement physique ET financier, relate les mouvements du matériel et personnel, la situation financière, les difficultés et évènements majeurs, et donne la programmation des travaux pour le mois suivant.",ref:"Chapitre IV › II. › Page 23"},
+  {q:"Quelle est la norme de l'essai Los Angeles pour les granulats ?",type:'multi',opts:[{t:"NF P 18-573",c:true},{t:"NF P 18-451",c:false},{t:"NF P 94-056",c:false},{t:"NF P 18-417",c:false}],diff:'hard',piege:false,expl:"L'essai Los Angeles pour les granulats (résistance à l'usure) est régi par la norme NF P 18-573. Il concerne les bétons hydrauliques.",ref:"Chapitre V › III. › Page 36"},
+  {q:"Quels sont les trois types d'essais réalisés dans le cadre du contrôle des matériaux ?",type:'multi',opts:[{t:"Essais d'agrément, essais de convenance, essais de conformité",c:true},{t:"Essais préliminaires, essais en cours, essais finaux",c:false},{t:"Essais de sol, essais de béton, essais de bitume",c:false},{t:"Essais de qualité, essais de sécurité, essais d'environnement",c:false}],diff:'med',piege:false,expl:"Les trois types d'essais sont : AGRÉMENT (avant mise en œuvre), CONVENANCE (vérification compatibilité dispositions techniques) et CONFORMITÉ (vérification des caractéristiques après mise en place).",ref:"Chapitre V › III. › Page 37-38"},
+  {q:"Quel est le contenu minimum du journal de chantier ?",type:'multi',opts:[{t:"Conditions atmosphériques, travaux exécutés, avancement, incidents, quantités, visites officielles",c:true},{t:"Uniquement les travaux exécutés et les quantités",c:false},{t:"Uniquement les incidents et accidents",c:false},{t:"Le planning prévisionnel et le budget révisé",c:false}],diff:'med',piege:false,expl:"Le journal de chantier contient au minimum : conditions atmosphériques, travaux exécutés (effectif, qualification, matériel), avancement précis, prescriptions, détail quantités, travaux laboratoire programmés, incidents/accidents, travaux environnementaux, situation emplois, visites officielles.",ref:"Chapitre IV › I. › Page 21-22"},
+  {q:"Quand le béton de propreté doit-il être mis en place lors de la réalisation d'une fondation ?",type:'multi',opts:[{t:"Dès réception du fond de fouille par l'Ingénieur",c:true},{t:"Après séchage naturel du fond de fouille pendant 24h",c:false},{t:"Avant la réception du fond de fouille",c:false},{t:"Uniquement si l'Ingénieur le juge utile",c:false}],diff:'hard',piege:false,expl:"Le béton de propreté doit être mis en place DÈS réception du fond de fouille par l'Ingénieur, sans attendre. C'est une règle impérative pour protéger le terrain d'assise.",ref:"Chapitre V › I. › Page 19"},
+  {q:"Quel est le taux de compactage minimum exigé sur les 30 derniers centimètres d'un fond de fouille si l'Ingénieur le juge utile ?",type:'multi',opts:[{t:"90% OPM",c:true},{t:"95% OPM",c:false},{t:"85% OPM",c:false},{t:"100% OPM",c:false}],diff:'hard',piege:false,expl:"Si l'Ingénieur le juge utile, le fond de fouille sera compacté à 90% OPM sur les 30 derniers centimètres.",ref:"Chapitre V › I. › Page 19"},
+  {q:"Quelle est la différence entre les types de BET ?",type:'multi',opts:[{t:"BET indépendants, BET publics/parapublics, BET intégrés dans entreprises/MOA, BET intégrés dans groupes industriels",c:true},{t:"BET de conception, BET de contrôle, BET de géotechnique",c:false},{t:"BET nationaux, BET régionaux, BET locaux",c:false},{t:"BET de bâtiment, BET de génie civil, BET d'environnement",c:false}],diff:'easy',piege:false,expl:"Le cours distingue : BET indépendants, BET publics ou parapublics, BET intégrés dans les entreprises ou chez les maîtres d'ouvrages, BET intégrés dans les groupes industriels.",ref:"Chapitre I › I. › Page 6"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"Le projet de construction du pont de Bagnoa est confié à l'entreprise BATIK BF. La société GEOTEC est chargée du suivi. Un sous-traitant FOUNDA réalise les fondations. Qui est responsable de la garantie des fondations vis-à-vis du MOA ?",type:'multi',opts:[{t:"BATIK BF, l'entrepreneur principal",c:true},{t:"FOUNDA, le sous-traitant",c:false},{t:"GEOTEC, la mission de contrôle",c:false},{t:"Le MOA lui-même",c:false}],diff:'med',piege:true,expl:"L'entrepreneur principal (BATIK BF) reste responsable vis-à-vis du MOA, même pour les travaux sous-traités. Le sous-traitant FOUNDA n'a pas de lien direct de responsabilité avec le MOA.",ref:"Chapitre I › I. › Page 5-6"},
+  {q:"L'ingénieur contrôleur M. KABORÉ visite le chantier chaque matin. Il constate que le béton coulé la veille présente des anomalies de surface. Quel instrument doit-il utiliser en premier pour vérifier sa qualité in situ ?",type:'multi',opts:[{t:"Le scléromètre",c:true},{t:"Le cône d'ABRAMS",c:false},{t:"L'essai de traction par fendage",c:false},{t:"Les limites d'Atterberg",c:false}],diff:'easy',piege:false,expl:"Pour contrôler la qualité du béton durci lorsqu'il y a un doute, on utilise le SCLÉROMÈTRE (mesure de dureté de surface par rebondissement, NF P 18-417). Le cône d'ABRAMS est pour le béton FRAIS.",ref:"Chapitre V › III. › Page 37"},
+  {q:"La mission de contrôle du projet de route RN1 reçoit les plans d'exécution de l'entreprise CONSTRO. Après vérification, elle note que les plans sont globalement conformes mais nécessitent 3 corrections mineures. Quelle mention doit-elle apposer ?",type:'multi',opts:[{t:"APPROUVÉ COMME INDIQUÉ (après corrections apportées)",c:true},{t:"APPROUVÉ directement",c:false},{t:"RETOURNÉ POUR CORRECTION",c:false},{t:"BON POUR EXÉCUTION sans mention",c:false}],diff:'med',piege:true,expl:"APPROUVÉ COMME INDIQUÉ signifie que l'entreprise doit intégrer les observations portées sur le plan, puis la MDC inscrira la mention d'approbation. RETOURNÉ POUR CORRECTION implique une resousmission complète.",ref:"Chapitre III › II. › Page 16"},
+  {q:"M. TRAORÉ, chef de mission, reçoit le décompte n°5 de l'entreprise EDIF pour 45 millions FCFA. Après vérification, il constate que le décompte est conforme aux attachements. Sur quel compte ce montant sera-t-il versé ?",type:'multi',opts:[{t:"Sur le compte de l'entreprise EDIF",c:true},{t:"Sur le compte de la Mission de Contrôle",c:false},{t:"Sur un compte séquestre ouvert par le MOA",c:false},{t:"Sur le compte du Maître d'Ouvrage",c:false}],diff:'med',piege:true,expl:"Le décompte est établi par la MDC au MOA, mais le montant est versé sur le compte de L'ENTREPRISE (EDIF dans ce cas). L'argent ne transite pas par la MDC.",ref:"Chapitre IV › III. › Page 26"},
+  {q:"Sur le chantier de construction du barrage de SAMANDENI, la MDC veut vérifier la qualité de compactage des remblais. Quels essais doit-elle réaliser ?",type:'multi',opts:[{t:"Essais Proctor et mesure de densité in situ",c:true},{t:"Essai Los Angeles et analyse granulométrique",c:false},{t:"Essais RTFOT et pénétrabilité",c:false},{t:"Affaissement au cône d'ABRAMS",c:false}],diff:'med',piege:false,expl:"Pour vérifier le compactage des remblais (corps de chaussée/terrassements), on utilise l'essai Proctor (NF P 94-093) pour définir la référence, et la mesure de densité in situ (NF P 94-061-2) pour vérifier le compactage réel.",ref:"Chapitre V › III. › Page 36"},
+  {q:"L'entreprise INFRABEL soumet son plan d'installation de chantier pour le projet de voirie de Ouagadougou. La MDC vérifie le document. Lequel de ces éléments NE doit PAS figurer dans ce plan ?",type:'multi',opts:[{t:"Le montant du marché de l'entreprise",c:true},{t:"Les aires de stockage des matériaux",c:false},{t:"Le plan de communication",c:false},{t:"Les conditions de gardiennage et nettoyage",c:false}],diff:'hard',piege:true,expl:"Le plan d'installation de chantier concerne l'organisation physique et logistique du chantier. Il doit comporter : aires de stockage, stationnement, ateliers, logements, gardiennage, signalisation, déviation, plan comm, ouvrages provisoires, laboratoire, etc. Le montant du marché n'en fait pas partie.",ref:"Chapitre V › I. › Page 30-31"},
+  {q:"La réception provisoire du projet ROUTE-SUD a été prononcée le 15 mars 2024. Des réserves ont été soulevées concernant la signalisation. L'entrepreneur ROUTEX peut-il intervenir sur l'ouvrage pour corriger ces réserves ?",type:'multi',opts:[{t:"Oui, l'entrepreneur peut et doit intervenir pour corriger les réserves",c:true},{t:"Non, après la réception provisoire, l'entrepreneur n'a plus accès à l'ouvrage",c:false},{t:"Non, c'est la MDC qui doit corriger",c:false},{t:"Oui, mais uniquement avec autorisation écrite du MOA",c:false}],diff:'med',piege:true,expl:"Après la réception provisoire, l'entrepreneur PEUT intervenir sur l'ouvrage pour corriger les réserves soulevées. Il n'est pas déchargé de sa responsabilité à ce stade.",ref:"Sujet d'examen Q8"},
+  {q:"L'ingénieur géotechnicien de la MDC constate que les matériaux d'emprunt utilisés pour les remblais présentent une teneur en matières organiques trop élevée. Quelle action immédiate doit être prise ?",type:'multi',opts:[{t:"Arrêt partiel des travaux et nouveaux essais, puis remplacement des matériaux si carence confirmée",c:true},{t:"Continuer les travaux et informer le MOA par rapport mensuel",c:false},{t:"Informer l'entrepreneur et attendre sa réponse",c:false},{t:"Modifier le cahier des prescriptions techniques",c:false}],diff:'med',piege:false,expl:"En cas de doute ou de carence avérée sur la qualité des matériaux, le contrôle exige l'arrêt PARTIEL des travaux, procède à de nouveaux essais. Si les résultats confirment la carence, le remplacement des matériaux défectueux est exigé.",ref:"Chapitre III › III. › Page 17"},
+  {q:"Le chef de chantier de l'entreprise BATIFOR prétend que c'est lui qui doit rédiger le journal de chantier. Est-ce correct ?",type:'multi',opts:[{t:"Oui, c'est bien l'entrepreneur (ou son représentant chef de chantier) qui rédige le journal",c:true},{t:"Non, c'est le contrôleur des travaux de la MDC",c:false},{t:"Non, c'est conjointement l'entrepreneur et la MDC",c:false},{t:"Non, c'est le Maître d'Ouvrage",c:false}],diff:'med',piege:false,expl:"Le journal de chantier est rédigé par l'ENTREPRENEUR (représenté par son chef de chantier), qui le présente à la MDC pour approbation. Il est ensuite signé chaque jour par la MDC et l'entreprise.",ref:"Chapitre IV › I. › Page 21"},
+  {q:"Pour le projet de construction du barrage ZIGA, la MDC identifie un fond de fouille atteint mais le sol présente des poches de sol mou. Que doit faire l'entrepreneur ?",type:'multi',opts:[{t:"Curer les poches de sol mou sur la profondeur fixée par l'Ingénieur et combler avec un matériau de bonne qualité compacté",c:true},{t:"Poursuivre les travaux et couler directement le béton de propreté",c:false},{t:"Demander à la MDC de modifier les plans de fondation",c:false},{t:"Signaler et attendre l'autorisation du MOA pour continuer",c:false}],diff:'hard',piege:false,expl:"L'entrepreneur doit procéder à l'enlèvement ou à la purge de tous les éléments, blocs, poches ou lentilles susceptibles de provoquer des désordres, et combler les vides créés avec un matériau de bonne qualité compacté.",ref:"Chapitre V › I. › Page 19"},
+  {q:"La réception provisoire du pont KOSSODO est prononcée le 1er juin 2025. À quelle date interviendra la réception définitive, en l'absence de problème ?",type:'multi',opts:[{t:"1er juin 2026",c:true},{t:"1er décembre 2025",c:false},{t:"1er juin 2027",c:false},{t:"1er janvier 2026",c:false}],diff:'easy',piege:false,expl:"La réception définitive intervient UNE ANNÉE (12 mois) après la réception PROVISOIRE. Donc 1 an après le 1er juin 2025 = 1er juin 2026.",ref:"Chapitre III › IV. / Sujet Q17"},
+  {q:"L'entreprise TOPO-BF implante un axe de voirie et obtient une erreur de 3 cm en altimétrie. Est-ce acceptable ?",type:'multi',opts:[{t:"Non, la tolérance est ±0,02 m (2 cm) en altimétrie pour la voirie",c:true},{t:"Oui, la tolérance est de ±5 cm pour la voirie",c:false},{t:"Oui, la tolérance de ±3 cm est standard",c:false},{t:"Cela dépend de l'accord de la MDC",c:false}],diff:'hard',piege:true,expl:"Pour la voirie, la tolérance est ±0,02 m (2 cm) en ALTIMÉTRIE. Une erreur de 3 cm dépasse donc la tolérance admissible. L'entreprise doit reprendre l'implantation.",ref:"Chapitre V › II. › Page 35"},
+  {q:"Mme OUÉDRAOGO, ingénieure en chef de mission, préside la réunion de chantier hebdomadaire. Un accord est trouvé sur un délai supplémentaire. Ce n'est pas signé. Est-ce opposable ?",type:'multi',opts:[{t:"Non, les PV de réunion doivent être signés par tous les participants pour être opposables",c:true},{t:"Oui, la décision orale suffit en réunion de chantier",c:false},{t:"Oui, si le chef de mission valide par email",c:false},{t:"Non, sauf si le MOA est présent",c:false}],diff:'med',piege:false,expl:"Les réunions de chantier font systématiquement l'objet de procès-verbaux SIGNÉS par les divers participants et consignant les engagements de chaque partie. Sans signature, l'accord ne peut pas être formellement opposable.",ref:"Chapitre IV › II. › Page 22-23"},
+  {q:"Le projet de réhabilitation de la route RN-2 doit être livré dans 18 mois. Après 12 mois, l'avancement physique n'est que de 45%. La MDC constate un retard de 15%. Quelle est son rôle ?",type:'multi',opts:[{t:"Dresser un état graphique au jour le jour et exercer une pression sur l'entreprise pour qu'elle prenne sans délai les mesures correctives",c:true},{t:"Accepter un réaménagement du planning immédiatement",c:false},{t:"Informer le MOA uniquement dans le rapport mensuel",c:false},{t:"Suspendre les paiements de l'entreprise",c:false}],diff:'med',piege:false,expl:"Il appartient à la MDC de veiller au respect du planning en dressant au jour le jour un état graphique de l'avancée, et en exerçant dès qu'une anomalie est détectée une pression sur l'entreprise pour corriger sans délai.",ref:"Chapitre IV › IV. › Page 27"},
+  {q:"L'entreprise GÉOBAT propose de changer sa centrale à béton en cours de chantier pour améliorer le rendement. Doit-elle obtenir un accord préalable ?",type:'multi',opts:[{t:"Oui, toute modification de méthode de travail ou d'équipement doit être soumise pour accord à la MDC et au MOA",c:true},{t:"Non, l'entrepreneur est libre de choisir ses équipements",c:false},{t:"Non, seulement si cela entraîne un surcoût",c:false},{t:"Oui, uniquement si la nouvelle centrale coûte plus cher",c:false}],diff:'med',piege:false,expl:"L'entreprise doit soumettre systématiquement pour accord toute modification de ses méthodes de travail, équipements et de conception des ouvrages provisoires. Ces modifications sont contrôlées pour vérifier leur conformité.",ref:"Chapitre III › III. › Page 17"},
+  {q:"Dans le cadre du projet BIXI, le MOA demande à la MDC si elle peut arrêter le chantier. Quelle est la réponse correcte ?",type:'multi',opts:[{t:"La MDC peut recommander l'arrêt mais c'est l'Administration/MOA qui conserve la direction et décide",c:true},{t:"Oui, la MDC peut toujours arrêter unilatéralement le chantier",c:false},{t:"Non, seul l'entrepreneur peut décider d'arrêter",c:false},{t:"Non, seul le tribunal peut ordonner l'arrêt",c:false}],diff:'hard',piege:true,expl:"La MDC est soumise à l'autorité de l'Administration qui conserve la Direction du contrôle. En pratique, la MDC peut recommander ou demander l'arrêt, mais la décision finale appartient à l'Administration/MOA.",ref:"Chapitre II › I. › Page 8 / Sujet Q9"},
+  {q:"L'entreprise TERRABUILD vient de terminer les fondations d'un pont. Les plans d'exécution ont été approuvés. Doit-elle encore demander une réception technique de ces fondations ?",type:'multi',opts:[{t:"Oui, l'approbation des plans ne dispense pas des réceptions techniques des parties d'ouvrages",c:true},{t:"Non, les plans approuvés suffisent",c:false},{t:"Non, la réception des fondations se fait uniquement lors de la réception provisoire globale",c:false},{t:"Cela dépend du CCTP",c:false}],diff:'hard',piege:true,expl:"Une fois les plans d'exécution approuvés, l'entreprise est toujours tenue de demander les réceptions techniques des parties d'ouvrages. L'approbation des plans est distincte de la réception technique des ouvrages réalisés.",ref:"Sujet d'examen Q14"},
+  {q:"La MDC du projet RN3 reçoit le rapport confidentiel de fin de mission qu'elle doit transmettre. Comment doit-elle le conditionner ?",type:'multi',opts:[{t:"En une version unique sous pli scellé marqué 'CONFIDENTIEL', adressé au Maître d'Ouvrage",c:true},{t:"En plusieurs exemplaires transmis à tous les intervenants",c:false},{t:"Par email sécurisé à l'ensemble de l'équipe de projet",c:false},{t:"En deux versions : une pour le MOA, une pour les archives",c:false}],diff:'hard',piege:false,expl:"Le rapport général confidentiel est adressé en UNE version unique sous pli scellé marqué 'CONFIDENTIEL' au Maître d'Ouvrage uniquement.",ref:"Chapitre IV › II. › Page 26"},
+  {q:"Pour le chantier de construction du CHU de Tengandogo, les enrobés bitumineux du parking sont posés. Quels essais permettent de vérifier la formulation de l'enrobé ?",type:'multi',opts:[{t:"Essai Marshall (NF T 98-251-2) et essai Duriez (NF T 98-251-1)",c:true},{t:"Essai Proctor et CBR",c:false},{t:"Essai Los Angeles et analyse granulométrique",c:false},{t:"Limites d'Atterberg et teneur en eau",c:false}],diff:'hard',piege:false,expl:"Pour les enrobés bitumineux, les essais de formulation sont l'essai Marshall (NF T 98-251-2) et l'essai Duriez (NF T 98-251-1). Les essais Proctor/CBR concernent les sols.",ref:"Chapitre V › III. › Page 37"},
+  {q:"M. COMPAORÉ est MOA délégué du projet LOTISSEMENT-YAKO. Il souhaite confier la maîtrise d'œuvre à son BET habituel. Est-ce légalement possible ?",type:'multi',opts:[{t:"Non, un BET ne peut pas être simultanément MOA délégué ET maître d'œuvre",c:true},{t:"Oui, si le MOA principal l'autorise par écrit",c:false},{t:"Oui, c'est une pratique courante et autorisée",c:false},{t:"Oui, si le BET est indépendant",c:false}],diff:'med',piege:true,expl:"Dans le cas où un BET est MOA délégué, il ne peut pas remplir simultanément le rôle de maître d'œuvre. Ces deux missions sont incompatibles pour la même entité.",ref:"Chapitre I › I. › Page 4"},
+  {q:"L'entreprise SABLIÈRE dépose des matériaux excavés à 40 mètres en aval d'un cours d'eau. Est-ce conforme ?",type:'multi',opts:[{t:"Non, les dépôts en aval doivent être à au moins 50 m du cours d'eau",c:true},{t:"Oui, 40 m est suffisant",c:false},{t:"Oui, si la MDC le valide",c:false},{t:"Non, les dépôts en aval sont totalement interdits",c:false}],diff:'hard',piege:true,expl:"Les dépôts en aval doivent être à au moins 50 MÈTRES du cours d'eau. 40 m ne suffit pas. Aucun dépôt ne doit se faire en amont de l'ouvrage.",ref:"Chapitre V › I. › Page 19"},
+  {q:"Dans le projet ROUTE-CENTRE, la MDC reçoit des plans BÉTON de l'entreprise. Elle les contrôle et retourne avec la mention 'RETOURNÉ POUR CORRECTION'. L'entreprise peut-elle démarrer les travaux sur la base de ces plans ?",type:'multi',opts:[{t:"Non, seuls les plans APPROUVÉS peuvent être utilisés pour exécution",c:true},{t:"Oui, si les corrections sont mineures",c:false},{t:"Oui, pendant la période de re-soumission",c:false},{t:"Oui, si le chef de chantier juge les corrections sans impact",c:false}],diff:'easy',piege:false,expl:"Seuls les plans portant la mention 'APPROUVÉ' peuvent être utilisés sur le chantier pour exécution. Les plans 'RETOURNÉ POUR CORRECTION' doivent être corrigés et re-soumis avant tout démarrage.",ref:"Chapitre III › II. › Page 16"},
+  {q:"L'entrepreneur du projet SOUDURE-CENTRE réalise un sondage géotechnique et découvre des terrains rocheux à 2m au lieu de 5m prévu. Qui doit décider de la marche à suivre ?",type:'multi',opts:[{t:"L'Ingénieur (chef de mission MDC) qui décide de maintenir ou non la cote arrêtée sur les plans",c:true},{t:"L'entrepreneur qui adapte ses méthodes",c:false},{t:"Le laboratoire géotechnique",c:false},{t:"Le MOA directement",c:false}],diff:'hard',piege:false,expl:"Si lors de l'exécution de la fouille l'entrepreneur rencontre des terrains rocheux nécessitant des matériels spéciaux, il doit en aviser l'Ingénieur (MDC) qui décide de maintenir ou non la cote arrêtée sur les plans.",ref:"Chapitre V › I. › Page 19"},
+  {q:"Le projet de construction de l'école primaire de Bobo-Dioulasso approche de sa fin. Quel document la MDC doit-elle constituer pour remettre au MOA en fin de chantier ?",type:'multi',opts:[{t:"Le Dossier des Ouvrages Exécutés (DOE)",c:true},{t:"Uniquement le rapport final",c:false},{t:"Le Dossier de Consultation des Entreprises (DCE)",c:false},{t:"Le Plan d'Assurance Qualité (PAQ)",c:false}],diff:'easy',piege:false,expl:"En fin de chantier, la MDC constitue un DOE (Dossier des Ouvrages Exécutés) complet comportant toutes les pièces administratives, comptables/financières et techniques d'exécution.",ref:"Chapitre IV › II. › Page 25-26"},
+  {q:"Pour le projet de voirie urbaine de Koudougou, la MDC envisage de prendre en attachement les quantités de terrassements. Comment doit-elle procéder ?",type:'multi',opts:[{t:"Par prise en attachement contradictoire et journalière sous forme de constat de mesure des travaux réalisés",c:true},{t:"Par une estimation forfaitaire mensuelle",c:false},{t:"Par relevé photographique uniquement",c:false},{t:"Par attestation signée de l'entrepreneur en fin de mois",c:false}],diff:'med',piege:false,expl:"Le contrôle des quantités se traduit par la prise en attachement CONTRADICTOIRE (avec l'entrepreneur) et JOURNALIÈRE sous forme de constat de mesure des travaux réalisés sur le terrain.",ref:"Chapitre III › III. › Page 17"},
+  {q:"L'entreprise BÉTON-PLUS utilise une nouvelle formule de béton C30 pour les poutres. Avant de démarrer, quel type d'essai la MDC doit-elle exiger ?",type:'multi',opts:[{t:"Essais de convenance pour vérifier que la formule est compatible avec les spécifications",c:true},{t:"Essais de conformité uniquement",c:false},{t:"Essais d'agrément sur les sols",c:false},{t:"Aucun, le béton C30 est standard",c:false}],diff:'med',piege:true,expl:"Les essais de CONVENANCE visent à vérifier que les dispositions techniques prévues par l'entreprise (nouvelle formule de béton) sont compatibles avec les spécifications du marché. Ils sont réalisés à chaque démarrage de nouvelle production.",ref:"Chapitre V › III. › Page 38"},
+  {q:"Dans le rapport mensuel n°7 du projet IRRIGATION-SISSILI, la MDC note un dépassement de quantités sur le poste terrassements. Quelle action doit-elle prendre ?",type:'multi',opts:[{t:"Fournir une note explicative à l'appui du décompte mensuel avec propositions chiffrées",c:true},{t:"Ne rien mentionner si le montant global du marché n'est pas dépassé",c:false},{t:"Attendre le rapport final pour signaler le dépassement",c:false},{t:"Suspendre les paiements jusqu'à clarification",c:false}],diff:'hard',piege:false,expl:"Une note explicative doit être fournie à l'appui de chaque décompte mensuel lorsqu'un dépassement de quantité apparaît par rapport au détail quantitatif et estimatif du marché. Ces propositions comportent des solutions techniques ou mesures sociales.",ref:"Chapitre IV › II. › Page 24"},
+  {q:"L'entrepreneur CONSTRU-WEST propose d'accélérer les travaux en faisant travailler ses équipes de nuit. Doit-il obtenir un accord préalable ?",type:'multi',opts:[{t:"Oui, toute modification des méthodes de travail doit être soumise pour accord à la MDC et au MOA",c:true},{t:"Non, l'entrepreneur est libre d'organiser ses équipes comme il le souhaite",c:false},{t:"Non, si les horaires de travail de nuit sont légaux",c:false},{t:"Oui, mais uniquement l'accord du MOA suffit",c:false}],diff:'med',piege:true,expl:"Les méthodes de travail envisagées par l'entreprise sont soumises à l'accord de la MDC et du MOA. En cours de chantier, l'entreprise doit soumettre systématiquement toute modification pour accord.",ref:"Chapitre III › III. › Page 16-17"},
+  {q:"La MDC du projet DIGUE-SUD-VOLTA est prévenue que le laboratoire sous-traitant GELAB ne dispose pas d'équipement pour l'essai Duriez. Quelle solution est acceptable ?",type:'multi',opts:[{t:"Faire réaliser l'essai dans un autre laboratoire ou demander les certificats de conformité des fournisseurs",c:true},{t:"Supprimer l'essai Duriez du programme d'essais",c:false},{t:"Remplacer l'essai Duriez par un essai Marshall uniquement",c:false},{t:"Faire réaliser l'essai par l'entrepreneur lui-même",c:false}],diff:'hard',piege:false,expl:"En cas d'impossibilité de réaliser certains essais sur chantier dans le laboratoire, on peut être amené à demander à les faire réaliser dans un autre laboratoire ou à demander les certificats de conformité des fournisseurs.",ref:"Chapitre V › III. › Page 38"},
+  {q:"Sur le chantier du projet PONT-SUD, le contrôleur remarque que l'entrepreneur réalise des travaux sur une partie d'ouvrage sans avoir demandé la réception technique préalable. Quelle est la position correcte ?",type:'multi',opts:[{t:"L'entrepreneur doit toujours demander les réceptions techniques même après approbation des plans",c:true},{t:"Une fois les plans approuvés, les réceptions techniques sont optionnelles",c:false},{t:"Les réceptions techniques ne sont requises que pour les ouvrages principaux",c:false},{t:"L'entrepreneur peut avancer si la MDC n'a pas répondu sous 48h",c:false}],diff:'med',piege:true,expl:"Une fois les plans d'exécution approuvés, l'entreprise est toujours tenue de demander les réceptions techniques des parties d'ouvrages. Cette obligation est indépendante de l'approbation des plans.",ref:"Sujet d'examen Q14"},
+  {q:"Le MOA du projet LOTISSEMENT-LARLÉ veut confier la maîtrise d'ouvrage déléguée à un BET. Ce BET devra-t-il aussi concevoir les routes du lotissement ?",type:'multi',opts:[{t:"Non, il ne peut pas être à la fois MOA délégué et MOE (concepteur)",c:true},{t:"Oui, c'est plus efficient de regrouper les deux rôles",c:false},{t:"Oui, si le MOA principal le demande expressément",c:false},{t:"Oui, mais uniquement pour la phase conception",c:false}],diff:'med',piege:false,expl:"Un BET ne peut pas remplir simultanément le rôle de MOA délégué et de maître d'œuvre (concepteur). Ces deux missions sont incompatibles pour la même entité.",ref:"Chapitre I › I. › Page 4"},
+  {q:"Le chef de mission MDC du projet BARAGE-COMOÉ constate que l'équipement de terrassement de l'entreprise tombe régulièrement en panne. Quelle action doit-il entreprendre ?",type:'multi',opts:[{t:"Signaler la défaillance à l'entreprise pour rectification et enregistrer les temps de panne",c:true},{t:"Ordonner le remplacement immédiat de l'équipement",c:false},{t:"Stopper tous les paiements jusqu'à remplacement",c:false},{t:"Accepter les pannes si le planning global est respecté",c:false}],diff:'med',piege:false,expl:"Toute défaillance ou défaut d'équipement sera signalée à l'entreprise pour rectification. Les interruptions et temps de panne seront enregistrés pour évaluer le rendement total de chaque équipement.",ref:"Chapitre III › III. › Page 17"},
+  {q:"L'équipe topographique de l'entreprise IMPLANTEX réalise le piquetage général. L'entrepreneur doit-il remettre un document à la MDC ?",type:'multi',opts:[{t:"Oui, l'entrepreneur remet à la MDC la situation des repères de base",c:true},{t:"Non, le piquetage est interne à l'entreprise",c:false},{t:"Non, seulement si la MDC le demande",c:false},{t:"Oui, mais uniquement pour les ouvrages d'art",c:false}],diff:'hard',piege:false,expl:"L'Entrepreneur remettra à la MDC la situation des repères de base. Le piquetage général sera complété par un nivellement définitif fixant des repères nécessaires pour la bonne exécution des travaux.",ref:"Chapitre V › II. › Page 35"},
+  {q:"Sur le chantier de construction du stade de Ouagadougou, la MDC veut vérifier la résistance à la traction du béton des poutres de tribunes. Quel essai utiliser ?",type:'multi',opts:[{t:"Essai de résistance à la traction par fendage (NF P 18-408)",c:true},{t:"Scléromètre (NF P 18-417)",c:false},{t:"Cône d'ABRAMS (NF P 18-451)",c:false},{t:"Essai Los Angeles (NF P 18-573)",c:false}],diff:'hard',piege:true,expl:"L'essai de résistance à la traction par fendage (NF P 18-408) mesure la résistance à la TRACTION indirecte du béton. Le scléromètre mesure la dureté de surface, le cône d'ABRAMS la consistance du béton frais.",ref:"Chapitre V › III. › Page 36"},
+  {q:"Dans le projet de construction d'un lycée à Banfora, la MDC reçoit le rapport final de l'entrepreneur qui contient des réclamations sur des travaux supplémentaires non rémunérés. Comment doit-elle traiter cette situation dans le rapport final ?",type:'multi',opts:[{t:"Inclure des appréciations sur les éventuelles réclamations de la part de l'entreprise dans le rapport final",c:true},{t:"Rejeter les réclamations sans les mentionner dans le rapport",c:false},{t:"Accepter toutes les réclamations pour maintenir un bon climat",c:false},{t:"Transférer directement les réclamations au tribunal",c:false}],diff:'med',piege:false,expl:"Le rapport final doit comporter, entre autres, des appréciations sur d'éventuelles réclamations de la part de l'entreprise. C'est une composante officielle du rapport final.",ref:"Chapitre IV › II. › Page 25"},
+  {q:"Sur le chantier de la digue KOMPIENGA, le piquetage de l'axe principal donne une erreur de 1,5 cm en planimétrie pour un terrassement. Est-ce acceptable ?",type:'multi',opts:[{t:"Oui, la tolérance est de ±0,02 m (2 cm) en planimétrie pour les terrassements",c:true},{t:"Non, toute erreur supérieure à 1 cm est inacceptable",c:false},{t:"Non, la tolérance est ±0,015 m (1,5 cm)",c:false},{t:"Oui, si l'entrepreneur est d'accord",c:false}],diff:'med',piege:true,expl:"Pour les terrassements, la tolérance en planimétrie est ±0,02 m (2 cm). Une erreur de 1,5 cm est donc dans les tolérances admissibles.",ref:"Chapitre V › II. › Page 35"},
+  {q:"Le projet ROUTE-SUD se termine. La MDC doit constituer le rapport final provisoire. Sur quoi doit porter ce rapport ?",type:'multi',opts:[{t:"Bilan des travaux, analyse coût final, réclamations, suggestions pour projets futurs, description des techniques employées",c:true},{t:"Uniquement le bilan financier du marché",c:false},{t:"Uniquement les incidents sécurité et incidents environnementaux",c:false},{t:"Uniquement la description des techniques employées",c:false}],diff:'med',piege:false,expl:"Le rapport final couvre : situation des travaux exécutés et techniques employées, étude critique des problèmes techniques, analyse du coût final, appréciations sur les réclamations, suggestions pour projets futurs.",ref:"Chapitre IV › II. › Page 25"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (questions du sujet PDF dans l'ordre)
+const serie3 = [
+  {q:"Quels sont les objectifs assignés à la mission de contrôle sur un chantier de construction ?",type:'multi',opts:[{t:"Effectuer l'étude de sol",c:false},{t:"Assister l'entreprise dans l'exécution des travaux",c:false},{t:"Contrôler la qualité et la quantité des matériaux",c:true},{t:"Effectuer les levés topographiques pour l'entreprise",c:false}],diff:'med',piege:true,expl:"La mission de contrôle garantit la QUALITÉ et la QUANTITÉ des matériaux (contrôle des matériaux et des quantités). Elle n'effectue pas elle-même les études de sol, n'assiste pas l'entreprise (elle la contrôle), et les levés topographiques sont faits par l'entreprise sous contrôle MDC.",ref:"Chapitre II › I. › Page 8"},
+  {q:"Parmi les documents suivants, quels sont ceux nécessaires, au quotidien, à la vie d'un chantier de construction ?",type:'multi',opts:[{t:"La garantie décennale",c:false},{t:"La garantie de bonne exécution",c:false},{t:"Les procès-verbaux (PV)",c:true},{t:"Le journal de chantier",c:true}],diff:'med',piege:true,expl:"Au quotidien, ce sont les PV de réunion et le journal de chantier qui sont utilisés. La garantie décennale et la garantie de bonne exécution sont des documents contractuels/assurance, pas des documents quotidiens de vie du chantier.",ref:"Chapitre IV › I. et II. › Page 21-22"},
+  {q:"Parmi les tâches ci-dessous, lesquels doivent être vérifiées quotidiennement par l'ingénieur contrôleur sur le chantier ?",type:'multi',opts:[{t:"L'effectif du personnel de l'entreprise",c:true},{t:"La présence des sous-traitants de l'entreprise",c:false}],diff:'easy',piege:false,expl:"L'effectif du personnel fait partie du contenu minimum du journal de chantier, vérifié quotidiennement. La présence des sous-traitants spécifiquement n'est pas listée comme vérification quotidienne prioritaire.",ref:"Chapitre IV › I. › Page 21"},
+  {q:"Le planning des travaux est le délai imparti pour les travaux, il est un ordonnancement synchronisé des tâches et des activités dans le temps.",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX — Le planning n'est pas simplement 'le délai imparti'. C'est un outil de pilotage complet qui permet de prévoir, organiser, commander, coordonner ET contrôler. Ce n'est donc pas la bonne définition complète.",ref:"Chapitre IV › IV. › Page 27"},
+  {q:"Sur le chantier, quel acteur est le responsable du cadre du projet, exécutant direct ou principal des travaux avec ou sans participation d'autres cadres ?",type:'multi',opts:[{t:"L'entrepreneur",c:true},{t:"La mission de contrôle",c:false},{t:"Le maître d'œuvre",c:false},{t:"Le maître d'ouvrage",c:false}],diff:'easy',piege:false,expl:"L'ENTREPRENEUR est l'exécutant direct ou principal des travaux. Il réalise les travaux sans lien de subordination, en mettant en œuvre les moyens en personnel, matériaux et matériels.",ref:"Chapitre I › I. › Page 5"},
+  {q:"Lequel des acteurs ci-dessous est la personne physique ou morale agréée, chargé de la construction, qui a pour mission de vérifier la conformité des plans et de vérifier le respect des normes sur le chantier ?",type:'multi',opts:[{t:"L'entrepreneur",c:false},{t:"Le maître d'ouvrage",c:false},{t:"La mission de contrôle",c:true},{t:"Les assurances",c:false}],diff:'med',piege:false,expl:"La MISSION DE CONTRÔLE (bureau de contrôle technique agréé) vérifie la conformité des plans élaborés par les BET par rapport aux normes en vigueur et le respect des règles de l'art sur le chantier.",ref:"Chapitre I › I. › Page 7-8"},
+  {q:"Dans une opération de construction, le laboratoire a pour mission d' :",type:'multi',opts:[{t:"Autoriser au maître d'ouvrage de contracter une assurance décennale",c:false},{t:"Assurer la qualité des matériaux",c:true},{t:"Assurer la qualité du matériel de chantier",c:false},{t:"Autoriser le paiement de l'entreprise par le maître d'ouvrage",c:false}],diff:'easy',piege:true,expl:"Le LABORATOIRE a pour mission principale d'ASSURER LA QUALITÉ DES MATÉRIAUX. Il ne se prononce pas sur la garantie décennale ni le paiement de l'entreprise. Il ne contrôle pas le matériel de chantier (machines, engins).",ref:"Chapitre I › I. › Page 6-7"},
+  {q:"Après une réception provisoire de travaux :",type:'multi',opts:[{t:"L'entrepreneur n'est plus responsable des dommages sur l'ouvrage",c:false},{t:"L'entrepreneur peut intervenir sur l'ouvrage pour corriger les réserves soulevées par le bureau de contrôle",c:true},{t:"L'entrepreneur peut exiger le paiement total du marché à condition de remettre au maître d'ouvrage une caution de garantie jusqu'à réception définitive",c:true}],diff:'hard',piege:true,expl:"Après réception provisoire : (1) L'entrepreneur PEUT intervenir pour corriger les réserves — VRAI. (2) L'entrepreneur peut exiger le paiement total avec caution de garantie — VRAI. (3) L'entrepreneur n'est plus responsable — FAUX, il reste responsable jusqu'à la réception définitive.",ref:"Sujet d'examen Q8 / Chapitre III"},
+  {q:"Dans le déroulement d'une opération de construction, la mission de contrôle peut-elle arrêter le chantier ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'hard',piege:true,expl:"FAUX (selon le cours) — La MDC est soumise à l'autorité de l'Administration qui conserve la Direction du contrôle. La MDC ne peut pas arrêter unilatéralement le chantier ; c'est une prérogative de l'Administration/MOA.",ref:"Chapitre II › I. › Page 8"},
+  {q:"Le scléromètre est un instrument utilisé pour :",type:'multi',opts:[{t:"Déterminer le taux d'acier contenu dans un ouvrage en béton armé",c:false},{t:"Contrôler la qualité du béton lorsqu'il y'a un doute",c:true}],diff:'easy',piege:true,expl:"Le scléromètre est un instrument de mesure de DURETÉ DE SURFACE par REBONDISSEMENT (NF P 18-417), utilisé pour contrôler la qualité du béton en cas de doute. Ce n'est PAS pour mesurer le taux d'acier (c'est le rôle du pachomètre/covermètre).",ref:"Chapitre V › III. › Page 37 / Sujet Q10"},
+  {q:"Le décompte est le montant de l'attachement fait par la mission de contrôle au maître d'ouvrage et ce montant est versé dans compte de la mission ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX — Le décompte est bien établi par la MDC au MOA, MAIS ce montant est versé dans le compte de L'ENTREPRISE, pas dans le compte de la mission. C'est un piège classique !",ref:"Chapitre IV › III. › Page 26 / Sujet Q11"},
+  {q:"Les plans d'exécutions réalisés par l'entreprise doivent être validés par :",type:'multi',opts:[{t:"Le maître d'ouvrage délégué",c:false},{t:"La mission de suivi et de contrôle",c:true},{t:"Le maître d'ouvrage",c:false},{t:"L'assureur de la garantie décennale",c:false}],diff:'med',piege:false,expl:"Les plans d'exécution de l'entreprise sont validés (approuvés) par la MISSION DE SUIVI ET DE CONTRÔLE. La MDC appose la mention 'APPROUVÉ' ou les retourne pour correction.",ref:"Chapitre III › II. › Page 15-16"},
+  {q:"La tenue du cahier de chantier et du journal de chantier est assurée par le chef de chantier ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX (partiellement) — Le journal de chantier est rédigé par l'ENTREPRENEUR (qui peut déléguer au chef de chantier), puis présenté à la MDC pour approbation. Mais c'est bien signé par la MDC et l'entreprise. La responsabilité formelle est de l'entrepreneur.",ref:"Chapitre IV › I. › Page 21"},
+  {q:"Une fois les plans d'exécution approuvés, l'entreprise n'est plus tenue de demander les réceptions techniques des parties d'ouvrages.",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'hard',piege:true,expl:"FAUX — L'approbation des plans d'exécution et les réceptions techniques des parties d'ouvrages sont deux obligations DISTINCTES et INDÉPENDANTES. L'approbation des plans ne dispense pas des réceptions techniques.",ref:"Sujet d'examen Q14"},
+  {q:"Les banques participent à la vie d'un projet de construction par l'élaboration des documents suivants :",type:'multi',opts:[{t:"La garantie d'exécution",c:true},{t:"La garantie d'attribution du marché",c:true},{t:"La caution de réception partielle",c:false},{t:"L'avance de démarrage",c:true}],diff:'med',piege:true,expl:"Les banques émettent : la garantie d'exécution, la garantie d'attribution du marché, et l'avance de démarrage. La caution de réception partielle n'est pas listée parmi les documents bancaires standard du cours.",ref:"Sujet d'examen Q15"},
+  {q:"Dans un attachement, les prix unitaires ne doivent pas inclure des frais qui interviennent à la fin du chantier (repli du matériel, nettoyage du chantier,…) ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX — Les prix unitaires DOIVENT inclure les frais qui interviennent à la fin du chantier (repli du matériel, nettoyage…). C'est une règle du bordereau de prix.",ref:"Sujet d'examen Q16"},
+  {q:"La réception définitive intervient une année après :",type:'multi',opts:[{t:"La réception partielle",c:false},{t:"La réception unique",c:false},{t:"La réception provisoire",c:true}],diff:'med',piege:true,expl:"La réception définitive intervient 1 AN après la RÉCEPTION PROVISOIRE. Ne pas confondre avec la réception partielle ou réception unique.",ref:"Chapitre III › IV. / Sujet Q17"},
+  {q:"Les essais sur la qualité du matériau (essais Proctor, CBR, etc.) sont réalisés par :",type:'multi',opts:[{t:"L'entrepreneur",c:false},{t:"Le maître d'œuvre",c:false},{t:"La mission de contrôle",c:false},{t:"Le laboratoire",c:true}],diff:'easy',piege:false,expl:"C'est le LABORATOIRE qui réalise les essais sur la qualité des matériaux (Proctor, CBR, etc.). La MDC sous-traite ces prestations à un laboratoire agréé si elle n'en dispose pas en interne.",ref:"Chapitre V › III. › Page 35-36 / Sujet Q18"},
+  {q:"Le décompte est le montant de l'attachement fait par la mission de contrôle au maître d'ouvrage et ce montant est versé dans compte de la mission ? (Q19 bis)",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX (question répétée dans le sujet) — Le montant du décompte est versé dans le compte de L'ENTREPRISE, pas de la mission de contrôle.",ref:"Chapitre IV › III. › Page 26"},
+  {q:"Sur lequel des documents contractuels peut-on voir le coût global de réalisation de l'ouvrage projeté ?",type:'multi',opts:[{t:"Le devis descriptif",c:false},{t:"Le devis estimatif",c:true},{t:"Le devis financier",c:false},{t:"Le devis quantitatif",c:false}],diff:'med',piege:true,expl:"Le DEVIS ESTIMATIF est le document contractuel indiquant le coût global de réalisation de l'ouvrage projeté. Le devis descriptif décrit les travaux sans coût, le devis quantitatif liste les quantités sans prix unitaires.",ref:"Sujet d'examen Q20"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M10';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — MÉTHODE
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-pièges — Acteurs</div>
+    <span class="piege-word">déléguer TOUTES</span>
+    <span class="piege-word">MOE = financier</span>
+    <span class="piege-word">MOA délégué + MOE</span>
+    <span class="piege-word">arrêter le chantier</span>
+    <span class="piege-word">laboratoire = matériel</span>
+    <span class="piege-word">assurance = MDC directe</span>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3)">
+      ❌ MOA ne peut pas déléguer TOUTES ses responsabilités<br>
+      ❌ MOE engage responsabilité TECHNIQUE seulement<br>
+      ❌ BET ne peut pas être MOA délégué ET MOE<br>
+      ❌ MDC ne peut pas arrêter unilatéralement<br>
+      ❌ Labo → qualité MATÉRIAUX, pas matériel
+    </div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-pièges — Documents & Finances</div>
+    <span class="piege-word">décompte → compte mission</span>
+    <span class="piege-word">prix unitaires sans repli</span>
+    <span class="piege-word">plans approuvés = pas de réception</span>
+    <span class="piege-word">planning = délai imparti</span>
+    <span class="piege-word">journal rédigé par MDC</span>
+    <span class="piege-word">journal → MDC en fin chantier</span>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3)">
+      ❌ Décompte versé chez L'ENTREPRISE, pas MDC<br>
+      ❌ Prix unitaires INCLUENT le repli et nettoyage<br>
+      ❌ Plans approuvés ≠ dispense de réception technique<br>
+      ❌ Journal rédigé par ENTREPRENEUR (pas MDC)<br>
+      ❌ Journal → propriété du MAÎTRE D'OUVRAGE
+    </div>
+  </div>
+</div>
+<div class="methode-card" style="margin-bottom:12px;">
+  <div class="methode-card-title">📐 Chiffres-clés à retenir</div>
+  <table class="chiffres-table">
+    <tr><th>Valeur</th><th>Ce que ça représente</th><th>Contexte</th></tr>
+    <tr><td>1 AN</td><td>Durée entre réception provisoire et réception définitive</td><td>Garantie de parfait achèvement</td></tr>
+    <tr><td>1 MOIS</td><td>Délai max pour dépôt rapport final après réception provisoire</td><td>Clôture mission MDC</td></tr>
+    <tr><td>±0,02 m</td><td>Tolérance planimétrie et altimétrie — terrassements et voirie</td><td>Implantation</td></tr>
+    <tr><td>±0,015 m</td><td>Tolérance altimétrie drainage (plus stricte)</td><td>Implantation drainage</td></tr>
+    <tr><td>±0,03 m</td><td>Tolérance planimétrie drainage</td><td>Implantation drainage</td></tr>
+    <tr><td>90% OPM</td><td>Compactage fond de fouille (30 derniers cm si ingénieur le juge utile)</td><td>Fondations</td></tr>
+    <tr><td>50 m</td><td>Distance minimale des dépôts en aval d'un cours d'eau</td><td>Gestion déblais</td></tr>
+    <tr><td>Hebdomadaire</td><td>Fréquence des réunions de chantier</td><td>PV réunions</td></tr>
+  </table>
+</div>
+<div class="methode-card" style="margin-bottom:12px;">
+  <div class="methode-card-title">🔬 Instruments & essais — Aide-mémoire</div>
+  <table class="chiffres-table">
+    <tr><th>Instrument/Essai</th><th>Mesure</th><th>Norme</th><th>Matériau</th></tr>
+    <tr><td>Scléromètre</td><td>Dureté surface par rebondissement</td><td>NF P 18-417</td><td>Béton durci</td></tr>
+    <tr><td>Cône d'ABRAMS</td><td>Affaissement / consistance</td><td>NF P 18-451</td><td>Béton frais</td></tr>
+    <tr><td>Proctor</td><td>Compactage référence</td><td>NF P 94-093</td><td>Sols</td></tr>
+    <tr><td>CBR</td><td>Portance sol</td><td>NF P 94-078</td><td>Corps de chaussée</td></tr>
+    <tr><td>Los Angeles</td><td>Résistance usure granulats</td><td>NF P 18-573</td><td>Granulats béton</td></tr>
+    <tr><td>Marshall</td><td>Formulation enrobés</td><td>NF T 98-251-2</td><td>Enrobés bitumineux</td></tr>
+    <tr><td>Duriez</td><td>Tenue eau enrobés</td><td>NF T 98-251-1</td><td>Enrobés bitumineux</td></tr>
+    <tr><td>Compression</td><td>Résistance béton</td><td>NF P 18-455</td><td>Béton</td></tr>
+  </table>
+</div>
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">🔄 Schéma — Approbation des plans</div>
+    <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Entreprise soumet les plans</strong> à la MDC (papier + fichier informatique)</div></div>
+    <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>MDC contrôle</strong> la conformité avec le CCTP et le DAO</div></div>
+    <div class="schema-step"><div class="schema-num">3A</div><div class="schema-text"><strong>APPROUVÉ</strong> → Entreprise peut exécuter directement</div></div>
+    <div class="schema-step"><div class="schema-num">3B</div><div class="schema-text"><strong>APPROUVÉ COMME INDIQUÉ</strong> → Corrections mineures intégrées, puis distribué</div></div>
+    <div class="schema-step"><div class="schema-num">3C</div><div class="schema-text"><strong>RETOURNÉ POUR CORRECTION</strong> → Reprendre dès étape 1 avec re-soumission complète</div></div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🏁 Schéma — Réceptions & Chronologie</div>
+    <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Fin des travaux physiques</strong> → Réception PROVISOIRE. Réserves soulevées, corrections à faire.</div></div>
+    <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Période de garantie (1 an)</strong> → MDC surveille corrections, essais complémentaires.</div></div>
+    <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Réception DÉFINITIVE</strong> (1 an après provisoire) → Libération caution, paiement final retenue.</div></div>
+    <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Rapport final MDC</strong> → Au plus tard 1 mois après réception provisoire.</div></div>
+  </div>
+</div>
+<div class="methode-card" style="margin-bottom:12px;">
+  <div class="methode-card-title">🗂️ Schéma — Types de rapports MDC</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:6px;">HEBDOMADAIRE</div>
+      <div style="font-size:11px;color:var(--text2)">PV de réunion de chantier</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:6px;">MENSUEL</div>
+      <div style="font-size:11px;color:var(--text2)">Rapport d'avancement + décompte</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:6px;">PONCTUEL</div>
+      <div style="font-size:11px;color:var(--text2)">Rapport spécial / circonstanciel</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent4);margin-bottom:6px;">FIN DE CHANTIER</div>
+      <div style="font-size:11px;color:var(--text2)">Rapport final (≤1 mois après réception provisoire)</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent4);margin-bottom:6px;">FIN DE MISSION</div>
+      <div style="font-size:11px;color:var(--text2)">Rapport confidentiel (pli scellé au MOA)</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent4);margin-bottom:6px;">FIN DE CHANTIER</div>
+      <div style="font-size:11px;color:var(--text2)">DOE — Dossier des Ouvrages Exécutés</div>
+    </div>
+  </div>
+</div>
+<div class="methode-card">
+  <div class="methode-card-title">🔀 Confusions classiques à l'examen</div>
+  <table class="chiffres-table">
+    <tr><th>Ce qu'on confond</th><th>Réalité à retenir</th></tr>
+    <tr><td>Scléromètre = détecte l'acier</td><td>Scléromètre = dureté SURFACE béton. L'acier → pachomètre/covermètre</td></tr>
+    <tr><td>Décompte versé à la MDC</td><td>Décompte établi par MDC → versé à L'ENTREPRISE</td></tr>
+    <tr><td>Journal de chantier rédigé par MDC</td><td>Journal rédigé par ENTREPRENEUR, signé par les deux, propriété MOA</td></tr>
+    <tr><td>Réception définitive = 1 an après réception partielle</td><td>Réception définitive = 1 AN après réception PROVISOIRE</td></tr>
+    <tr><td>Plans approuvés = fin des obligations techniques</td><td>Plans approuvés ≠ dispense de demander les réceptions techniques des parties d'ouvrage</td></tr>
+    <tr><td>MOE peut prendre des engagements financiers</td><td>MOE = responsabilité TECHNIQUE uniquement. C'est le MOA qui décide.</td></tr>
+    <tr><td>MDC peut arrêter seule le chantier</td><td>C'est l'Administration/MOA qui conserve la direction et décide des arrêts</td></tr>
+    <tr><td>Devis descriptif = coût global</td><td>Devis ESTIMATIF = coût global. Devis descriptif = description des travaux</td></tr>
+  </table>
+</div>
+`;}
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

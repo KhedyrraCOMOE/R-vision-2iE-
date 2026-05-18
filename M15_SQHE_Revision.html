@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M15 — Suivi Qualité Hygiène Environnement · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 6px; padding: 2px 8px; background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); }
+.qcm-nav { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: default; }
+.btn-secondary { padding: 10px 20px; border-radius: var(--r2); border: 1px solid var(--border2); background: transparent; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg3); color: var(--text); }
+.btn-retry { padding: 10px 20px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.5); background: rgba(167,139,250,0.1); color: var(--purple); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-retry:hover { background: rgba(167,139,250,0.2); }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 30px; text-align: center; display: none; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 64px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 8px; }
+.score-label { font-size: 14px; color: var(--text2); margin-bottom: 20px; }
+.score-stats { display: -webkit-flex; display: flex; -webkit-justify-content: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { text-align: center; padding: 10px 16px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.score-stat.green .score-stat-val { color: var(--green); } .score-stat.red .score-stat-val { color: var(--red); } .score-stat.orange .score-stat-val { color: var(--orange); }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M15</div>
+  <div class="header-title">Suivi Qualité Hygiène Environnement — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '🏗️',
+    title: 'Définitions fondamentales QHSE',
+    subtitle: 'Qualité · Hygiène · Sécurité · Environnement — Chapitre I',
+    content: `
+      <div class="memo-section-title">📖 Concepts clés</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Qualité</div><div class="def-text">Aptitude d'un ensemble de caractéristiques intrinsèques à satisfaire des exigences. Se décline en qualité externe (satisfaction client) et qualité interne (amélioration interne).</div></div>
+        <div class="def-item"><div class="def-term">Norme</div><div class="def-text">Document définissant des exigences, spécifications, lignes directrices ou caractéristiques pour assurer l'aptitude à l'emploi des matériaux, produits, processus et services.</div></div>
+        <div class="def-item"><div class="def-term">Hygiène</div><div class="def-text">Discipline s'occupant de l'environnement professionnel pour qu'il soit optimal pour la santé et le bien-être des travailleurs. Ensemble des moyens collectifs ou individuels préservant la santé.</div></div>
+        <div class="def-item"><div class="def-term">Sécurité</div><div class="def-text">Science de la détection et de la maîtrise des dysfonctionnements dans les systèmes de production. L'absence d'accidents ou de risque inacceptable.</div></div>
+        <div class="def-item"><div class="def-term">Risque</div><div class="def-text">Combinaison de la probabilité d'un événement non désirable et de ses conséquences. Effet de l'incertitude sur les objectifs.</div></div>
+        <div class="def-item"><div class="def-term">Danger</div><div class="def-text">Capacité ou propriété intrinsèque d'un équipement, d'une substance, d'une méthode de travail susceptible de causer un dommage pour la santé des travailleurs.</div></div>
+        <div class="def-item"><div class="def-term">Accident</div><div class="def-text">Événement soudain et inattendu entraînant des dégâts et des dommages.</div></div>
+        <div class="def-item"><div class="def-term">Incident</div><div class="def-text">Événement inattendu à faible influence immédiate, mais susceptible d'entraîner de graves conséquences s'il n'est pas corrigé.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE FRÉQUENT</div><div class="piege-text">Ne pas confondre <strong>risque</strong> (probabilité + conséquence) et <strong>danger</strong> (propriété intrinsèque d'une chose). Le risque est une évaluation; le danger est un fait.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE FRÉQUENT</div><div class="piege-text">Ne pas confondre <strong>accident</strong> (dommage réel) et <strong>incident</strong> (pas de dommage immédiat, mais potentiel dangereux). Un incident non traité peut devenir un accident.</div></div>
+    `
+  },
+  {
+    icon: '🏅',
+    title: 'ISO 9001 — Système de Management de la Qualité (SMQ)',
+    subtitle: 'Normes · Cycle APCD · 7 Principes — Chapitre I §II',
+    content: `
+      <div class="memo-section-title">📋 Cycle APCD (Roue de Deming)</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">1 — Plan (Planifier)</div><div class="def-text">Analyser l'existant, formaliser les problèmes, trouver des solutions et mobiliser les ressources.</div></div>
+        <div class="def-item"><div class="def-term">2 — Do (Réaliser)</div><div class="def-text">Déployer les solutions selon les modalités décidées à l'étape Plan.</div></div>
+        <div class="def-item"><div class="def-term">3 — Check (Vérifier)</div><div class="def-text">Juger objectivement l'efficacité de la démarche. Réajustements possibles si les résultats sont insuffisants.</div></div>
+        <div class="def-item"><div class="def-term">4 — Act (Améliorer)</div><div class="def-text">Inscrire l'action dans la durée. Mettre à jour les procédures. Retour à l'étape 1 = amélioration continue.</div></div>
+      </div>
+      <div class="memo-section-title">🏆 Les 7 Principes du management de la qualité</div>
+      <div class="key-box"><div class="key-title">Les 7 principes</div><div class="key-text"><ul>
+        <li><strong>1. Orientation client</strong> : identifier, comprendre, mesurer la satisfaction du client</li>
+        <li><strong>2. Leadership</strong> : établir la finalité, fixer les objectifs, fournir les ressources</li>
+        <li><strong>3. Engagement du personnel</strong> : contribution à l'amélioration continue, résolution de problèmes</li>
+        <li><strong>4. Approche processus</strong> : gérer les interactions entre processus, surveiller les indicateurs</li>
+        <li><strong>5. Amélioration</strong> : objectif principal = toujours faire mieux</li>
+        <li><strong>6. Prise de décision fondée sur des preuves</strong> : analyse de données vérifiées</li>
+        <li><strong>7. Management des relations avec les parties intéressées</strong> : créer de la valeur avec les partenaires</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE EXAMEN</div><div class="piege-text">Il y a <strong>7 principes</strong> (pas 5, pas 8). La <strong>conformité ISO est volontaire</strong>, jamais obligatoire légalement. Les lois et règlements ont toujours la priorité sur les normes ISO.</div></div>
+      <table class="chiffres-table">
+        <tr><th>Norme</th><th>Domaine</th></tr>
+        <tr><td>ISO 9001</td><td>Système de Management de la Qualité (SMQ)</td></tr>
+        <tr><td>ISO 14001</td><td>Système de Management Environnemental (SME)</td></tr>
+        <tr><td>ISO 45001</td><td>Santé-Sécurité au Travail (anciennement OHSAS 18001)</td></tr>
+        <tr><td>ISO 14040</td><td>Analyse du Cycle de Vie (ACV)</td></tr>
+      </table>
+    `
+  },
+  {
+    icon: '🌿',
+    title: 'Management Environnemental — SME & ISO 14001',
+    subtitle: 'Chantier · Avant/Pendant/Après travaux — Chapitre I §III-3',
+    content: `
+      <div class="memo-section-title">📋 Management environnemental du chantier</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Avant travaux</div><div class="def-text">Obtention des autorisations environnementales (coupe arbres, prélèvement eau), préparation du PGES-Chantier, Plan de Gestion des Déchets, fiches de suivi.</div></div>
+        <div class="def-item"><div class="def-term">Pendant travaux</div><div class="def-text">Mise en œuvre des mesures contractuelles, suivi et correction des non-conformités, formation du personnel, gestion des déchets.</div></div>
+        <div class="def-item"><div class="def-term">Après travaux</div><div class="def-text">Repli du matériel, reboisement compensatoire, dépollution/nettoyage des sites, remise en état.</div></div>
+        <div class="def-item"><div class="def-term">PGES</div><div class="def-text">Plan de Gestion Environnementale et Sociale — document contractuel de référence sur le chantier pour les impacts environnementaux et sociaux.</div></div>
+      </div>
+      <div class="key-box"><div class="key-title">PGES — Collecte des données</div><div class="key-text">La collecte des données lors de la réalisation du PGES comporte : consultation des riverains sur la zone d'influence, revue documentaire des localités, collecte de données sur le terrain par site, traitement/analyse/synthèse de l'information. ⚠ "Toutes les réponses sont correctes" est un piège si une réponse est fausse.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Audit Environnemental</div><div class="piege-text">L'audit environnemental et social des installations est une étape de la phase <strong>d'Exploitation des ouvrages</strong>, PAS de la phase d'exécution ni d'achèvement.</div></div>
+    `
+  },
+  {
+    icon: '⚖️',
+    title: 'Réglementation Burkinabè — Hygiène, Sécurité, Travail',
+    subtitle: 'Codes et Lois en vigueur au Burkina Faso — Chapitre I §IV',
+    content: `
+      <div class="memo-section-title">📜 Textes clés</div>
+      <table class="chiffres-table">
+        <tr><th>Texte</th><th>Objet</th></tr>
+        <tr><td>Loi n°022/2005/AN</td><td>Code de l'hygiène publique du Burkina Faso</td></tr>
+        <tr><td>Loi n°023/94/ADP</td><td>Code de santé publique — interdit pollution atmosphérique, déversement déchets toxiques</td></tr>
+        <tr><td>Loi n°028-2008/AN</td><td>Code du travail du Burkina Faso — santé et sécurité en milieu professionnel</td></tr>
+        <tr><td>Décret 2011-928</td><td>Mesures générales d'hygiène et de sécurité sur les lieux de travail</td></tr>
+        <tr><td>Décret 2015-866</td><td>Liste des maladies professionnelles au Burkina Faso</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">Code du travail — obligations clés (Loi 028-2008)</div><div class="key-text"><ul>
+        <li>Vérification des machines au moins <strong>1 fois par trimestre</strong> (art. 240)</li>
+        <li>Formation en sécurité obligatoire pour les employés (art. 242-244)</li>
+        <li>Formation de 2-3 secouristes si chantier de <strong>plus de 25 personnes</strong></li>
+        <li>Comité sécurité-santé obligatoire dès <strong>30 travailleurs</strong> (art. 249)</li>
+        <li>Service de sécurité obligatoire pour entreprises industrielles d'au moins <strong>50 travailleurs</strong> (art. 254)</li>
+      </ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Conformité légale</div><div class="piege-text">La norme ISO est <strong>volontaire</strong>. Les lois et règlements ont toujours la priorité. Il y a une <strong>obligation de conformité légale</strong>, jamais d'obligation de certification ISO.</div></div>
+    `
+  },
+  {
+    icon: '🚨',
+    title: 'Accidents de Travail — Définitions, Gravité & Analyse',
+    subtitle: 'AT · Incident · Arbre des causes · Ishikawa — Chapitre II',
+    content: `
+      <div class="memo-section-title">📊 Échelle de gravité des AT</div>
+      <table class="chiffres-table">
+        <tr><th>Niveau</th><th>Type</th><th>Conséquence</th></tr>
+        <tr><td>0</td><td>Incident</td><td>Aucun blessé</td></tr>
+        <tr><td>1</td><td>Accident</td><td>1 ou plusieurs blessés</td></tr>
+        <tr><td>2</td><td>Accident grave</td><td>1 à 9 morts</td></tr>
+        <tr><td>3</td><td>Accident très grave</td><td>10 à 99 morts</td></tr>
+        <tr><td>4</td><td>Catastrophe</td><td>100 à 999 morts</td></tr>
+        <tr><td>5</td><td>Catastrophe majeure</td><td>1000 morts et plus</td></tr>
+      </table>
+      <div class="memo-section-title">🌳 Méthode Arbre des Causes (INS)</div>
+      <div class="key-box"><div class="key-title">Démarche INS</div><div class="key-text">Partir du fait final (l'AT), construire le diagramme de droite à gauche en identifiant les causes <strong>Immédiates, Nécessaires, Suffisantes</strong>. Poser la question : "Quelle(s) cause(s) a-t-il fallu pour obtenir cette conséquence ?"</div></div>
+      <div class="memo-section-title">🐟 Diagramme d'Ishikawa — Les 5M</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Main-d'œuvre</div><div class="def-text">Manque de qualifications, attitudes personnelles, conflits d'équipes.</div></div>
+        <div class="def-item"><div class="def-term">Matières</div><div class="def-text">Matières premières, ressources, énergétiques, produits fabriqués.</div></div>
+        <div class="def-item"><div class="def-term">Machine</div><div class="def-text">Machineries, engins roulants, engins de levage.</div></div>
+        <div class="def-item"><div class="def-term">Méthode</div><div class="def-text">Mode opératoire, gestion des flux de travail.</div></div>
+        <div class="def-item"><div class="def-term">Milieu</div><div class="def-text">Influences environnementales : température, humidité, etc.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Définition légale AT (art. 51 CSS)</div><div class="piege-text">L'AT inclut aussi l'accident sur le <strong>trajet domicile-travail</strong> si le parcours n'a pas été interrompu pour un motif personnel. Et les accidents durant les voyages dont <strong>les frais sont supportés par l'employeur</strong>.</div></div>
+    `
+  },
+  {
+    icon: '🛡️',
+    title: 'Prévention des Accidents — 9 Principes & Évaluation des Risques',
+    subtitle: 'EPI · Protection collective · PPSPS — Chapitre II §III',
+    content: `
+      <div class="memo-section-title">📋 9 Principes généraux de prévention</div>
+      <div class="key-box"><div class="key-title">Les 9 principes (à mémoriser dans l'ordre)</div><div class="key-text"><ul>
+        <li>1. Éviter les risques</li>
+        <li>2. Évaluer les risques qui ne peuvent être évités</li>
+        <li>3. Combattre le risque à la source</li>
+        <li>4. Adapter le travail à l'homme</li>
+        <li>5. Tenir compte de l'évolution de la technique</li>
+        <li>6. Remplacer ce qui est dangereux par ce qui l'est moins</li>
+        <li>7. Planifier la prévention</li>
+        <li>8. Prendre des mesures de <strong>protection collective en priorité</strong> sur l'individuelle</li>
+        <li>9. Donner des instructions appropriées aux travailleurs</li>
+      </ul></div></div>
+      <div class="memo-section-title">📊 Matrice d'évaluation des risques</div>
+      <table class="chiffres-table">
+        <tr><th>Probabilité</th><th>Gravité</th></tr>
+        <tr><td>P1 : Improbable</td><td>G1 : Négligeable</td></tr>
+        <tr><td>P2 : Rare</td><td>G2 : Mineur</td></tr>
+        <tr><td>P3 : Occasionnel</td><td>G3 : Important</td></tr>
+        <tr><td>P4 : Fréquent</td><td>G4 : Critique</td></tr>
+        <tr><td>P5 : Constant</td><td>G5 : Catastrophique</td></tr>
+      </table>
+      <div class="memo-section-title">📄 Plans de gestion des risques</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">PPSPS</div><div class="def-text">Plan Particulier de Sécurité et de Protection de la Santé — document de planification des risques sur chantier.</div></div>
+        <div class="def-item"><div class="def-term">POI</div><div class="def-text">Plan d'Opération Interne — EPI, consignes circulation, signalisation des dangers potentiels.</div></div>
+        <div class="def-item"><div class="def-term">Plan d'urgence</div><div class="def-text">Informations sur la sécurité du site, commodités offertes, consignes de secours.</div></div>
+        <div class="def-item"><div class="def-term">Plan permanent d'intervention</div><div class="def-text">Informations sur l'hygiène du personnel et prise en charge médicale.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE PRIORITÉ</div><div class="piege-text">La <strong>protection collective prime toujours</strong> sur la protection individuelle (EPI). Les EPI viennent en <em>appui</em> aux mesures collectives, pas en remplacement.</div></div>
+    `
+  },
+  {
+    icon: '🚑',
+    title: 'Secourisme — Conduite à tenir en cas d\'accident',
+    subtitle: '4 étapes · Acteurs internes & externes · Matériel — Chapitre III',
+    content: `
+      <div class="memo-section-title">🆘 Les 4 étapes pour porter secours</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Sécuriser le lieu</strong> — évaluer les conditions de sécurité, établir un périmètre si danger persistant</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Apprécier l'état de la victime</strong> — conscience ? respiration ? saignement ? brûlures ? fractures ?</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Demander de l'aide</strong> — alerter les secours (se présenter, se localiser, décrire la situation, attendre les consignes, ne pas raccrocher en premier)</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Effectuer les gestes de premiers secours</strong> — compression, RCP, position latérale, méthode Heimlich</div></div>
+      <div class="memo-section-title">🏥 Matériel minimum sur le chantier</div>
+      <div class="key-box"><div class="key-title">5 éléments obligatoires</div><div class="key-text"><ul>
+        <li>Trousse de premier secours (compresses, antiseptiques, pansements, paracétamol)</li>
+        <li>Moyens de lutte contre le feu (extincteurs, bacs à sable)</li>
+        <li>EPI (pour visiteurs et recharges personnel)</li>
+        <li>Matériels de nettoyage (savons, désinfectants, poubelles)</li>
+        <li>Kits absorbants antipollution (pour déversements d'hydrocarbures)</li>
+      </ul></div></div>
+      <div class="memo-section-title">👥 Acteurs clés en cas de sinistre</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Internes</div><div class="def-text">Direction, DRH, Comité santé-sécurité (ou responsable QHSE), chaque collaborateur.</div></div>
+        <div class="def-item"><div class="def-term">Externes</div><div class="def-text">Pompiers (incendie), gendarmes (constat décès), police (enquête), assurances, services de santé, CNSS (maladies professionnelles).</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'Documents de Chantier — PV, DAO, SQHE',
+    subtitle: 'Réunions · PV de chantier · MOA/MOE — Cours UE 6',
+    content: `
+      <div class="memo-section-title">📄 Documents clés du chantier</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">PV de chantier</div><div class="def-text">Permet d'acter ce qui s'est dit lors de la réunion. Objet principal : constater l'application des clauses du marché. A une <strong>valeur juridique</strong>.</div></div>
+        <div class="def-item"><div class="def-term">DAO</div><div class="def-text">Dossier d'Appel d'Offres — se prépare pendant la phase de <strong>préparation du projet</strong>, PAS pendant la phase d'exécution.</div></div>
+        <div class="def-item"><div class="def-term">Devis descriptif</div><div class="def-text">Document qui précise pour chaque élément intervenant dans la construction, la nature et les caractéristiques des matériaux à utiliser. Vrai selon le cours.</div></div>
+        <div class="def-item"><div class="def-term">SQHE</div><div class="def-text">Suivi Qualité Hygiène Environnement — garantit les conditions d'hygiène, sécurité, qualité et protection de l'environnement. <strong>PAS</strong> les conditions de rentabilité.</div></div>
+      </div>
+      <div class="memo-section-title">👷 Acteurs principaux du chantier</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Maître d'Ouvrage (MOA)</div><div class="def-text">Acteur principal — donneur d'ordre, commanditaire du projet. Participe aux réunions de chantier.</div></div>
+        <div class="def-item"><div class="def-term">Maître d'Œuvre (MOE)</div><div class="def-text">Acteur principal — dirige l'exécution du projet. <strong>Participe bien</strong> aux réunions de chantier (l'affirmation contraire est fausse).</div></div>
+        <div class="def-item"><div class="def-term">Contractant/Entreprise</div><div class="def-text">Prend en charge HSE : désignation d'un responsable HSE, service médical adapté, interdiction d'accès au public, signalisation.</div></div>
+        <div class="def-item"><div class="def-term">Emploi local</div><div class="def-text">Mis en œuvre pendant la <strong>phase de construction des ouvrages</strong>.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGES CLASSIQUES DE L'EXAMEN</div><div class="piege-text">
+        1. Le PV de chantier N'EST PAS sans valeur juridique — il en a une.<br>
+        2. Le MOE PARTICIPE aux réunions de chantier — l'affirmation "ne participe pas" est FAUSSE.<br>
+        3. Le DAO se prépare AVANT la phase d'exécution.<br>
+        4. Le SQHE ne garantit PAS les conditions de rentabilité (c'est l'intrus).
+      </div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quelle est la définition correcte de la qualité selon le cours SQHE ?",type:'multi',opts:[{t:"Aptitude d'un ensemble de caractéristiques intrinsèques à satisfaire des exigences",c:true},{t:"Ensemble des conditions d'hygiène et de sécurité sur le chantier",c:false},{t:"Conformité obligatoire aux normes ISO",c:false},{t:"Absence d'accidents sur le lieu de travail",c:false}],diff:'easy',piege:false,expl:"La qualité est définie comme l'aptitude d'un ensemble de caractéristiques intrinsèques à satisfaire des exigences. Elle se décline en qualité externe (répondre aux besoins clients) et qualité interne (amélioration interne de l'entreprise).",ref:"Chapitre I › §I-1 › Page 6"},
+  {q:"Le cycle APCD dans le management de la qualité correspond à quelles étapes dans l'ordre ?",type:'multi',opts:[{t:"Agir, Planifier, Contrôler, Déployer",c:false},{t:"Plan, Do, Check, Act",c:true},{t:"Analyser, Produire, Contrôler, Décider",c:false},{t:"Audit, Politique, Conformité, Documentation",c:false}],diff:'easy',piege:false,expl:"APCD = Act (Agir/Améliorer), Plan (Planifier), Check (Contrôler/Vérifier), Do (Réaliser). En anglais ISO : Plan, Do, Check, Act. La roue de Deming insiste sur la récursivité du processus pour l'amélioration continue.",ref:"Chapitre I › §II-3 › Page 10"},
+  {q:"Combien de principes compte le management de la qualité selon l'ISO 9001 version 2015 ?",type:'multi',opts:[{t:"5 principes",c:false},{t:"6 principes",c:false},{t:"7 principes",c:true},{t:"9 principes",c:false}],diff:'easy',piege:true,expl:"Il y a exactement 7 principes : Orientation client, Leadership, Engagement du personnel, Approche processus, Amélioration, Prise de décision fondée sur des preuves, Management des relations avec les parties intéressées. Attention au piège : 9 principes concernent la prévention des AT, pas la qualité.",ref:"Chapitre I › §II-4 › Page 10-11"},
+  {q:"La mise en œuvre d'une norme ISO est :",type:'multi',opts:[{t:"Une obligation légale pour toutes les entreprises de BTP",c:false},{t:"Une décision volontaire qui peut aboutir à une certification",c:true},{t:"Obligatoire dès que l'entreprise emploie plus de 50 personnes",c:false},{t:"Imposée par le code du travail burkinabè",c:false}],diff:'med',piege:true,expl:"La mise en œuvre d'une norme ISO est une décision volontaire et non une condition légale. Dans tous les cas, les lois et règlements ont la priorité sur le respect des normes. Il y a obligation de conformité avec la législation, mais pas avec les normes ISO.",ref:"Chapitre I › §II-5 › Page 13"},
+  {q:"Quelle norme ISO concerne le Système de Management Environnemental (SME) ?",type:'multi',opts:[{t:"ISO 9001",c:false},{t:"ISO 45001",c:false},{t:"ISO 14001",c:true},{t:"ISO 14040",c:false}],diff:'easy',piege:true,expl:"ISO 14001 définit les exigences et lignes directrices des Systèmes de Management Environnemental (SME). ISO 9001 = qualité. ISO 45001 = santé-sécurité au travail. ISO 14040 = Analyse du Cycle de Vie.",ref:"Chapitre I › §III-3a › Page 19"},
+  {q:"Selon le code du travail burkinabè, à quelle fréquence minimale les machines dangereuses doivent-elles être vérifiées ?",type:'multi',opts:[{t:"Une fois par an",c:false},{t:"Une fois par semestre",c:false},{t:"Une fois par trimestre",c:true},{t:"Une fois par mois",c:false}],diff:'med',piege:false,expl:"Selon l'article 240 du code du travail, toute machine dont une défectuosité est susceptible d'occasionner un accident doit faire l'objet d'une vérification au moins une fois par trimestre.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"À partir de combien de travailleurs un Comité de sécurité et santé au travail est-il obligatoire ?",type:'multi',opts:[{t:"25 travailleurs",c:false},{t:"30 travailleurs",c:true},{t:"50 travailleurs",c:false},{t:"100 travailleurs",c:false}],diff:'med',piege:true,expl:"L'article 249 du code du travail impose la création d'un Comité de sécurité et santé au travail pour les établissements d'au moins 30 travailleurs. Pour 50 travailleurs industriels, un service de sécurité dédié est requis (art. 254). Pour les chantiers de plus de 25 personnes, il faut des secouristes formés.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"La définition de l'accident de travail selon l'article 51 du code de sécurité sociale inclut :",type:'multi',opts:[{t:"Uniquement les accidents survenant sur le lieu de travail",c:false},{t:"L'accident sur le trajet domicile-travail si non interrompu pour motif personnel",c:true},{t:"L'accident survenu lors d'une activité personnelle",c:false},{t:"Seulement les accidents avec incapacité permanente",c:false}],diff:'med',piege:true,expl:"L'AT inclut : l'accident par le fait ou à l'occasion du travail, l'accident sur le trajet aller-retour domicile-travail (si le parcours n'a pas été interrompu pour un motif personnel), et l'accident lors de voyages dont les frais sont supportés par l'employeur.",ref:"Chapitre II › §I-1 › Page 1"},
+  {q:"La méthode de l'arbre des causes se construit :",type:'multi',opts:[{t:"De gauche à droite, des causes vers l'effet",c:false},{t:"De droite à gauche, de l'AT vers ses causes",c:true},{t:"Du haut vers le bas selon la hiérarchie",c:false},{t:"Selon le modèle des 5M d'Ishikawa uniquement",c:false}],diff:'med',piege:false,expl:"L'arbre des causes se construit en partant du fait (l'AT) et en construisant un diagramme de droite à gauche. Les faits générateurs antécédents se déduisent logiquement les uns des autres. Les questions clés sont : Quelle(s) cause(s) a-t-il fallu pour obtenir cette conséquence ?",ref:"Chapitre II › §I-3b › Page 2"},
+  {q:"Dans le diagramme d'Ishikawa (5M), la catégorie 'Milieu' correspond à :",type:'multi',opts:[{t:"Les matières premières utilisées",c:false},{t:"Les machines et équipements",c:false},{t:"Les influences environnementales (température, humidité...)",c:true},{t:"Les méthodes de travail",c:false}],diff:'easy',piege:true,expl:"'Milieu' dans les 5M regroupe toutes les choses se produisant en dehors de l'entreprise mais pouvant influencer le processus : influences environnementales telles qu'une température ou humidité élevée. Ne pas confondre avec 'Matières' (matières premières) ou 'Méthode' (processus de travail).",ref:"Chapitre II › §I-3b › Page 3"},
+  {q:"Combien de principes généraux de prévention des accidents du travail doit respecter une démarche de prévention ?",type:'multi',opts:[{t:"5 principes",c:false},{t:"7 principes",c:false},{t:"9 principes",c:true},{t:"12 principes",c:false}],diff:'med',piege:true,expl:"La démarche de prévention des AT doit respecter 9 principes généraux (pas 7 comme pour le management qualité). Ces 9 principes vont de l'évitement des risques à la formation des travailleurs.",ref:"Chapitre II › §III-1 › Page 5"},
+  {q:"Quelle est la priorité entre protection collective et protection individuelle (EPI) ?",type:'multi',opts:[{t:"Les EPI sont prioritaires car plus efficaces",c:false},{t:"La protection collective est prioritaire sur la protection individuelle",c:true},{t:"Elles sont équivalentes, selon le risque",c:false},{t:"La protection individuelle est prioritaire sur les chantiers",c:false}],diff:'easy',piege:false,expl:"Principe général n°8 : prendre des mesures de protection collective en leur donnant la priorité sur les mesures de protection individuelle. Les EPI viennent en appui aux mesures collectives, pas en remplacement.",ref:"Chapitre II › §III-1 › Page 5-6"},
+  {q:"Laquelle de ces méthodes est utilisée pour l'évaluation des risques dans un SMQ ISO 9001 ?",type:'multi',opts:[{t:"PPSPS",c:false},{t:"AMDE (Analyse des Modes de Défaillance)",c:true},{t:"POI",c:false},{t:"PGES",c:false}],diff:'med',piege:false,expl:"Les méthodes d'évaluation des risques dans l'ISO 9001 comprennent : AMDE (Analyse des Modes de Défaillance, de leurs Effets et Criticité), Analyses SWOT, et Matrice des risques. PPSPS et POI sont des plans de sécurité chantier, PGES concerne l'environnement.",ref:"Chapitre I › §II-5 › Page 12"},
+  {q:"Quelles sont les trois catégories de processus dans l'approche processus ?",type:'multi',opts:[{t:"Processus de management, opérationnel, supports",c:true},{t:"Processus d'entrée, de transformation, de sortie",c:false},{t:"Processus qualité, sécurité, environnement",c:false},{t:"Processus planification, exécution, contrôle",c:false}],diff:'med',piege:false,expl:"L'approche processus distingue 3 catégories : Processus de management (pilotage, politique, objectifs), Processus opérationnel (réalisation du produit), Processus supports (soutien aux processus de réalisation et maîtrise des risques).",ref:"Chapitre I › §II-6 › Page 13"},
+  {q:"Le risque professionnel est défini comme :",type:'multi',opts:[{t:"Une éventualité permanente de toutes les situations de travail",c:true},{t:"Uniquement les accidents mortels sur le lieu de travail",c:false},{t:"Les maladies professionnelles uniquement",c:false},{t:"Un danger identifié par le responsable QHSE",c:false}],diff:'med',piege:false,expl:"Le risque professionnel est une éventualité permanente de toutes les situations de travail, plus ou moins probable et dommageable selon la nature du travail. Ses deux formes de conséquences sont l'accident du travail (AT) et la maladie professionnelle (MP).",ref:"Chapitre II › §II › Page 4"},
+  {q:"Quels sont les types de risques professionnels selon la typologie du cours ?",type:'multi',opts:[{t:"Mécaniques, physiques, chimiques, biologiques, radiologiques, psychologiques",c:true},{t:"Électriques, thermiques, acoustiques, optiques",c:false},{t:"Humains, organisationnels, environnementaux, techniques",c:false},{t:"Directs, indirects, résiduels, acceptables",c:false}],diff:'med',piege:false,expl:"La typologie des risques selon le cours comprend 6 catégories : Mécaniques (chutes, coupures), Physiques (vibrations, bruit, chaleur), Chimiques (inhalation substances), Biologiques (agents infectieux), Radiologiques (rayonnements), Psychologiques (harcèlement, stress). Les facteurs de risque (humains, organisationnels, etc.) sont distincts des types de risques.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"La loi burkinabè n°022/2005/AN concerne :",type:'multi',opts:[{t:"Le Code du travail",c:false},{t:"Le Code de santé publique",c:false},{t:"Le Code de l'hygiène publique",c:true},{t:"Les maladies professionnelles",c:false}],diff:'hard',piege:false,expl:"La loi n°022/2005/AN du 24 mai 2005 porte Code de l'hygiène publique au Burkina Faso. Elle régit notamment le rejet des eaux usées, l'incinération des déchets, les émissions sonores et les dépôts polluants.",ref:"Chapitre I › §IV-1 › Page 21"},
+  {q:"L'article 16 de la loi n°023/94/ADP définit la pollution atmosphérique comme :",type:'multi',opts:[{t:"Tout rejet d'eaux usées dans les cours d'eau",c:false},{t:"La présence dans l'air de fumée, poussières ou gaz toxiques, corrosifs, odorants ou radioactifs",c:true},{t:"L'incinération des déchets industriels en plein air",c:false},{t:"Le déversement des huiles de vidange dans la nature",c:false}],diff:'hard',piege:false,expl:"L'article 16 du Code de santé publique (loi 023/94) définit la pollution atmosphérique comme la présence dans l'air et dans l'atmosphère de fumée, poussières ou gaz toxiques, corrosifs, odorants ou radioactifs dus au hasard de la nature ou du fait de l'homme.",ref:"Chapitre I › §IV-2 › Page 21"},
+  {q:"Quelle est la composition minimale d'une trousse de premier secours sur un chantier ?",type:'multi',opts:[{t:"Uniquement des pansements et du sparadrap",c:false},{t:"Petits matériels, antiseptiques, pansements, médicaments (paracétamol)",c:true},{t:"Extincteur et kit antipollution",c:false},{t:"EPI et matériels de nettoyage",c:false}],diff:'med',piege:false,expl:"La trousse de premier secours doit comporter a minima : petits matériels (ciseaux, gants, sachets), antiseptiques (alcool, bétadine), pansements (compresses stériles, bandes, coton, sparadrap), pierre noire et médicaments (paracétamol).",ref:"Chapitre III › §III-1 › Page 4"},
+  {q:"Selon l'article 113 du Code de l'hygiène publique burkinabè, qu'est-il interdit de faire ?",type:'multi',opts:[{t:"Rejeter des eaux usées dans les caniveaux",c:false},{t:"Incinérer en plein air des déchets combustibles pouvant engendrer des nuisances",c:true},{t:"Rejeter des huiles de vidange dans la nature",c:false},{t:"Installer des ateliers bruyants près des établissements scolaires",c:false}],diff:'hard',piege:false,expl:"L'article 113 du Code de l'hygiène publique interdit l'incinération en plein air des déchets combustibles pouvant engendrer des nuisances. L'interdiction des eaux usées dans les caniveaux est l'art. 14, les huiles de vidange sont l'art. 119, les ateliers bruyants sont l'art. 122.",ref:"Chapitre I › §IV-1 › Page 21"},
+  {q:"Qu'est-ce que le plan d'action stratégique s'inscrit dans le cycle APCD ?",type:'multi',opts:[{t:"Dans l'étape Check (Contrôler)",c:false},{t:"Dans l'étape Plan (Planifier)",c:true},{t:"Dans l'étape Act (Améliorer)",c:false},{t:"Dans l'étape Do (Réaliser)",c:false}],diff:'med',piege:false,expl:"Le plan d'action s'inscrit dans l'étape 'Plan' du cycle APCD. Il permet de formaliser les actions à mener, les responsables, les moyens nécessaires et les délais de réalisation, en cohérence avec la politique de l'entreprise.",ref:"Chapitre I › §II-7 › Page 14-15"},
+  {q:"Les parties intéressées dans un SMQ sont :",type:'multi',opts:[{t:"Uniquement les clients de l'entreprise",c:false},{t:"Personnes ou organismes pouvant avoir une incidence sur les résultats ou être affectés par les activités",c:true},{t:"Uniquement les actionnaires et la direction",c:false},{t:"Les organismes de certification ISO uniquement",c:false}],diff:'med',piege:false,expl:"Les parties intéressées sont des personnes ou organismes qui peuvent avoir une incidence, être affectés par les activités ou influencer les résultats. Cela inclut pouvoir public, actionnaires, clients, fournisseurs, employés, etc.",ref:"Chapitre I › §II-5 › Page 12"},
+  {q:"Selon le cours, l'enjeu majeur d'un système de management de qualité est :",type:'multi',opts:[{t:"D'obtenir la certification ISO 9001",c:false},{t:"De mener l'organisation dans une démarche de progrès et de performance",c:true},{t:"De réduire les coûts de production au maximum",c:false},{t:"D'éliminer tout risque d'accident",c:false}],diff:'easy',piege:false,expl:"L'enjeu majeur d'un système de management de qualité est de mener l'organisation dans une démarche de progrès et de performance. La certification n'est pas l'objectif en soi mais une conséquence possible.",ref:"Chapitre I › §I-2 › Page 8"},
+  {q:"Les facteurs de risque professionnel comprennent :",type:'multi',opts:[{t:"Facteurs humains, organisationnels, environnementaux, techniques",c:true},{t:"Facteurs mécaniques, chimiques, biologiques, physiques",c:false},{t:"Facteurs internes et externes uniquement",c:false},{t:"Facteurs de gravité et de probabilité uniquement",c:false}],diff:'med',piege:true,expl:"Les facteurs de risque (qui révèlent le danger et augmentent la probabilité du dommage) sont : humains, organisationnels, environnementaux et matériels/techniques. À ne pas confondre avec les types de risques (mécaniques, chimiques, etc.) qui décrivent la nature du risque.",ref:"Chapitre II › §II-2 › Page 5"},
+  {q:"L'inspection sur un chantier est définie comme :",type:'multi',opts:[{t:"Un contrôle effectué uniquement après un accident",c:false},{t:"Une activité qui recherche systématiquement les anomalies pour identifier les risques avant qu'un accident survienne",c:true},{t:"L'audit annuel obligatoire par les autorités",c:false},{t:"La vérification des EPI uniquement",c:false}],diff:'med',piege:false,expl:"L'inspection est un ensemble d'activités qui recherche de façon systématique les anomalies (non-conformités) dans un milieu de travail. C'est une technique d'identification des risques 'préventive' car elle tente d'identifier et corriger les risques avant qu'un événement indésirable ne survienne.",ref:"Chapitre II › §III-1 › Page 8"},
+  {q:"Quelle est la différence entre action curative et action corrective ?",type:'multi',opts:[{t:"Elles sont synonymes dans le cadre QHSE",c:false},{t:"L'action curative élimine la non-conformité; l'action corrective élimine les causes de la non-conformité",c:true},{t:"L'action corrective est immédiate; l'action curative est à long terme",c:false},{t:"L'action curative est préventive; l'action corrective est réactive",c:false}],diff:'hard',piege:true,expl:"Action curative = réagir et alerter immédiatement pour éliminer une non-conformité détectée selon sa conséquence. Action corrective = exploiter et rechercher les causes a posteriori pour éliminer les causes d'une non-conformité. L'action curative est immédiate, la corrective est analytique.",ref:"Chapitre II › §III-2 › Page 8"},
+  {q:"En cas d'arrêt cardiaque, la RCP se pratique avec :",type:'multi',opts:[{t:"30 insufflations puis 2 compressions thoraciques",c:false},{t:"30 compressions thoraciques puis 2 insufflations",c:true},{t:"15 compressions thoraciques puis 2 insufflations",c:false},{t:"Uniquement des compressions thoraciques sans insufflations",c:false}],diff:'med',piege:true,expl:"La Réanimation Cardio-Pulmonaire (RCP) se pratique en alternant 30 compressions thoraciques puis 2 insufflations. Continuer jusqu'à l'arrivée des secours ou reprise d'une respiration normale.",ref:"Chapitre III › §I-2d › Page 3"},
+  {q:"L'alerte en cas d'accident doit comprendre dans l'ordre :",type:'multi',opts:[{t:"Se présenter, se localiser, décrire la situation, attendre les consignes, ne pas raccrocher en premier",c:true},{t:"Raccrocher après avoir donné l'adresse",c:false},{t:"Uniquement donner le nombre de victimes",c:false},{t:"Appeler uniquement si la victime est inconsciente",c:false}],diff:'easy',piege:false,expl:"L'alerte doit être rapide et précise. Elle comporte : se présenter (Je m'appelle…), se localiser (Je me trouve…), décrire ce qui se passe (Je suis en présence de…), attendre les questions et consignes, et ne pas raccrocher en premier.",ref:"Chapitre III › §I-2c › Page 1-2"},
+  {q:"La norme ISO 45001 remplace quelle ancienne norme de santé-sécurité au travail ?",type:'multi',opts:[{t:"ISO 14001",c:false},{t:"ISO 9001",c:false},{t:"OHSAS 18001",c:true},{t:"ISO 14031",c:false}],diff:'hard',piege:false,expl:"ISO 45001 est la norme actuelle pour la santé et sécurité au travail. Elle remplace OHSAS 18001 (Occupational Health and Safety Assessment Series). ISO 14001 = environnement, ISO 9001 = qualité.",ref:"Chapitre I › §III › Page 16"},
+  {q:"L'évaluation du risque dans la matrice d'évaluation considère deux facteurs. Lesquels ?",type:'multi',opts:[{t:"La fréquence d'exposition au danger et la gravité des dommages potentiels",c:true},{t:"Le coût de prévention et le nombre de travailleurs exposés",c:false},{t:"La probabilité et le délai d'apparition du risque",c:false},{t:"L'ancienneté de l'équipement et la qualification des opérateurs",c:false}],diff:'med',piege:false,expl:"L'évaluation du risque consiste à considérer pour chaque situation dangereuse deux facteurs : la fréquence d'exposition au danger (P1 à P5) et la gravité des dommages potentiels (G1 à G5). La combinaison détermine le niveau de risque (acceptable, important, ou élevé inacceptable).",ref:"Chapitre II › §III-1 › Page 6"},
+  {q:"Selon le cours SQHE, le management QHSE est parfois perçu comme une contrainte, mais c'est avant tout :",type:'multi',opts:[{t:"Une obligation légale imposée par l'État",c:false},{t:"Un choix éthique, garant de la satisfaction client et d'une démarche de prévention",c:true},{t:"Un avantage concurrentiel uniquement commercial",c:false},{t:"Un outil de réduction des effectifs",c:false}],diff:'easy',piege:false,expl:"Selon le cours, bien que parfois perçu comme une contrainte, le management QHSE est un choix éthique, garant de la satisfaction client, l'engagement dans une démarche de prévention et d'amélioration continue.",ref:"Chapitre I › Introduction › Page 6"},
+  {q:"Quels sont les trois intérêts de la mise en œuvre d'un système QHSE intégré ?",type:'multi',opts:[{t:"Intérêt stratégique et organisationnel, économique, éthique",c:true},{t:"Intérêt technique, financier, commercial",c:false},{t:"Intérêt humain, matériel, temporel",c:false},{t:"Intérêt légal, normatif, opérationnel",c:false}],diff:'med',piege:false,expl:"La mise en œuvre d'un SMI QHSE présente trois grands axes d'intérêt : stratégique et organisationnel (progrès, cohérence), économique (réduction des coûts, des risques), éthique (communication, image, fidélisation clients, relations avec les autorités).",ref:"Chapitre I › §I-2 › Page 8"},
+  {q:"Dans la phase de prévention, quelle est la première étape de la méthodologie d'évaluation des risques ?",type:'multi',opts:[{t:"L'estimation de la gravité des dommages",c:false},{t:"L'identification des dangers et situations dangereuses liés au travail",c:true},{t:"La hiérarchisation des risques",c:false},{t:"La mise en œuvre du PPSPS",c:false}],diff:'med',piege:false,expl:"La méthodologie d'évaluation des risques comporte trois étapes dans l'ordre : 1) Identification des dangers et situations dangereuses, 2) Estimation de la gravité et de la fréquence d'exposition, 3) Hiérarchisation des risques pour déterminer les priorités du plan d'action.",ref:"Chapitre II › §III-1 › Page 5-6"},
+  {q:"Selon le Code du travail burkinabè, l'employeur est obligé de former des secouristes si le chantier emploie en permanence :",type:'multi',opts:[{t:"Plus de 10 personnes",c:false},{t:"Plus de 20 personnes",c:false},{t:"Plus de 25 personnes",c:true},{t:"Plus de 30 personnes",c:false}],diff:'hard',piege:true,expl:"L'article 242 du Code du travail impose la formation de 2 ou 3 personnes pour administrer les soins de premier secours dans les ateliers ou chantiers où travaillent en permanence plus de 25 personnes.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"L'objectif spécifique principal du cours M15 SQHE est :",type:'multi',opts:[{t:"Calculer les coûts d'un chantier QHSE",c:false},{t:"Définir les mesures de prévention et mettre en œuvre des actions pour limiter les dommages en cas de sinistre",c:true},{t:"Rédiger un contrat de sous-traitance conforme aux normes",c:false},{t:"Auditer les systèmes qualité d'entreprises",c:false}],diff:'easy',piege:false,expl:"Selon les objectifs spécifiques du cours, l'apprenant doit être capable de : définir les mesures de préventions sur un chantier, et mettre en œuvre les actions nécessaires afin de limiter les dommages en cas de sinistre.",ref:"Objectifs › Page 5"},
+  {q:"Qu'est-ce qu'un processus selon l'approche processus ISO ?",type:'multi',opts:[{t:"Une procédure écrite obligatoire",c:false},{t:"Un ensemble d'activités corrélées ou interactives qui transforme des éléments d'entrée en éléments de sortie",c:true},{t:"Un document de contrôle qualité",c:false},{t:"Un audit interne régulier",c:false}],diff:'med',piege:false,expl:"Un processus est défini comme un ensemble d'activités corrélées ou interactives qui transforme des éléments d'entrée en éléments de sortie. L'élément de sortie d'un processus constitue souvent l'élément d'entrée du processus suivant.",ref:"Chapitre I › §II-6a › Page 13"},
+  {q:"Lorsqu'une victime présente un saignement abondant, quelle est la première action à effectuer ?",type:'multi',opts:[{t:"Appeler les secours avant toute autre action",c:false},{t:"Allonger la victime et comprimer immédiatement la plaie",c:true},{t:"Donner à boire à la victime pour compenser la perte de sang",c:false},{t:"Déplacer immédiatement la victime vers un endroit sûr",c:false}],diff:'med',piege:true,expl:"En cas de saignement abondant : repérer l'origine, allonger la victime, comprimer immédiatement (manuellement ou pansement compressif), puis alerter les secours. Ne jamais donner à boire à une victime. La compression manuelle est maintenue pour le cou, l'abdomen et le thorax.",ref:"Chapitre III › §I-2d › Page 2"},
+  {q:"Le facteur organisationnel de risque professionnel inclut :",type:'multi',opts:[{t:"Les substances chimiques présentes dans l'environnement",c:false},{t:"Les mauvaises méthodes de management, les exigences de productivité, les horaires de travail",c:true},{t:"L'état des machines et des équipements",c:false},{t:"Les caractéristiques physiques et psychologiques des travailleurs",c:false}],diff:'med',piege:true,expl:"Le facteur organisationnel comprend les mauvaises méthodes de management, les exigences de productivité, l'organisation des postes, la nature du travail. Les horaires de nuit, par exemple, constituent un facteur organisationnel affectant la concentration.",ref:"Chapitre II › §II-2 › Page 5"},
+  {q:"Combien de types d'accidents du travail sont distingués selon l'échelle de gravité ?",type:'multi',opts:[{t:"3 types",c:false},{t:"4 types",c:true},{t:"5 types",c:false},{t:"6 types",c:false}],diff:'med',piege:true,expl:"L'échelle distingue 4 types d'AT : AT bénins (sans arrêt de travail), AT avec arrêt de travail, AT avec incapacité permanente, AT mortels. L'échelle de GRAVITÉ (0 à 5) est différente — elle compte 6 niveaux incluant l'incident (0) et les catastrophes.",ref:"Chapitre II › §I-2 › Page 1"},
+  {q:"La CNSS intervient en cas de sinistre pour :",type:'multi',opts:[{t:"Mener l'enquête et identifier les responsabilités",c:false},{t:"Assurer la prise en charge des maladies professionnelles",c:true},{t:"Fournir les équipements de protection individuelle",c:false},{t:"Former les responsables QHSE",c:false}],diff:'med',piege:false,expl:"La CNSS (Caisse Nationale de Sécurité Sociale) assure la prise en charge des maladies professionnelles selon la réglementation. La DRH gère la déclaration administrative des AT. La police et la gendarmerie mènent les enquêtes.",ref:"Chapitre III › §II-2 › Page 4"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : QCM CAS PRATIQUES
+const serie2 = [
+  {q:"Sur le chantier de construction de l'école de Ouagadougou, le chef de chantier Moussa constate qu'une bétonnière présente une courroie usée pouvant provoquer un accident. Selon le code du travail burkinabè, quelle action est correcte ?",type:'multi',opts:[{t:"Attendre l'audit annuel pour signaler la défectuosité",c:false},{t:"La machine doit être vérifiée au moins une fois par trimestre et les défauts corrigés immédiatement",c:true},{t:"Continuer à utiliser la machine jusqu'à ce qu'elle tombe en panne",c:false},{t:"Signaler uniquement si un accident survient",c:false}],diff:'med',piege:false,expl:"L'article 240 du code du travail impose la vérification trimestrielle des machines dont une défectuosité peut occasionner un accident. La défectuosité détectée doit être corrigée immédiatement pour éviter tout risque.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"La directrice technique de BTP-Sahel, Aïssata, souhaite mettre en place un SMQ. Elle hésite entre certification ISO 9001 obligatoire ou volontaire. Que lui conseille le consultant QHSE ?",type:'multi',opts:[{t:"La certification ISO 9001 est obligatoire pour tout BTP au Burkina Faso",c:false},{t:"La certification est volontaire, mais les lois nationales doivent être respectées en priorité",c:true},{t:"La conformité ISO prime sur les lois nationales",c:false},{t:"Il faut d'abord obtenir l'ISO 14001 avant l'ISO 9001",c:false}],diff:'med',piege:true,expl:"La conformité ISO est volontaire. Les lois et règlements nationaux ont toujours la priorité sur les normes. L'entreprise doit respecter le code du travail, le code de l'hygiène, etc. indépendamment de toute démarche ISO.",ref:"Chapitre I › §II-5 › Page 13"},
+  {q:"Ibrahim est ouvrier sur un chantier de 30 personnes à Bobo-Dioulasso. Son employeur Koné est-il obligé de créer un Comité de Sécurité et Santé au travail ?",type:'multi',opts:[{t:"Non, car 30 personnes est inférieur au seuil légal",c:false},{t:"Oui, le seuil légal est atteint à exactement 30 travailleurs",c:true},{t:"Uniquement si des accidents se sont déjà produits",c:false},{t:"Uniquement pour les chantiers industriels, pas les BTP",c:false}],diff:'med',piege:true,expl:"L'article 249 du code du travail rend obligatoire le Comité de sécurité et santé au travail pour les établissements occupant au moins 30 travailleurs. Le seuil est 30 (et non 25 ou 50).",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"Pendant la construction du barrage de Samendeni, un ouvrier tombe d'un échafaudage et se blesse grièvement. Le responsable QHSE Diallo doit notifier sa hiérarchie dans quel délai ?",type:'multi',opts:[{t:"Dans les 48 heures",c:false},{t:"Dans les 24 heures suivant l'accident ou la première constatation médicale",c:true},{t:"Dans les 72 heures",c:false},{t:"Uniquement si l'ouvrier est hospitalisé plus de 3 jours",c:false}],diff:'med',piege:false,expl:"Selon le cours, après un AT, le supérieur hiérarchique doit être informé dans les 24 heures qui suivent l'accident ou la première constatation médicale de la maladie.",ref:"Chapitre II › §III-2 › Page 8"},
+  {q:"Sur le chantier du lycée de Koudougou, le chef de chantier Ouédraogo organise une réunion de chantier. Lequel de ces acteurs y participe obligatoirement ?",type:'multi',opts:[{t:"Uniquement les entreprises sous-traitantes",c:false},{t:"Le Maître d'Œuvre participe aux réunions de chantier",c:true},{t:"Le Maître d'Œuvre ne participe jamais aux réunions de chantier",c:false},{t:"Uniquement le Maître d'Ouvrage",c:false}],diff:'med',piege:true,expl:"Le Maître d'Œuvre (MOE) participe aux réunions de chantier. L'affirmation 'le MOE ne participe pas aux réunions de chantier' est FAUSSE selon le cours. C'est un piège classique d'examen.",ref:"Cours UE 6 › Page 3"},
+  {q:"Le responsable QHSE du chantier de la Centrale solaire de Zagtouli doit choisir entre signalisation (protection collective) et casques (EPI) pour protéger les travailleurs d'une zone dangereuse. Quelle est la bonne démarche ?",type:'multi',opts:[{t:"Mettre uniquement des EPI, ils protègent mieux individuellement",c:false},{t:"Mettre d'abord la protection collective (signalisation) puis les EPI en complément",c:true},{t:"Choisir selon le coût le moins élevé",c:false},{t:"Les deux ont la même priorité selon l'ISO 9001",c:false}],diff:'easy',piege:false,expl:"Principe général n°8 de prévention : prendre des mesures de protection collective en leur donnant la priorité sur les mesures de protection individuelle. Les EPI viennent en appui aux mesures collectives.",ref:"Chapitre II › §III-1 › Page 5-6"},
+  {q:"Fatimata, secrétaire de direction chez BTP-Burkina, trébuche dans l'escalier du bureau en rentrant de sa pause déjeuner et se blesse. Est-ce un accident de travail selon l'article 51 du code de sécurité sociale ?",type:'multi',opts:[{t:"Non, car c'est pendant la pause, donc hors temps de travail",c:false},{t:"Oui, car c'est survenu sur le lieu de travail à l'occasion du travail",c:true},{t:"Non, car la pause déjeuner est un motif personnel",c:false},{t:"Uniquement si elle est hospitalisée plus de 3 jours",c:false}],diff:'hard',piege:true,expl:"L'AT est l'accident survenu à un travailleur par le fait ou à l'occasion du travail. L'accident dans les locaux de l'entreprise pendant la pause est généralement considéré comme survenu à l'occasion du travail. La pause déjeuner dans l'entreprise est différente d'une interruption de trajet pour motif personnel.",ref:"Chapitre II › §I-1 › Page 1"},
+  {q:"Sur le chantier de réhabilitation de la route Ouaga-Bobo, les ouvriers transportent des matériaux lourds. Le responsable HSE Zongo identifie ce risque comme :",type:'multi',opts:[{t:"Risque chimique",c:false},{t:"Risque mécanique (contraintes posturales, risque musculosquelettique)",c:true},{t:"Risque biologique",c:false},{t:"Risque radiologique",c:false}],diff:'med',piege:false,expl:"Les contraintes posturales et les gestes répétitifs font partie des risques mécaniques selon la typologie du cours. Le transport de charges lourdes entraîne des contraintes posturales qui relèvent des risques mécaniques.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"L'entreprise COGEB réalise des travaux d'assainissement à Ouagadougou. Des ouvriers entrent en contact avec des eaux usées pouvant contenir des agents infectieux. Quel type de risque est identifié ?",type:'multi',opts:[{t:"Risque chimique",c:false},{t:"Risque mécanique",c:false},{t:"Risque biologique",c:true},{t:"Risque physique",c:false}],diff:'easy',piege:false,expl:"Les agents infectieux (bactériens, parasitaires, viraux, fongiques) et allergisants auxquels les travailleurs peuvent être exposés par piqûre, morsure, inhalation ou voie cutanéomuqueuse constituent des risques biologiques.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"Le maçon Séni, 45 ans, travaille depuis 20 ans sur des chantiers bruyants sans protections auditives. Il développe une surdité progressive. C'est :",type:'multi',opts:[{t:"Un accident du travail avec incapacité permanente",c:false},{t:"Une maladie professionnelle (MP)",c:true},{t:"Un incident de travail",c:false},{t:"Un accident bénin",c:false}],diff:'med',piege:true,expl:"Une maladie développée progressivement suite à l'exposition à des risques professionnels sur le long terme est une maladie professionnelle (MP), pas un AT. L'AT est un événement soudain et inattendu. La distinction AT/MP est importante dans les conséquences du risque professionnel.",ref:"Chapitre II › §II › Page 4"},
+  {q:"Lors d'une réunion de chantier pour la construction d'un lycée à Dori, le PV doit être rédigé. Quelle est sa valeur selon le cours ?",type:'multi',opts:[{t:"Le PV de chantier n'a aucune valeur juridique",c:false},{t:"Le PV a une valeur juridique et permet d'acter ce qui s'est dit lors de la réunion",c:true},{t:"Le PV est uniquement informatif sans valeur contractuelle",c:false},{t:"Le PV remplace le contrat de marché",c:false}],diff:'med',piege:true,expl:"Le PV de chantier permet d'acter ce qui s'est dit lors de la réunion et a pour objet principal de constater l'application des clauses du marché. Il a une valeur juridique. L'affirmation 'n'a aucune valeur juridique' est fausse et constitue un piège d'examen.",ref:"Cours UE 6 › Page 3"},
+  {q:"Koné, directeur de chantier, réceptionne le PGES du projet de réhabilitation de la RN1. La collecte des données pour ce PGES doit comprendre :",type:'multi',opts:[{t:"Uniquement des données financières et techniques",c:false},{t:"Consultation des riverains, revue documentaire, collecte de terrain, traitement et synthèse",c:true},{t:"Uniquement l'enquête auprès des riverains",c:false},{t:"Uniquement les données topographiques",c:false}],diff:'med',piege:false,expl:"La collecte des données lors de la réalisation du PGES comporte : la consultation des riverains sur la zone d'influence environnementale, la revue documentaire sur les différentes localités du projet, la collecte de données sur le terrain pour chaque site, et le traitement/analyse/synthèse de l'information.",ref:"Cours UE 6 › Page 1"},
+  {q:"Le responsable administratif d'une entreprise BTP de 60 ouvriers à Ouagadougou doit créer :",type:'multi',opts:[{t:"Uniquement un Comité de sécurité (30 ouvriers suffisent pour ce seul comité)",c:false},{t:"Un Comité de sécurité et santé ET un service de sécurité dédié car l'entreprise dépasse 50 travailleurs",c:true},{t:"Aucune structure particulière, les obligations légales commencent à 100 employés",c:false},{t:"Uniquement un service médical",c:false}],diff:'hard',piege:true,expl:"Pour 60 ouvriers : Comité de sécurité obligatoire dès 30 travailleurs (art. 249) ET service de sécurité en milieu de travail obligatoire pour les entreprises industrielles d'au moins 50 travailleurs (art. 254). Les deux obligations s'appliquent.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"Un ouvrier s'étouffe avec un aliment sur le chantier. Après 5 tapes dans le dos inefficaces, l'infirmier Diallo doit :",type:'multi',opts:[{t:"Pratiquer immédiatement la RCP",c:false},{t:"Effectuer 1 à 5 compressions abdominales (méthode Heimlich)",c:true},{t:"Donner à boire pour dégager les voies",c:false},{t:"Allonger la victime sur le dos",c:false}],diff:'med',piege:true,expl:"En cas d'obstruction totale des voies aériennes : d'abord 1 à 5 tapes dans le dos, si inefficace, 1 à 5 compressions abdominales (méthode Heimlich), si toujours inefficace, recommencer le cycle. La RCP est pour les arrêts cardiaques, pas les étouffements.",ref:"Chapitre III › §I-2d › Page 2"},
+  {q:"L'entreprise Sogea-Satom réalise des travaux de construction d'une route en zone boisée au Burkina. Quelle démarche doit être faite AVANT le démarrage des travaux ?",type:'multi',opts:[{t:"Démarrer les travaux immédiatement et obtenir les autorisations en cours de route",c:false},{t:"Obtenir les autorisations environnementales et préparer le PGES-Chantier avant tout démarrage",c:true},{t:"Uniquement prévenir les populations locales",c:false},{t:"Attendre l'audit environnemental de fin de travaux",c:false}],diff:'med',piege:false,expl:"Le management environnemental avant démarrage comprend : obtention des autorisations environnementales (coupe d'arbres, prélèvement d'eau), préparation des documents contractuels (PGES-Chantier, Plan de Gestion des Déchets), formalisation des contrats de prestations environnementales.",ref:"Chapitre I › §III-3c › Page 20"},
+  {q:"Dans l'analyse SWOT de l'entreprise BTP-Sahel, la 'diversification de l'entreprise' est classée comme :",type:'multi',opts:[{t:"Force",c:false},{t:"Faiblesse",c:false},{t:"Opportunité",c:true},{t:"Menace",c:false}],diff:'med',piege:false,expl:"Dans l'exemple SWOT du cours, la 'Diversification de l'entreprise' est classée dans les Opportunités (avec l'environnement économique favorable). Les Forces incluent la réalisation d'ouvrage de qualité et les effectifs dynamiques. Les Menaces incluent l'insatisfaction des clients.",ref:"Chapitre I › §II-5 › Page 12"},
+  {q:"Pendant les travaux de construction d'un pont à Dédougou, un ouvrier Ouédraogo déverse accidentellement de l'huile de vidange dans le lit de la rivière. Selon la loi burkinabè :",type:'multi',opts:[{t:"C'est autorisé si la quantité est faible",c:false},{t:"C'est interdit selon l'article 119 du Code de l'hygiène publique",c:true},{t:"L'entreprise doit uniquement payer une amende",c:false},{t:"Seul le déversement de déchets toxiques industriels est interdit",c:false}],diff:'hard',piege:false,expl:"L'article 119 du Code de l'hygiène publique dispose que le rejet dans la nature des huiles de vidange est interdit. L'article 14 interdit le rejet d'eaux usées dans les cours d'eau.",ref:"Chapitre I › §IV-1 › Page 21"},
+  {q:"Le projet de construction du CHU de Ouagadougou est en phase d'exploitation depuis 2 ans. L'audit Environnemental et Social des installations est réalisé pendant :",type:'multi',opts:[{t:"La phase d'identification du projet",c:false},{t:"La phase d'exécution des travaux",c:false},{t:"La phase d'exploitation des ouvrages",c:true},{t:"La phase d'achèvement du projet",c:false}],diff:'med',piege:true,expl:"L'audit Environnemental et Social des installations est une étape de la phase d'Exploitation des ouvrages du projet. Ce n'est pas pendant l'exécution ni l'achèvement — c'est un piège classique d'examen.",ref:"Cours UE 6 › Page 2"},
+  {q:"L'entreprise Faso BTP emploie 15 ouvriers sur un petit chantier de réhabilitation à Banfora. La préparation des soins de premier secours doit inclure :",type:'multi',opts:[{t:"Un médecin permanent sur le chantier",c:false},{t:"Un dispositif d'alerte et du matériel de premiers secours accessible à tous",c:true},{t:"Un hôpital de chantier complet",c:false},{t:"Rien de spécifique pour un si petit effectif",c:false}],diff:'med',piege:false,expl:"L'organisation des secours passe par la mise en place d'un dispositif d'alerte en cas d'accident, la présence de sauveteurs secouristes et du matériel de premiers secours. La conduite à tenir en urgence doit être rédigée et portée à la connaissance du personnel. Les numéros de pompiers, police et hôpitaux doivent être communiqués.",ref:"Chapitre II › §III-2 › Page 8"},
+  {q:"Awa, infirmière sur le chantier du barrage de Bagré, suspecte un arrêt cardiaque chez un ouvrier inconscient. Quelle est la première action après avoir sécurisé les lieux ?",type:'multi',opts:[{t:"Donner à boire pour réhydrater la victime",c:false},{t:"Libérer les voies aériennes et pratiquer la RCP (30 compressions, 2 insufflations)",c:true},{t:"Transporter immédiatement la victime à l'hôpital",c:false},{t:"Attendre l'arrivée des secours sans intervenir",c:false}],diff:'med',piege:true,expl:"En cas de perte de connaissance/arrêt cardiaque : alerter, vérifier que la victime ne réagit pas, libérer les voies aériennes, pratiquer la RCP : 30 compressions thoraciques puis 2 insufflations, en alternance jusqu'à l'arrivée des secours. Ne jamais donner à boire à une victime.",ref:"Chapitre III › §I-2d › Page 2-3"},
+  {q:"La société SETAO doit réaliser un Plan d'Assurance Environnement pour le chantier de construction de la voirie de Ouaga 2000. Ce document est préparé :",type:'multi',opts:[{t:"Après la fin des travaux uniquement",c:false},{t:"Avant le démarrage des travaux, comme document contractuel",c:true},{t:"Pendant les travaux, au fur et à mesure",c:false},{t:"Ce document n'existe pas dans le management environnemental",c:false}],diff:'med',piege:false,expl:"Le Plan d'Assurance Environnement fait partie des documents contractuels préparés AVANT le démarrage des travaux, avec le PGES-Chantier et le Plan de Gestion et d'Élimination des Déchets.",ref:"Chapitre I › §III-3c › Page 20"},
+  {q:"L'ouvrier Traoré travaille de nuit depuis 3 ans sur les chantiers de construction. Son chef de chantier Sawadogo observe une baisse de sa vigilance. Selon le cours, ce risque est classé comme :",type:'multi',opts:[{t:"Facteur de risque psychologique",c:false},{t:"Facteur de risque organisationnel (horaires de travail)",c:true},{t:"Facteur de risque physique",c:false},{t:"Facteur de risque humain",c:false}],diff:'hard',piege:true,expl:"Les horaires de travail (notamment le travail de nuit) constituent un facteur organisationnel de risque. Ils réduisent la qualité et la durée du sommeil, impactant la concentration. C'est distinct du facteur humain (caractéristiques personnelles de l'individu).",ref:"Chapitre II › §II-2 › Page 5"},
+  {q:"Dans le cadre de la construction d'une école à Ziniaré, le DAO doit être préparé pendant quelle phase du projet ?",type:'multi',opts:[{t:"Pendant la phase d'exécution des travaux",c:false},{t:"Pendant la phase de préparation/études, avant l'exécution",c:true},{t:"Pendant la phase d'exploitation de l'ouvrage",c:false},{t:"Pendant la phase d'identification du projet",c:false}],diff:'med',piege:true,expl:"La préparation des Dossiers d'Appel d'Offres (DAO) se réalise pendant la phase de préparation du projet, AVANT la phase d'exécution. L'affirmation 'le DAO se prépare pendant la phase d'exécution' est FAUSSE selon le cours.",ref:"Cours UE 6 › Page 4"},
+  {q:"Sur un chantier de 40 ouvriers, le responsable HSE Compaoré doit organiser une formation de secouristes. Combien de personnes former au minimum ?",type:'multi',opts:[{t:"1 personne suffit",c:false},{t:"2 ou 3 personnes doivent être formées",c:true},{t:"5 personnes minimum",c:false},{t:"Tous les ouvriers doivent être formés",c:false}],diff:'med',piege:false,expl:"L'article 242 du code du travail impose la formation de 2 ou 3 personnes pour administrer les soins de premier secours dans les chantiers où travaillent en permanence plus de 25 personnes.",ref:"Chapitre I › §IV-3 › Page 22"},
+  {q:"Le chef de chantier Kiénou doit gérer l'emploi des populations locales lors des travaux de construction de la route RN4. À quelle phase cela se met-il en œuvre ?",type:'multi',opts:[{t:"Phase de négociation des locataires/utilisateurs",c:false},{t:"Phase de négociation du marché",c:false},{t:"Phase de construction des ouvrages",c:true},{t:"Phase d'exploitation des ouvrages",c:false}],diff:'med',piege:true,expl:"L'emploi probable pour les populations locales lors des travaux est mis en œuvre pendant la phase de construction des ouvrages. C'est un piège car on pourrait penser que cela se négocie avant.",ref:"Cours UE 6 › Page 3"},
+  {q:"L'entreprise Africaine du Bâtiment réalise une analyse SWOT. Le 'manque de communication interne' est classé dans :",type:'multi',opts:[{t:"Forces",c:false},{t:"Faiblesses",c:true},{t:"Opportunités",c:false},{t:"Menaces",c:false}],diff:'easy',piege:false,expl:"Dans l'exemple SWOT du cours, le manque de communication et le manque de formalisation des procédures sont classés dans les Faiblesses. Forces = réalisation d'ouvrages de qualité, effectifs dynamiques. Opportunités = diversification, environnement favorable. Menaces = insatisfaction clients, concurrence.",ref:"Chapitre I › §II-5 › Page 12"},
+  {q:"Pendant la construction d'une école à Tenkodogo, un ouvrier souffre de vertiges suite à une exposition prolongée à la chaleur. Le responsable QHSE Yarga classe ce risque comme :",type:'multi',opts:[{t:"Risque mécanique",c:false},{t:"Risque physique",c:true},{t:"Risque chimique",c:false},{t:"Risque psychologique",c:false}],diff:'easy',piege:false,expl:"La chaleur (température trop forte) est un risque physique selon la classification du cours, avec les vibrations, le bruit, le froid, les intempéries, le niveau d'éclairement, la qualité de l'air, le courant électrique, l'incendie.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"Le maçon Yé peint des murs et inhale des vapeurs de peinture contenant des solvants. Ce risque est classifié comme :",type:'multi',opts:[{t:"Risque physique",c:false},{t:"Risque biologique",c:false},{t:"Risque chimique",c:true},{t:"Risque mécanique",c:false}],diff:'easy',piege:false,expl:"L'exposition à des substances chimiques par inhalation constitue un risque chimique. Les solvants de peinture sont des substances chimiques pouvant être toxiques, irritants ou allergisants.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"Dans le cadre du SME d'une entreprise BTP, la 'revue de direction' correspond à l'étape suivante du cycle APCD :",type:'multi',opts:[{t:"Plan (Planifier)",c:false},{t:"Do (Réaliser)",c:false},{t:"Check (Contrôler)",c:false},{t:"Act (Agir/Améliorer)",c:true}],diff:'hard',piege:true,expl:"Dans le SME ISO 14001, la 'revue de direction' (réunion au plus haut niveau pour suivre l'évolution et décider des axes d'amélioration) correspond à l'étape Act du cycle APCD. Les audits et enregistrements correspondent à Check.",ref:"Chapitre I › §III-3b › Page 19-20"},
+  {q:"Deux ouvriers se disputent violemment sur le chantier de Banfora, entraînant un stress intense chez les autres travailleurs. Ce risque est classifié :",type:'multi',opts:[{t:"Risque mécanique",c:false},{t:"Risque organisationnel",c:false},{t:"Risque psychologique",c:true},{t:"Risque biologique",c:false}],diff:'easy',piege:false,expl:"L'agression verbale ou physique sur le lieu de travail par une partie intéressée constitue un risque psychologique, avec le harcèlement moral ou sexuel et les charges mentales excessives.",ref:"Chapitre II › §II-1 › Page 4"},
+  {q:"Le responsable QHSE du chantier de construction du nouveau marché de Ouahigouya prépare le PPSPS. Ce document est :",type:'multi',opts:[{t:"Le Plan de Protection et de Sécurité du Personnel Supérieur",c:false},{t:"Le Plan Particulier de Sécurité et de Protection de la Santé, qui planifie la gestion des risques sur le chantier",c:true},{t:"Un document uniquement administratif sans contenu opérationnel",c:false},{t:"Identique au POI",c:false}],diff:'med',piege:false,expl:"Le PPSPS (Plan Particulier de Sécurité et de Protection de la Santé) est élaboré à partir de l'évaluation des risques et permet de proposer des mesures de gestion des risques sanitaires et sécuritaires sur les chantiers.",ref:"Chapitre II › §III-1 › Page 6"},
+  {q:"Lors d'un chantier de construction d'un pont, les acteurs principaux qui se sont largement investis et sont parvenus à un consensus sur le projet sont :",type:'multi',opts:[{t:"Le chef de chantier et le contremaître",c:false},{t:"Le Maître d'Ouvrage et le Maître d'Œuvre",c:true},{t:"L'entreprise et le sous-traitant",c:false},{t:"L'État et les bailleurs de fonds",c:false}],diff:'med',piege:true,expl:"Le chantier est la concrétisation par les entreprises d'un projet sur lequel le Maître d'Ouvrage (MOA) et le Maître d'Œuvre (MOE) se sont largement investis. Ils sont les deux acteurs principaux du projet.",ref:"Cours UE 6 › Page 4"},
+  {q:"Sur le chantier de l'université Joseph Ki-Zerbo, un gradin de la bibliothèque s'effondre partiellement, sans blesser personne. Le responsable sécurité Nikiéma doit :",type:'multi',opts:[{t:"Ignorer l'événement car personne n'est blessé",c:false},{t:"Signaler l'incident et mettre en place des mesures correctrices rapidement",c:true},{t:"Attendre l'audit trimestriel pour en faire mention",c:false},{t:"Démolir immédiatement tout l'ouvrage",c:false}],diff:'easy',piege:false,expl:"Un incident (même sans blessé) a le potentiel de dégénérer rapidement. Il est important de mettre en place des mesures correctrices rapidement et d'effectuer une surveillance. Ignorer les incidents augmente le risque d'accidents futurs.",ref:"Chapitre II › §I-1 › Page 1"},
+  {q:"L'entreprise de construction installe un atelier de découpe bruyant à 30 mètres d'un hôpital à Dédougou. Cette installation est :",type:'multi',opts:[{t:"Autorisée si les horaires de travail respectent la nuit",c:false},{t:"Interdite selon l'article 122 du Code de l'hygiène publique",c:true},{t:"Autorisée si les travailleurs portent des protections auditives",c:false},{t:"Soumise uniquement aux règles du voisinage civil",c:false}],diff:'hard',piege:false,expl:"L'article 122 du Code de l'hygiène publique interdit l'installation des ateliers bruyants aux abords des formations sanitaires (hôpitaux), établissements scolaires, lieux de culte, cimetières, casernes, zones résidentielles et autres services administratifs.",ref:"Chapitre I › §IV-1 › Page 21"},
+  {q:"Lors d'un chantier, le Contractant prend en compte l'Hygiène, la Santé et la Sécurité notamment par :",type:'multi',opts:[{t:"La désignation d'un responsable Hygiène/Sécurité/Environnement (HSE)",c:true},{t:"L'indication des différents accès seulement",c:false},{t:"L'interdiction d'accès au public seulement",c:false},{t:"La mise en place d'un service médical seulement",c:false}],diff:'med',piege:true,expl:"La désignation d'un responsable HSE est LA réponse correcte à la question sur la prise en compte de l'HSE par le Contractant selon le cours. Les autres mesures (signalisation, service médical, etc.) sont des mesures supplémentaires qui font partie d'un ensemble plus large.",ref:"Cours UE 6 › Page 4-5"},
+  {q:"L'objectif principal du cours SQHE est de permettre de gérer les aspects liés à :",type:'multi',opts:[{t:"Uniquement la qualité des matériaux de construction",c:false},{t:"La qualité, l'hygiène, la sécurité et la protection de l'environnement dans l'exécution d'un projet",c:true},{t:"La rentabilité financière du chantier",c:false},{t:"La gestion des ressources humaines du chantier",c:false}],diff:'easy',piege:false,expl:"L'objectif principal du cours est de permettre de gérer les aspects liés à la qualité, l'hygiène, la sécurité et la protection de l'environnement dans le cadre de l'exécution d'un projet. La rentabilité n'est PAS dans les objectifs SQHE (c'est l'intrus).",ref:"Objectifs › Page 5"},
+  {q:"Dans le cadre d'une démarche QHSE, le Comité santé-sécurité lors d'un sinistre doit notamment :",type:'multi',opts:[{t:"Uniquement prévenir les autorités policières",c:false},{t:"Prendre des mesures correctives immédiates et mener l'enquête assortie d'un plan d'actions",c:true},{t:"Gérer les aspects financiers de l'indemnisation",c:false},{t:"Décider seul de la reprise des travaux",c:false}],diff:'med',piege:false,expl:"Le Comité santé-sécurité (ou le responsable santé-sécurité) lors d'un sinistre doit : appliquer la procédure en cas de sinistre, prendre des mesures correctives immédiates, mener l'enquête assortie d'un plan d'actions, alerter la direction sur les anomalies.",ref:"Chapitre III › §II-1 › Page 3"},
+  {q:"Lors d'une enquête sur un accident de travail, le responsable QHSE doit commencer l'enquête :",type:'multi',opts:[{t:"Dans les 7 jours suivant l'AT pour constituer le dossier",c:false},{t:"Aussitôt que possible après l'AT pour maximiser les chances de recueillir des preuves",c:true},{t:"Uniquement après la guérison complète de la victime",c:false},{t:"Après la déclaration officielle à la CNSS",c:false}],diff:'med',piege:false,expl:"L'enquête doit débuter aussitôt que possible après l'AT afin de maximiser les chances d'observer les conditions existant au moment de l'AT, d'empêcher le déplacement des éléments de preuve et d'identifier les témoins.",ref:"Chapitre II › §I-3a › Page 2"},
+  {q:"Un ouvrier du chantier de l'ambassade à Ouaga se blesse à la main. L'infirmier Sanou suspecte une fracture. Il doit :",type:'multi',opts:[{t:"Donner à boire et réduire la fracture sur place",c:false},{t:"Manier la victime avec précaution, ne pas la déplacer inutilement et appeler les secours",c:true},{t:"Remettre la victime en position de travail pour confirmer la fracture",c:false},{t:"Attendre que la victime perde conscience pour intervenir",c:false}],diff:'easy',piege:false,expl:"Principes du secourisme : agir rapidement mais avec sérénité, analyser avant de décider, manier la victime avec précaution et ne pas la déplacer inutilement, examiner (conscient ? respire ? saigne ? brûlé ? fracturé ?), ne pas jouer le rôle du médecin, ne pas donner à boire.",ref:"Chapitre III › §I-1 › Page 1"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (Questions du sujet PDF dans l'ordre Q21-Q30)
+const serie3 = [
+  {q:"[Q21] La collecte des données lors de la réalisation du Plan de Gestion Environnementale et Sociale comporte :",type:'multi',opts:[{t:"La consultation des riverains sur la zone d'influence environnementale du site",c:true},{t:"La revue documentaire sur les différentes localités du projet",c:true},{t:"Toutes les réponses sont correctes",c:false},{t:"La collecte de données sur le terrain pour chaque site du projet",c:true},{t:"Le traitement, l'analyse et la synthèse de l'information",c:true}],diff:'hard',piege:true,expl:"Les bonnes réponses sont a, b, d et e. 'Toutes les réponses sont correctes' (c) est fausse car si a, b, d, e sont vraies MAIS PAS 'c' (qui se contredit elle-même : si toutes sont correctes, c serait aussi correcte, créant une circularité impossible). Dans ce type de question, sélectionner les réponses substantielles a, b, d, e sans cocher la proposition 'toutes les réponses'.",ref:"Cours UE 6 › Page 1"},
+  {q:"[Q22] Le cours de 'Suivi de la Qualité, Hygiène et Environnement de Chantier (SQHE)' vise à garantir les conditions ci-dessous. Parmi ces conditions il existe un intrus, lequel ?",type:'multi',opts:[{t:"Les conditions d'hygiène",c:false},{t:"Les conditions de sécurité",c:false},{t:"Les conditions de rentabilité",c:true},{t:"Les conditions de qualité",c:false},{t:"Les conditions de protection de l'environnement",c:false}],diff:'easy',piege:false,expl:"L'intrus est 'les conditions de rentabilité'. Le SQHE vise à garantir : hygiène, sécurité, qualité et protection de l'environnement. La rentabilité est un objectif financier/économique qui ne fait pas partie des objectifs du cours SQHE.",ref:"Cours UE 6 › Objectifs › Page 5"},
+  {q:"[Q23] Dans le cycle d'un projet, l'audit Environnemental et Social des installations est une étape de la phase suivante :",type:'multi',opts:[{t:"Exécution du projet",c:false},{t:"Requête de financement du projet",c:false},{t:"Identification du projet",c:false},{t:"Exploitation des ouvrages du projet",c:true},{t:"Achèvement du projet",c:false}],diff:'med',piege:true,expl:"L'audit Environnemental et Social des installations est une étape de la phase d'Exploitation des ouvrages du projet. Ce n'est pas pendant l'exécution (où se font les travaux) ni l'achèvement (réception). L'exploitation concerne le fonctionnement de l'ouvrage après livraison.",ref:"Cours UE 6 › Page 2"},
+  {q:"[Q24] Un devis descriptif est un document qui précise pour chaque élément l'état intervenant dans la construction, la nature et les caractéristiques des matériaux à utiliser :",type:'multi',opts:[{t:"Vrai",c:true},{t:"Faux",c:false}],diff:'easy',piege:false,expl:"Vrai. Un devis descriptif est bien un document qui précise pour chaque élément intervenant dans la construction, la nature et les caractéristiques des matériaux à utiliser.",ref:"Cours UE 6 › Page 2"},
+  {q:"[Q25] Sur un chantier, le Maître d'œuvre ne participe pas aux réunions de chantier :",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'easy',piege:true,expl:"FAUX. Le Maître d'Œuvre (MOE) participe aux réunions de chantier. C'est un piège classique de cet examen. La MOE est un acteur principal du chantier dont la présence aux réunions est essentielle pour le suivi de l'exécution.",ref:"Cours UE 6 › Page 3"},
+  {q:"[Q26] L'emploi probable pour les populations locales lors des travaux est mis en œuvre pendant :",type:'multi',opts:[{t:"Aucune réponse n'est correcte",c:false},{t:"La phase de négociation des locataires/utilisateurs",c:false},{t:"La phase de négociation du marché",c:false},{t:"La phase d'exploitation des ouvrages",c:false},{t:"La phase de construction des ouvrages",c:true}],diff:'med',piege:true,expl:"L'emploi probable pour les populations locales lors des travaux est mis en œuvre pendant la phase de construction des ouvrages. C'est logique : c'est pendant les travaux que la main-d'œuvre locale est effectivement employée.",ref:"Cours UE 6 › Page 3"},
+  {q:"[Q27] Le PV de chantier :",type:'multi',opts:[{t:"Récapitule les points forts du chantier",c:false},{t:"Permet d'acter ce qui s'est dit lors de la réunion",c:true},{t:"Toutes les réponses sont correctes",c:false},{t:"Le PV de chantier n'a aucune valeur juridique",c:false},{t:"A pour objet principal de constater l'application des clauses du marché",c:true}],diff:'hard',piege:true,expl:"Les bonnes réponses sont b et e. b : Le PV permet d'acter ce qui s'est dit lors de la réunion. e : Il a pour objet principal de constater l'application des clauses du marché. a est faux (ce n'est pas son objectif principal), c est faux (car d est faux), d est faux (le PV A une valeur juridique).",ref:"Cours UE 6 › Page 3"},
+  {q:"[Q28] La préparation des Dossiers d'Appel d'Offres (DAO) se réalise pendant la phase d'exécution des projets :",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX. La préparation des DAO se réalise pendant la phase de préparation/études du projet, AVANT la phase d'exécution. C'est un piège récurrent : le DAO est préparé pour lancer le marché, donc avant l'exécution.",ref:"Cours UE 6 › Page 4"},
+  {q:"[Q29] Le chantier est la concrétisation, par d'autres acteurs que sont les entreprises, d'un projet sur lequel deux participants se sont largement investis. Ces deux participants appelés également les acteurs principaux sont :",type:'multi',opts:[{t:"Le Maître d'Ouvrage",c:true},{t:"Le Maître délégué",c:false},{t:"Le Maître d'œuvre",c:true},{t:"Le Maître de Chantier",c:false},{t:"Le chef de projet",c:false}],diff:'med',piege:true,expl:"Les deux acteurs principaux sont le Maître d'Ouvrage (MOA) et le Maître d'Œuvre (MOE). Le Maître délégué et le Maître de Chantier sont des acteurs secondaires ou délégués. Le 'chef de projet' n'est pas un acteur du cycle classique MOA/MOE.",ref:"Cours UE 6 › Page 4"},
+  {q:"[Q30] Le Contractant prend en compte de l'Hygiène, la Santé et la Sécurité par :",type:'multi',opts:[{t:"La désignation d'un responsable Hygiène/Sécurité/Environnement",c:true},{t:"L'indication des différents accès",c:false},{t:"L'interdiction de l'accès du chantier au public et la mise en place de panneaux de signalisation",c:false},{t:"La mise en place d'un service médical courant et d'urgence à la base-vie, adapté à l'effectif",c:false},{t:"Toutes les réponses sont correctes",c:false}],diff:'hard',piege:true,expl:"Selon le sujet d'examen, la réponse correcte est uniquement 'a' : La désignation d'un responsable HSE. C'est la mesure principale et fondamentale. Les autres réponses sont des mesures importantes mais la question demande LA réponse qui correspond à la définition principale donnée dans le cours.",ref:"Cours UE 6 › Page 4-5"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M15';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-Pièges classiques</div>
+    <div style="margin-bottom:8px;font-size:11px;color:var(--text3)">Ces mots dans une question = méfiance absolue</div>
+    <span class="piege-word">rentabilité</span>
+    <span class="piege-word">toutes les réponses</span>
+    <span class="piege-word">ne participe pas</span>
+    <span class="piege-word">aucune valeur juridique</span>
+    <span class="piege-word">phase d'exécution</span>
+    <span class="piege-word">obligatoire (ISO)</span>
+    <span class="piege-word">25 travailleurs</span>
+    <span class="piege-word">50 travailleurs</span>
+    <span class="piege-word">30 travailleurs</span>
+    <span class="piege-word">achèvement</span>
+    <span class="piege-word">MOE absent</span>
+    <span class="piege-word">ISO prime sur loi</span>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🔢 Chiffres-clés à mémoriser</div>
+    <table class="chiffres-table">
+      <tr><th>Chiffre</th><th>Signification</th></tr>
+      <tr><td>7</td><td>Principes management qualité ISO 9001</td></tr>
+      <tr><td>9</td><td>Principes généraux prévention AT</td></tr>
+      <tr><td>4</td><td>Étapes cycle APCD</td></tr>
+      <tr><td>5</td><td>Catégories 5M Ishikawa</td></tr>
+      <tr><td>25+</td><td>Personnes → 2-3 secouristes obligatoires</td></tr>
+      <tr><td>30+</td><td>Travailleurs → Comité sécurité obligatoire</td></tr>
+      <tr><td>50+</td><td>Industriels → Service sécurité obligatoire</td></tr>
+      <tr><td>1/trimestre</td><td>Vérification machines dangereuses</td></tr>
+      <tr><td>24h</td><td>Délai notification AT au supérieur</td></tr>
+      <tr><td>30/2</td><td>Compressions/insufflations RCP</td></tr>
+      <tr><td>0 à 5</td><td>Échelle gravité AT (0=incident, 5=catastrophe majeure)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-bottom:16px;">
+  <div class="methode-card-title">🔄 Schéma décisionnel — Quelle norme pour quel domaine ?</div>
+  <div class="def-grid">
+    <div class="def-item"><div class="def-term">Qualité → ISO 9001</div><div class="def-text">SMQ — amélioration continue, 7 principes, APCD</div></div>
+    <div class="def-item"><div class="def-term">Environnement → ISO 14001</div><div class="def-text">SME — impacts environnementaux, développement durable</div></div>
+    <div class="def-item"><div class="def-term">Santé-Sécurité → ISO 45001</div><div class="def-text">Remplace OHSAS 18001 — risques professionnels</div></div>
+    <div class="def-item"><div class="def-term">ACV → ISO 14040</div><div class="def-text">Analyse du Cycle de Vie des produits</div></div>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-bottom:16px;">
+  <div class="methode-card-title">📋 Schéma décisionnel — Cycle du projet et étapes clés</div>
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Identification du projet</strong> — Études de faisabilité, définition du besoin</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Requête de financement</strong> — Plans de financement, dossiers bailleurs</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Préparation</strong> — Études, PGES, <strong>DAO préparé ici</strong>, appel d'offres</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Exécution / Construction</strong> — Travaux, réunions de chantier (MOA+MOE présents), PV, PPSPS, emploi local</div></div>
+  <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Achèvement</strong> — Réception des travaux, levée des réserves</div></div>
+  <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Exploitation</strong> — <strong>Audit environnemental ici</strong>, maintenance, gestion de l'ouvrage</div></div>
+</div>
+
+<div class="methode-card" style="margin-bottom:16px;">
+  <div class="methode-card-title">🆚 Confusions fréquentes à éviter</div>
+  <table class="chiffres-table">
+    <tr><th>Concept A</th><th>≠</th><th>Concept B</th></tr>
+    <tr><td>Risque (probabilité × conséquence)</td><td>≠</td><td>Danger (propriété intrinsèque)</td></tr>
+    <tr><td>Accident (soudain, dommage réel)</td><td>≠</td><td>Incident (pas de dommage immédiat)</td></tr>
+    <tr><td>AT (événement soudain)</td><td>≠</td><td>MP (maladie progressive)</td></tr>
+    <tr><td>Action curative (supprimer la NC)</td><td>≠</td><td>Action corrective (supprimer les causes)</td></tr>
+    <tr><td>Protection collective (prioritaire)</td><td>≠</td><td>EPI (complémentaire)</td></tr>
+    <tr><td>ISO volontaire</td><td>≠</td><td>Loi nationale obligatoire</td></tr>
+    <tr><td>7 principes qualité</td><td>≠</td><td>9 principes prévention AT</td></tr>
+    <tr><td>Facteurs de risque (organisationnel...)</td><td>≠</td><td>Types de risque (chimique, physique...)</td></tr>
+    <tr><td>DAO préparé AVANT exécution</td><td>≠</td><td>Travaux = phase d'exécution</td></tr>
+    <tr><td>Audit env. à l'exploitation</td><td>≠</td><td>Achèvement (réception des travaux)</td></tr>
+  </table>
+</div>
+
+<div class="methode-card" style="margin-bottom:16px;">
+  <div class="methode-card-title">🚨 Schéma — Les 4 étapes du secourisme</div>
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Sécuriser</strong> — Évaluer les dangers (circulation, électricité, incendie). Périmètre si danger persistant. Ne pas s'approcher si risque personnel.</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Évaluer la victime</strong> — Consciente ? Respire ? Saigne ? Brûlée ? Fracturée ? NE PAS donner à boire. NE PAS déplacer inutilement.</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Alerter</strong> — Se présenter + Se localiser + Décrire (nombre victimes + nature) + Attendre consignes + NE PAS raccrocher en premier.</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Gestes de premiers secours</strong> — Compression saignement | RCP (30 compressions + 2 insufflations) | Heimlich (étouffement) | Position de confort. Personnes habilitées uniquement pour gestes complexes.</div></div>
+</div>
+
+<div class="methode-card" style="margin-bottom:16px;">
+  <div class="methode-card-title">📜 Codes burkinabè — Résumé des articles clés</div>
+  <table class="chiffres-table">
+    <tr><th>Article</th><th>Loi</th><th>Contenu</th></tr>
+    <tr><td>Art. 14</td><td>Code hygiène publique</td><td>Interdit rejet eaux usées dans caniveaux/cours d'eau</td></tr>
+    <tr><td>Art. 113</td><td>Code hygiène publique</td><td>Interdit incinération en plein air des déchets combustibles</td></tr>
+    <tr><td>Art. 119</td><td>Code hygiène publique</td><td>Interdit rejet d'huiles de vidange dans la nature</td></tr>
+    <tr><td>Art. 122</td><td>Code hygiène publique</td><td>Interdit ateliers bruyants près hôpitaux, écoles, cultes...</td></tr>
+    <tr><td>Art. 16</td><td>Code santé publique</td><td>Définit la pollution atmosphérique</td></tr>
+    <tr><td>Art. 23</td><td>Code santé publique</td><td>Interdit déversement/enfouissement déchets toxiques industriels</td></tr>
+    <tr><td>Art. 51</td><td>Code sécurité sociale</td><td>Définition légale de l'accident de travail (inclut trajet)</td></tr>
+    <tr><td>Art. 236</td><td>Code du travail</td><td>Chef d'établissement assure sécurité physique et mentale</td></tr>
+    <tr><td>Art. 240</td><td>Code du travail</td><td>Vérification trimestrielle obligatoire des machines</td></tr>
+    <tr><td>Art. 242</td><td>Code du travail</td><td>Formation obligatoire, 2-3 secouristes si >25 personnes</td></tr>
+    <tr><td>Art. 249</td><td>Code du travail</td><td>Comité sécurité-santé obligatoire dès 30 travailleurs</td></tr>
+    <tr><td>Art. 254</td><td>Code du travail</td><td>Service sécurité dédié pour entreprises industrielles ≥50</td></tr>
+  </table>
+</div>
+`;}
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

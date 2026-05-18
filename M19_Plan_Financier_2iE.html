@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M19 — Élaboration du Plan Financier · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 8px; border-radius: 4px; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; border-radius: var(--r2); border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-retry { padding: 10px 20px; border-radius: var(--r2); border: 1px solid rgba(255,140,66,0.5); background: rgba(255,140,66,0.1); color: var(--orange); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'Space Mono', monospace; font-size: 64px; font-weight: 700; color: var(--accent); line-height: 1; }
+.score-label { font-size: 14px; color: var(--text2); margin: 10px 0 20px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 20px; text-align: center; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); }
+.score-stat.red { border-color: rgba(255,77,106,0.4); }
+.score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M19</div>
+  <div class="header-title">Élaboration du Plan Financier — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '📋',
+    title: 'Plan Financier — Définition & Structure',
+    subtitle: 'Chapitre 1 · Pages 6–7',
+    content: `
+      <div class="memo-section-title">📌 Définition</div>
+      <div class="key-box"><div class="key-title">Plan Financier / Plan de Financement</div><div class="key-text">Document prévisionnel qui présente les <strong>besoins financiers</strong> d'une entreprise à ses débuts puis sur plusieurs exercices, et les <strong>ressources financières</strong> affectées en contrepartie. Objectif : équilibrer besoins et ressources avec cohérence.</div></div>
+      <div class="memo-section-title">📐 Deux éléments essentiels</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Les Besoins</div><div class="def-text">Ce que l'entreprise doit financer (investissements, BFR, remboursements…)</div></div>
+        <div class="def-item"><div class="def-term">Les Ressources</div><div class="def-text">Moyens à disposition (fonds propres, emprunts, subventions, CAF…)</div></div>
+      </div>
+      <div class="memo-section-title">📅 Durée & Horizons</div>
+      <table class="chiffres-table">
+        <tr><th>Horizon</th><th>Durée</th><th>Outil</th></tr>
+        <tr><td>Court terme</td><td>1 an</td><td>Plan de trésorerie (mensuel)</td></tr>
+        <tr><td>Moyen terme</td><td>2–3 ans</td><td>Plan de financement budgétisé</td></tr>
+        <tr><td>Long terme</td><td>3–5 ans</td><td>Plan financier complet</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE FRÉQUENT</div><div class="piege-text">Le plan financier ne prédit PAS l'avenir — il chiffre le <strong>scénario le plus crédible</strong>. Il engage l'entreprise sur le <strong>long terme</strong>, non le moyen terme. La réponse "moyen terme" est la réponse FAUSSE dans les QCM.</div></div>
+      <div class="memo-section-title">🔢 Trois parties du plan financier</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Besoins (Emplois)</div><div class="def-text">Investissements, BFR, remboursements emprunt, dividendes</div></div>
+        <div class="def-item"><div class="def-term">Ressources</div><div class="def-text">CAF, fonds propres, emprunts, subventions, cessions actif</div></div>
+        <div class="def-item"><div class="def-term">Soldes annuels</div><div class="def-text">Ressources – Besoins pour chaque année</div></div>
+        <div class="def-item"><div class="def-term">Soldes cumulés</div><div class="def-text">Cumul des soldes = Trésorerie cumulée</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '🏗️',
+    title: 'Plan d\'Investissement & Schéma de Financement',
+    subtitle: 'Chapitre 2 · Pages 8–13',
+    content: `
+      <div class="memo-section-title">💡 Définition Investissement</div>
+      <div class="key-box"><div class="key-title">Investissement</div><div class="key-text">Mobilisation de ressources à <strong>moyen ou long terme</strong> dans le but d'en tirer des avantages nets dans le futur. Comptablement : moyens de production dont l'utilisation s'étale sur plusieurs exercices.</div></div>
+      <div class="memo-section-title">📦 Types d'investissements initiaux</div>
+      <div class="key-box"><div class="key-title">Investissements à recenser</div><div class="key-text"><ul><li>Matériels, outillage, machines, mobilier, véhicules</li><li>Terrains, bâtiments, travaux, rénovation, agencement</li><li>Licences, brevets, marques, droits au bail</li><li>Dépôts et cautionnements versés</li><li>Charges immobilisées (études, formalités, EIES)</li></ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE TAXES</div><div class="piege-text">Les investissements doivent être retenus pour leur <strong>prix d'achat TTC</strong>, incluant frais de transport maritime, taxes douanières, et toutes autres taxes. Ne pas oublier les imprévus = <strong>5 à 15%</strong> du coût total.</div></div>
+      <div class="memo-section-title">🏦 Plan de financement initial (Année 0)</div>
+      <table class="chiffres-table">
+        <tr><th>Besoins (Emplois)</th><th>Ressources</th></tr>
+        <tr><td>Investissements (TTC)</td><td>Apports en capital (numéraire + nature)</td></tr>
+        <tr><td>BFR initial</td><td>Emprunts souscrits</td></tr>
+        <tr><td>Imprévus (5–15%)</td><td>Subventions d'équipement</td></tr>
+        <tr><td>—</td><td>Compte courant d'associé</td></tr>
+      </table>
+      <div class="memo-section-title">🔄 Schéma de financement</div>
+      <div class="key-box"><div class="key-title">Rôle du schéma de financement</div><div class="key-text">Assure l'<strong>ajustement</strong> entre les échéanciers des emplois prévisionnels et les sources prévisionnelles de financement. Découle du plan d'investissement. Sources principales : <strong>fonds propres + emprunts + subventions</strong>.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE SCHÉMA</div><div class="piege-text">Les 3 groupes de financement sont : <strong>fonds propres / emprunts / subventions</strong>. Le crédit-bail et le leasing ne font PAS partie des 3 groupes principaux dans la classification du cours. Attention aux options qui les incluent !</div></div>
+    `
+  },
+  {
+    icon: '💰',
+    title: 'BFR — Besoin en Fonds de Roulement',
+    subtitle: 'Chapitre 2 › 2.1.1 · Page 11',
+    content: `
+      <div class="key-box"><div class="key-title">Définition BFR</div><div class="key-text">Trésorerie nécessaire pour financer le <strong>décalage entre les entrées et les sorties d'argent</strong> liées à l'activité. Dans le plan initial, il regroupe les achats hors investissement nécessaires au démarrage.</div></div>
+      <div class="memo-section-title">📊 Composantes du BFR initial</div>
+      <div class="key-box"><div class="key-title">Ce qui constitue le BFR initial</div><div class="key-text"><ul><li>Stocks de matières premières (généralement 2 mois d'achats)</li><li>Stocks de marchandises (2 mois d'achats)</li><li>Avances salaires (2 mois)</li><li>Frais généraux de démarrage (2 mois)</li><li>Frais liés à la création de l'entreprise</li><li>Petits achats de matériel et fournitures</li></ul></div></div>
+      <div class="memo-section-title">📐 Formule trésorerie</div>
+      <div class="key-box"><div class="key-title">Relation trésorerie / plan de financement</div><div class="key-text"><strong>Trésorerie fin de période = Trésorerie début de période + Solde du plan de financement</strong><br><br>Un excès de ressources → augmentation des disponibilités. Un excès d'emplois → besoins de trésorerie (concours bancaires).</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE FONDS PROPRES</div><div class="piege-text">Les fonds propres doivent représenter <strong>au moins 25 à 30%</strong> du financement global. Un emprunt trop important par rapport aux apports des associés est un signal d'alarme.</div></div>
+    `
+  },
+  {
+    icon: '📊',
+    title: 'Prévisions d\'Exploitation — Compte de Résultat',
+    subtitle: 'Chapitre 3 · Pages 18–22',
+    content: `
+      <div class="memo-section-title">💹 Calcul du Chiffre d'Affaires</div>
+      <div class="key-box"><div class="key-title">Formule CA</div><div class="key-text">CA = Quantité vendue × Prix unitaire de vente<br><br>3 approches : <strong>par imitation</strong> (ratios sectoriels), <strong>par les charges</strong> (seuil de rentabilité), <strong>par les produits</strong> (commandes fermes).</div></div>
+      <div class="memo-section-title">📋 Structure du Compte d'Exploitation Prévisionnel</div>
+      <table class="chiffres-table">
+        <tr><th>Rubrique</th><th>Calcul/Rôle</th></tr>
+        <tr><td>Chiffre d'affaires</td><td>Recettes totales</td></tr>
+        <tr><td>Achats + Δ stocks</td><td>Consommation matières</td></tr>
+        <tr><td>Transports consommés</td><td>Sur achats ET ventes</td></tr>
+        <tr><td>Services extérieurs A&B</td><td>Loyers, assurances, publicité…</td></tr>
+        <tr><td>Valeur Ajoutée (VA)</td><td>CA – Charges variables</td></tr>
+        <tr><td>Charges personnel</td><td>SB + 16% charges sociales</td></tr>
+        <tr><td>EBE</td><td>VA – Charges personnel</td></tr>
+        <tr><td>Dotations amortissement</td><td>Charge calculée non décaissée</td></tr>
+        <tr><td>Résultat d'exploitation</td><td>EBE – Amortissements</td></tr>
+        <tr><td>Frais financiers</td><td>Intérêts sur emprunts</td></tr>
+        <tr><td>IBIC (38%)</td><td>Impôt sur bénéfices</td></tr>
+        <tr><td>Résultat Net</td><td>Bénéfice distribuable</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE TRANSPORT</div><div class="piege-text">Les frais de transport couvrent <strong>DEUX flux</strong> : transport sur les ventes des produits ET transport sur les achats des matières. Ce n'est pas limité à un seul sens !</div></div>
+      <div class="memo-section-title">💡 Charges sociales</div>
+      <div class="key-box"><div class="key-title">Taux charges sociales</div><div class="key-text">Charges sociales = <strong>16% du Salaire Brut (SB)</strong></div></div>
+    `
+  },
+  {
+    icon: '🏦',
+    title: 'Plan de Trésorerie',
+    subtitle: 'Chapitre 3 › IV · Page 22',
+    content: `
+      <div class="key-box"><div class="key-title">Définition Plan de Trésorerie</div><div class="key-text">Tableau sur lequel sont portés <strong>tous les encaissements et décaissements prévus</strong> durant la première année d'activité. Permet de détecter les déficits avant le démarrage. Il varie en fonction des opérations d'exploitation, d'investissement ET de financement.</div></div>
+      <div class="memo-section-title">📐 Structure en 2 blocs</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Bloc Exploitation</div><div class="def-text">Encaissements (CA TTC – créances clients) − Décaissements (achats TTC, TVA, charges personnel, impôts) = Flux net d'exploitation</div></div>
+        <div class="def-item"><div class="def-term">Bloc Hors Exploitation</div><div class="def-text">Encaissements (capital, emprunts, subventions) − Décaissements (investissements, remboursements, dividendes) = Flux net hors exploitation</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGES PLAN DE TRÉSORERIE</div><div class="piege-text">
+        1. Le plan de trésorerie anticipe sur <strong>court ET long terme</strong>, pas uniquement le court terme.<br>
+        2. Il <strong>varie</strong> en fonction des opérations — il n'est PAS constant.<br>
+        3. Il a besoin du compte de résultat prévisionnel ET du plan de financement pour son établissement.<br>
+        4. La plupart des disparitions d'entreprises en 1ère année = problèmes de trésorerie !
+      </div></div>
+    `
+  },
+  {
+    icon: '📈',
+    title: 'VAN & TRI — Indicateurs de Rentabilité',
+    subtitle: 'Chapitre 3 › VI · Pages 24–26',
+    content: `
+      <div class="memo-section-title">💡 VAN — Valeur Actuelle Nette</div>
+      <div class="key-box"><div class="key-title">Formule VAN</div><div class="key-text">VAN = –C + R₁/(1+i)¹ + R₂/(1+i)² + … + Rₙ/(1+i)ⁿ + V/(1+i)ⁿ<br><br>Avec : C = Capital investi · i = Taux d'actualisation · R = Recettes nettes (CAF d'exploitation) · V = Valeur résiduelle</div></div>
+      <div class="key-box"><div class="key-title">CAF d'exploitation</div><div class="key-text">CAF d'exploitation = <strong>EBE – Impôt sur les sociétés</strong> (sur résultat d'exploitation)</div></div>
+      <table class="chiffres-table">
+        <tr><th>Critère</th><th>Interprétation</th></tr>
+        <tr><td>VAN &gt; 0</td><td>✅ Projet rentable / acceptable</td></tr>
+        <tr><td>VAN = 0</td><td>⚠ Projet neutre (TRI = taux d'actualisation)</td></tr>
+        <tr><td>VAN &lt; 0</td><td>❌ Projet non rentable</td></tr>
+      </table>
+      <div class="memo-section-title">📐 TRI — Taux de Rentabilité Interne</div>
+      <div class="key-box"><div class="key-title">Définition TRI</div><div class="key-text">Taux d'actualisation qui <strong>rend nulle la VAN</strong>. C'est la solution de : L = Σ [Rt / (1+i)^t]<br>Plus le TRI est élevé, plus l'investissement est intéressant. Un projet est rentable si TRI &gt; coût du capital.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGES VAN/TRI</div><div class="piege-text">
+        1. VAN positive = projet rentable (VRAI — c'est un piège de nier cette règle).<br>
+        2. Le TRI ne peut PAS être calculé directement par formule — il faut tâtonner ou utiliser un logiciel.<br>
+        3. La VAN ne donne aucune indication sur les contraintes de financement.<br>
+        4. La valeur résiduelle = valeur vénale + BFR récupéré en fin de projet.
+      </div></div>
+    `
+  },
+  {
+    icon: '🧪',
+    title: 'Tests de Sensibilité & Indicateurs Financiers',
+    subtitle: 'Chapitre 3 › VII–VIII · Page 27',
+    content: `
+      <div class="memo-section-title">🔬 Tests de Sensibilité</div>
+      <div class="key-box"><div class="key-title">3 scénarios standards</div><div class="key-text"><ul><li><strong>Hypothèse 1 :</strong> Baisse de 10% du CA (charges constantes) → TRI plus réaliste</li><li><strong>Hypothèse 2 :</strong> Hausse de 10% des charges (CA constant) → impact coûts</li><li><strong>Hypothèse 3 :</strong> Combinaison des deux → capacité de survie</li></ul>Le promoteur peut définir ses propres taux de façon réaliste.</div></div>
+      <div class="memo-section-title">📊 Indicateurs Financiers Clés</div>
+      <table class="chiffres-table">
+        <tr><th>Indicateur</th><th>Définition</th></tr>
+        <tr><td>CAF</td><td>Ressources générées en interne pour financer l'entreprise</td></tr>
+        <tr><td>BFR</td><td>Besoins financiers à court terme liés à l'activité opérationnelle</td></tr>
+        <tr><td>Seuil de rentabilité</td><td>CA minimal pour couvrir toutes les charges (point mort)</td></tr>
+        <tr><td>Marge commerciale</td><td>CA – Coût d'achat des marchandises vendues</td></tr>
+        <tr><td>Ratio endettement</td><td>Dettes / Capitaux propres</td></tr>
+        <tr><td>Ratio couverture dette</td><td>(Cash flow + Frais financiers) / (Remboursement + Frais financiers)</td></tr>
+      </table>
+    `
+  },
+  {
+    icon: '🌱',
+    title: 'Sources de Financement',
+    subtitle: 'Chapitre 4 · Pages 28–33',
+    content: `
+      <div class="memo-section-title">💸 Les 3 Groupes Principaux</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Fonds Propres</div><div class="def-text">Apports personnels, love money, concours entrepreneuriaux, crowdfunding, prêt d'honneur</div></div>
+        <div class="def-item"><div class="def-term">Emprunts</div><div class="def-text">Prêt bancaire, microcrédit, emprunts MLT (moyen et long terme)</div></div>
+        <div class="def-item"><div class="def-term">Subventions</div><div class="def-text">Aides publiques, subventions d'équipement, fonds de développement</div></div>
+      </div>
+      <div class="memo-section-title">📋 Sources détaillées</div>
+      <table class="chiffres-table">
+        <tr><th>Source</th><th>Particularité</th></tr>
+        <tr><td>Apport personnel</td><td>Rassure les investisseurs externes, facilite l'accès à d'autres fonds</td></tr>
+        <tr><td>Love money</td><td>Famille/proches, moins difficiles à convaincre</td></tr>
+        <tr><td>Concours (Awards)</td><td>Apports + accompagnement + visibilité</td></tr>
+        <tr><td>Crowdfunding</td><td>Peu répandu en Afrique, risque de vol d'idée</td></tr>
+        <tr><td>Prêt d'honneur</td><td>Taux 0%, sans garantie, sur l'honneur</td></tr>
+        <tr><td>Microcrédit</td><td>Petits montants, pas de garanties réelles</td></tr>
+        <tr><td>Prêt bancaire</td><td>⚠ Déconseillé au démarrage sans ventes certaines</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE PRÊT BANCAIRE</div><div class="piege-text">Il est <strong>fortement déconseillé</strong> aux entrepreneurs de recourir aux prêts bancaires au démarrage sans être sûrs des ventes réelles. En cas de non-remboursement, les cautions (immobiliers, biens précieux) sont saisies.</div></div>
+    `
+  },
+  {
+    icon: '🔄',
+    title: 'Amortissements',
+    subtitle: 'Chapitre 2 › I · Page 9',
+    content: `
+      <div class="key-box"><div class="key-title">Définition Amortissement</div><div class="key-text">Perte annuelle de valeur des investissements. Charge <strong>calculée et non réelle</strong> — n'apparaît que dans les comptes de production-exploitation, <strong>jamais</strong> dans les comptes de trésorerie ou de bilan des flux.</div></div>
+      <div class="memo-section-title">📊 3 Types d'Amortissement</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Fiscal</div><div class="def-text">Déduction des impôts → réduit la base imposable</div></div>
+        <div class="def-item"><div class="def-term">Technique / Économique</div><div class="def-text">Usure et perte d'utilité de l'équipement → reflet de la réalité</div></div>
+        <div class="def-item"><div class="def-term">Financier</div><div class="def-text">Déduction des intérêts sur les prêts → tableau d'amortissement emprunt</div></div>
+      </div>
+      <div class="memo-section-title">🏛️ Postes d'investissement spéciaux</div>
+      <table class="chiffres-table">
+        <tr><th>Situation</th><th>Poste comptable</th></tr>
+        <tr><td>Travaux dans local non propriété</td><td>Installations générales, agencement, aménagements divers</td></tr>
+        <tr><td>Terrain</td><td>Taux amortissement = 0% (non amortissable)</td></tr>
+        <tr><td>Imprévus</td><td>5 à 15% du coût total d'investissement</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE AMORTISSEMENT</div><div class="piege-text">Les amortissements sont calculés sur la base de <strong>dépense passée</strong>. Ils réduisent le résultat comptable sans sortie de trésorerie — c'est pourquoi la CAF = Résultat Net + Amortissements.</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Qu'est-ce qu'un plan financier ou plan de financement ?",type:'multi',opts:[{t:"Un document qui présente les besoins et les ressources financières d'une entreprise sur plusieurs exercices",c:true},{t:"Un tableau de bord commercial décrivant les objectifs de vente annuels",c:false},{t:"Un document uniquement destiné aux banques pour l'obtention d'un prêt",c:false},{t:"Un outil de comptabilité générale retraçant les opérations passées",c:false}],diff:'easy',piege:false,expl:"Le plan financier est un document prévisionnel présentant les besoins et ressources financières d'une entreprise à ses débuts puis sur plusieurs exercices. Son objectif est d'équilibrer besoins et ressources avec cohérence.",ref:"Chapitre 1 › I › Page 6"},
+  {q:"Quelle est la durée standard d'établissement du plan de financement ?",type:'multi',opts:[{t:"3 à 5 exercices",c:true},{t:"1 an uniquement",c:false},{t:"10 ans minimum",c:false},{t:"6 mois",c:false}],diff:'easy',piege:false,expl:"Le plan de financement est généralement établi sur une durée de 3 à 5 exercices, correspondant à la période retenue pour le prévisionnel en général.",ref:"Chapitre 1 › II › Page 7"},
+  {q:"Quels sont les deux éléments essentiels qui constituent le plan de financement ?",type:'multi',opts:[{t:"Les besoins et les ressources",c:true},{t:"Les recettes et les dépenses d'exploitation",c:false},{t:"Le bilan et le compte de résultat",c:false},{t:"Les emprunts et les subventions",c:false}],diff:'easy',piege:false,expl:"Les deux éléments essentiels du plan de financement sont : les besoins (ce que l'entreprise doit financer) et les ressources (les moyens à sa disposition).",ref:"Chapitre 1 › I › Page 6"},
+  {q:"À quoi sert le plan financier d'un business plan ?",type:'multi',opts:[{t:"À donner une indication sur la performance financière et la position de trésorerie future",c:true},{t:"À prévoir l'avenir avec précision",c:false},{t:"À remplacer le compte de résultat prévisionnel",c:false},{t:"À fixer le prix de vente des produits",c:false}],diff:'easy',piege:false,expl:"Le plan financier donne une indication sur la performance financière et la position de trésorerie future de l'entreprise. Il ne prédit pas l'avenir mais chiffre le scénario le plus crédible.",ref:"Chapitre 1 › III › Page 7"},
+  {q:"Le plan financier engage l'entreprise sur quelle durée ?",type:'multi',opts:[{t:"Long terme",c:true},{t:"Moyen terme uniquement",c:false},{t:"Court terme",c:false},{t:"Inférieure à 1 an",c:false}],diff:'med',piege:true,expl:"PIÈGE : Le plan financier récapitule les décisions financières dont la formulation et la mise en œuvre engagent l'entreprise sur le LONG terme. Toute réponse indiquant 'moyen terme' est fausse.",ref:"Chapitre 2 › II › Page 9"},
+  {q:"Quels sont les trois types d'amortissement distingués dans le cours ?",type:'multi',opts:[{t:"Fiscal, technique/économique, financier",c:true},{t:"Linéaire, dégressif, exceptionnel",c:false},{t:"Annuel, mensuel, trimestriel",c:false},{t:"Direct, indirect, différé",c:false}],diff:'med',piege:false,expl:"Les 3 types d'amortissement sont : l'amortissement fiscal (déduction des impôts), l'amortissement technique ou économique (usure et perte d'utilité), et l'amortissement financier (déduction des intérêts sur prêts).",ref:"Chapitre 2 › I › Page 9"},
+  {q:"Les amortissements apparaissent dans quel(s) document(s) comptable(s) ?",type:'multi',opts:[{t:"Dans les comptes de production-exploitation uniquement",c:true},{t:"Dans les comptes de trésorerie et de bilan des flux",c:false},{t:"Dans tous les documents financiers sans exception",c:false},{t:"Uniquement dans le bilan",c:false}],diff:'med',piege:true,expl:"PIÈGE : Les amortissements n'apparaissent QUE dans les comptes de production-exploitation. Ils n'apparaissent JAMAIS dans les comptes de trésorerie ou de bilan des flux car ce sont des charges calculées et non réelles.",ref:"Chapitre 2 › I › Page 9"},
+  {q:"Quel pourcentage d'imprévus prend-on généralement sur les estimations initiales d'investissement ?",type:'multi',opts:[{t:"Entre 5 et 15%",c:true},{t:"Entre 1 et 5%",c:false},{t:"Entre 15 et 25%",c:false},{t:"Exactement 10% systématiquement",c:false}],diff:'med',piege:false,expl:"Pour tenir compte des aléas techniques et financiers, on prend généralement un pourcentage des estimations initiales totales de coût, le plus souvent entre 5 et 15%.",ref:"Chapitre 2 › I › Page 9"},
+  {q:"Dans le plan de financement initial, à quel minimum doivent correspondre les fonds propres par rapport au financement global ?",type:'multi',opts:[{t:"25 à 30% du financement global",c:true},{t:"10 à 15% du financement global",c:false},{t:"50% du financement global",c:false},{t:"Il n'existe pas de minimum recommandé",c:false}],diff:'med',piege:false,expl:"En principe, les fonds propres doivent représenter au moins 25 à 30% du financement global. Un emprunt démesuré par rapport aux apports des associés est un signal d'alerte.",ref:"Chapitre 1 › III › Page 7"},
+  {q:"Quelles sont les ressources financières initiales pouvant figurer dans le plan de financement initial ?",type:'multi',opts:[{t:"Apports en capital, emprunts souscrits, subventions d'équipement",c:true},{t:"Uniquement les apports en numéraire des associés",c:false},{t:"Chiffre d'affaires prévisionnel de la première année",c:false},{t:"Dividendes distribués aux actionnaires",c:false}],diff:'med',piege:false,expl:"Les ressources financières initiales comprennent : apports en capital social (numéraire et nature), apports de l'exploitant, apports en compte courant d'associé, emprunts souscrits, et subventions d'équipement reçues à la création.",ref:"Chapitre 2 › 2.1.2 › Page 12"},
+  {q:"Quelle est la formule de la relation entre trésorerie et plan de financement ?",type:'multi',opts:[{t:"Trésorerie fin de période = Trésorerie début de période + Solde du plan de financement",c:true},{t:"Trésorerie = Ressources – Besoins",c:false},{t:"Trésorerie = CAF + Emprunts – Investissements",c:false},{t:"Trésorerie fin = Ressources cumulées – Besoins cumulés",c:false}],diff:'hard',piege:false,expl:"La relation exacte est : Trésorerie fin de période = Trésorerie début de période + Solde du plan de financement. Cette relation est valable à la fin de chaque année du plan de financement.",ref:"Chapitre 2 › C › Page 16"},
+  {q:"Le plan de trésorerie varie en fonction de quels types d'opérations ?",type:'multi',opts:[{t:"Opérations courantes d'exploitation, d'investissement ET de financement",c:true},{t:"Uniquement des opérations courantes d'exploitation",c:false},{t:"Uniquement des opérations d'investissement",c:false},{t:"Il ne varie pas, il reste constant",c:false}],diff:'med',piege:true,expl:"PIÈGE : Le plan de trésorerie varie en fonction des opérations courantes d'exploitation, MAIS AUSSI des opérations liées à l'investissement et au financement. Dire qu'il reste constant est faux.",ref:"Chapitre 3 › IV › Page 22"},
+  {q:"Quelle est la condition pour qu'un projet soit rentable selon la VAN ?",type:'multi',opts:[{t:"VAN > 0",c:true},{t:"VAN = 0",c:false},{t:"VAN < 0",c:false},{t:"VAN positive ou nulle",c:false}],diff:'easy',piege:false,expl:"Un projet est rentable (acceptable) dès lors que VAN > 0. La VAN strictement positive indique que le projet génère plus de valeur que le coût du capital.",ref:"Chapitre 3 › 6.1 › Page 25"},
+  {q:"Comment est calculée la CAF d'exploitation utilisée dans le calcul de la VAN ?",type:'multi',opts:[{t:"CAF d'exploitation = EBE – Impôt sur les sociétés sur le résultat d'exploitation",c:true},{t:"CAF = Résultat net + Amortissements",c:false},{t:"CAF = Chiffre d'affaires – Charges totales",c:false},{t:"CAF = EBE + Dotations aux amortissements",c:false}],diff:'hard',piege:true,expl:"Les recettes nettes d'exploitation prévues (R dans la formule VAN) correspondent à la CAF d'exploitation = EBE – Impôt sur les sociétés sur le résultat d'exploitation.",ref:"Chapitre 3 › 6.1 › Page 25"},
+  {q:"Le TRI peut-il être calculé directement par une formule analytique ?",type:'multi',opts:[{t:"Non, il faut tâtonner ou utiliser un algorithme/logiciel",c:true},{t:"Oui, directement par la formule L = Σ Rt/(1+i)^t",c:false},{t:"Oui, en utilisant simplement un tableau Excel standard",c:false},{t:"Oui, c'est plus simple à calculer que la VAN",c:false}],diff:'med',piege:true,expl:"PIÈGE : Contrairement à la VAN, le TRI ne peut pas être calculé directement par une formule. Il faut 'tâtonner' jusqu'à trouver une approximation satisfaisante, ou utiliser un algorithme/logiciel adéquat.",ref:"Chapitre 3 › 6.2.2 › Page 26"},
+  {q:"Que représente la valeur résiduelle d'un investissement dans le calcul de la VAN ?",type:'multi',opts:[{t:"La valeur vénale de l'investissement en fin de projet + BFR d'exploitation récupéré",c:true},{t:"Le montant restant dû sur l'emprunt en fin de projet",c:false},{t:"La valeur comptable nette de l'actif en fin de projet",c:false},{t:"Les dividendes non distribués en fin de projet",c:false}],diff:'hard',piege:false,expl:"La valeur résiduelle = valeur vénale de l'investissement en fin de projet + besoin en fonds de roulement d'exploitation récupéré en fin de projet. Elle s'ajoute à la recette d'exploitation de la dernière année.",ref:"Chapitre 3 › 6.1 › Page 25"},
+  {q:"Quels éléments incorpore-t-on dans le plan de financement sur 3 à 5 exercices ?",type:'multi',opts:[{t:"Nouveaux investissements, variation du BFR, CAF, remboursements emprunts, dividendes",c:true},{t:"Uniquement les investissements et les emprunts bancaires",c:false},{t:"Seulement la CAF et les dividendes distribués",c:false},{t:"Uniquement les subventions reçues et les apports en capital",c:false}],diff:'med',piege:false,expl:"Le plan de financement sur 3 à 5 exercices incorpore : nouveaux investissements, nouveaux apports en capital, nouveaux emprunts, distributions de dividendes, subventions, variation du BFR, et la CAF (ou insuffisance d'autofinancement).",ref:"Chapitre 2 › 2.2.1 › Page 13"},
+  {q:"Dans les tests de sensibilité standard, quel taux de baisse du CA est utilisé en première hypothèse ?",type:'multi',opts:[{t:"10% de baisse du chiffre d'affaires",c:true},{t:"5% de baisse du chiffre d'affaires",c:false},{t:"20% de baisse du chiffre d'affaires",c:false},{t:"15% de baisse du chiffre d'affaires",c:false}],diff:'med',piege:false,expl:"La première hypothèse des tests de sensibilité est une baisse de 10% du CA pouvant découler d'une baisse d'activité ou de l'entrée d'un concurrent, tout en maintenant les charges au niveau initial.",ref:"Chapitre 3 › VII › Page 27"},
+  {q:"Quels sont les 3 groupes de formes de financement disponibles pour satisfaire aux besoins d'une entreprise ?",type:'multi',opts:[{t:"Financement par emprunt, par subvention et par fonds propres",c:true},{t:"Financement par crédit-bail, par ligne de crédit et par leasing",c:false},{t:"Financement par crédit-bail, par subvention et par fonds propres",c:false},{t:"Financement par emprunt, par subvention et par leasing",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Les 3 groupes principaux de financement sont : emprunt + subvention + fonds propres. Le crédit-bail et le leasing ne sont PAS des groupes distincts dans cette classification.",ref:"Chapitre 4 › I › Page 28"},
+  {q:"Qu'est-ce que le prêt d'honneur ?",type:'multi',opts:[{t:"Un crédit à taux d'intérêt zéro, sans garantie, destiné à la création ou reprise d'entreprise",c:true},{t:"Un prêt accordé par un ami de confiance sans formalité bancaire",c:false},{t:"Un prêt bancaire à taux préférentiel pour les entrepreneurs",c:false},{t:"Un financement participatif remboursable avec intérêts",c:false}],diff:'med',piege:false,expl:"Le prêt d'honneur est un crédit à taux d'intérêt zéro destiné à la création, la reprise d'entreprise et les projets personnels, accordé sans intérêts ni garantie. L'emprunteur s'engage sur l'honneur à rembourser.",ref:"Chapitre 4 › 5 › Page 32"},
+  {q:"Le crowdfunding (financement participatif) est-il très répandu en Afrique ?",type:'multi',opts:[{t:"Non, il est beaucoup plus pratiqué en Europe et en Amérique",c:true},{t:"Oui, c'est la source de financement dominante en Afrique",c:false},{t:"Oui, il connaît une croissance rapide dans toute l'Afrique",c:false},{t:"Oui, notamment grâce aux plateformes mobiles africaines",c:false}],diff:'easy',piege:false,expl:"Selon le cours, le financement participatif (crowdfunding) n'est pas très répandu en Afrique. C'est plus en Europe et en Amérique qu'on pratique le crowdfunding.",ref:"Chapitre 4 › 4 › Page 31"},
+  {q:"Quelle est la particularité du prêt d'honneur par rapport à un prêt bancaire classique ?",type:'multi',opts:[{t:"Il est accordé sans intérêts et sans garantie",c:true},{t:"Il offre un taux d'intérêt préférentiel inférieur au marché",c:false},{t:"Il est accordé uniquement aux grandes entreprises",c:false},{t:"Il ne nécessite pas de remboursement du capital",c:false}],diff:'easy',piege:false,expl:"Le prêt d'honneur est accordé sans intérêts (taux zéro) et sans garantie ni caution personnelle. L'emprunteur rembourse uniquement la somme empruntée, sans intérêts.",ref:"Chapitre 4 › 5 › Page 32"},
+  {q:"Dans quel cas l'entreprise est-elle confrontée à un besoin de financement supplémentaire lors de l'ajustement du plan ?",type:'multi',opts:[{t:"Lorsque le plan de financement fait apparaître un excès des besoins sur les ressources",c:true},{t:"Lorsque la CAF est supérieure aux investissements prévus",c:false},{t:"Lorsque les dividendes distribués sont trop faibles",c:false},{t:"Lorsque la variation du BFR est négative",c:false}],diff:'hard',piege:false,expl:"Lorsque le plan de financement fait apparaître un besoin de financement (excès des emplois sur les ressources), l'entreprise doit trouver des ressources complémentaires : emprunts ou crédit bancaire court terme.",ref:"Chapitre 2 › III › Page 16"},
+  {q:"Quelle est la différence principale entre le plan financier et un tableau de financement comptable ?",type:'multi',opts:[{t:"Le plan financier est prévisionnel et non normalisé ; le tableau de financement est un constat historique normalisé",c:true},{t:"Le plan financier porte sur le court terme et le tableau sur le long terme",c:false},{t:"Le tableau de financement inclut la CAF mais pas le plan financier",c:false},{t:"Ils sont identiques, c'est juste une différence de terminologie",c:false}],diff:'hard',piege:false,expl:"Le plan financier est un document prévisionnel reflétant les anticipations et les choix de la politique financière. Le tableau de financement comptable est un constat se nourrissant des informations du passé. De plus, le plan financier n'est pas normalisé (pluralité de modèles).",ref:"Chapitre 2 › II › Page 9"},
+  {q:"Quels sont les 3 types d'approche dans le calcul du chiffre d'affaires prévisionnel ?",type:'multi',opts:[{t:"Par imitation, par les charges, par les produits",c:true},{t:"Par le marché, par les coûts, par les bénéfices",c:false},{t:"Par la demande, l'offre et la concurrence",c:false},{t:"Ascendant, descendant et horizontal",c:false}],diff:'med',piege:false,expl:"Les 3 approches sont : (1) par imitation = CA moyen du secteur, (2) par les charges = CA minimal pour couvrir les charges (seuil de rentabilité), (3) par les produits = commandes fermes ou conditionnelles des clients.",ref:"Chapitre 3 › 1.2 › Page 18"},
+  {q:"Le plan financier comprend combien de parties distinctes ?",type:'multi',opts:[{t:"Trois : besoins, ressources et soldes",c:true},{t:"Deux : emplois et ressources",c:false},{t:"Quatre : investissements, exploitation, financement et trésorerie",c:false},{t:"Cinq : correspondant aux 5 années d'exercice",c:false}],diff:'med',piege:false,expl:"Le plan financier comprend trois parties distinctes : les besoins (emplois), les ressources, et les soldes. Les soldes comprennent les soldes annuels mais aussi les soldes cumulés.",ref:"Chapitre 2 › II › Page 9"},
+  {q:"Que représente la CAF dans le plan de financement sur plusieurs exercices ?",type:'multi',opts:[{t:"Une ressource durable générée en interne pour financer les besoins prévisionnels",c:true},{t:"Un besoin supplémentaire lié à l'expansion de l'activité",c:false},{t:"Une subvention accordée par l'État",c:false},{t:"Un emprunt à court terme remboursable dans l'année",c:false}],diff:'med',piege:false,expl:"La CAF (Capacité d'Auto-Financement) est une ressource durable. Les ressources durables représentent l'ensemble des ressources susceptibles de financer les besoins stables prévisionnels. La CAF tient compte de l'outil de production et des investissements inscrits en emplois.",ref:"Chapitre 2 › B › Page 15"},
+  {q:"Quels frais doit-on obligatoirement inclure dans l'évaluation des investissements pour un équipement importé ?",type:'multi',opts:[{t:"Frais de transport maritime, taxes douanières, et toutes autres taxes",c:true},{t:"Uniquement le prix d'achat HT de l'équipement",c:false},{t:"Uniquement la TVA locale",c:false},{t:"Frais de formation du personnel uniquement",c:false}],diff:'med',piege:false,expl:"Pour les équipements importés, il faut obligatoirement inclure : le prix d'achat + frais de transport maritime + taxes douanières + toutes autres taxes. Le cours insiste (!!!) sur l'importance de tenir compte de TOUS ces frais.",ref:"Chapitre 2 › 2.1.1 › Page 10"},
+  {q:"Quel est le taux de charges sociales applicable sur le salaire brut dans le cours M19 ?",type:'multi',opts:[{t:"16% du salaire brut",c:true},{t:"18% du salaire brut",c:false},{t:"10% du salaire brut",c:false},{t:"25% du salaire brut",c:false}],diff:'easy',piege:false,expl:"Les charges sociales = 16% du Salaire Brut (SB). Ce taux est clairement indiqué dans le tableau des charges de personnel du cours.",ref:"Chapitre 3 › 2.8 › Page 20"},
+  {q:"Dans le plan de financement initial (Année 0), les besoins initiaux sont constitués de quoi ?",type:'multi',opts:[{t:"Des investissements nécessaires à la création de l'activité et du BFR initial",c:true},{t:"Uniquement des investissements en équipements",c:false},{t:"Du chiffre d'affaires prévisionnel de la première année",c:false},{t:"Des charges d'exploitation de la première année",c:false}],diff:'easy',piege:false,expl:"Les besoins initiaux à financer sont constitués des investissements nécessaires à la création de l'activité ET du besoin de fonds de roulement initial. Ces deux éléments composent le plan de financement initial (Année 0).",ref:"Chapitre 2 › 2.1.1 › Page 10"},
+  {q:"Selon le cours, pourquoi le plan financier revêt-il un caractère intégrateur ?",type:'multi',opts:[{t:"Il reflète les implications financières de tous les projets et permet de tester leur cohérence",c:true},{t:"Il intègre tous les contrats signés avec les fournisseurs",c:false},{t:"Il récapitule toutes les opérations bancaires de l'entreprise",c:false},{t:"Il regroupe l'ensemble des ressources humaines disponibles",c:false}],diff:'med',piege:false,expl:"Le plan financier revêt un caractère intégrateur dans la mesure où il reflète les implications financières de tous les projets arrêtés par l'entreprise et permet ainsi de tester leur cohérence et leur compatibilité.",ref:"Chapitre 2 › Introduction › Page 8"},
+  {q:"Si une entreprise doit réaliser des travaux dans des locaux qui ne lui appartiennent pas, dans quel poste comptable enregistre-t-on cette dépense ?",type:'multi',opts:[{t:"Installations générales, agencement, aménagements divers",c:true},{t:"Installation spéciale du locale",c:false},{t:"Bâtiments à installation spéciale",c:false},{t:"Bâtiments, installations techniques et agencement",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Les travaux réalisés dans des constructions n'appartenant pas à l'entreprise ou au projet sont enregistrés dans le poste 'Installations générales, agencement, aménagements divers'.",ref:"Sujet d'examen › Q36"},
+  {q:"Après son élaboration, le plan financier reste-t-il invariable ?",type:'multi',opts:[{t:"Non, il doit être mis à jour en fonction de l'évolution économique et financière",c:true},{t:"Oui, il reste figé jusqu'à la fin de la période prévue",c:false},{t:"Oui, car toute modification invaliderait les hypothèses de base",c:false},{t:"Oui, sauf en cas de force majeure",c:false}],diff:'med',piege:true,expl:"PIÈGE : L'affirmation selon laquelle le plan financier reste invariable est FAUSSE. Le plan financier est un outil permanent de gestion utilisé pour suivre, contrôler et guider le développement — il est donc mis à jour.",ref:"Chapitre 2 & Sujet d'examen › Q37"},
+  {q:"L'élaboration du plan financier conduit à s'interroger sur quels points essentiels ?",type:'multi',opts:[{t:"Le niveau de risque assumé et le niveau de flexibilité financière face aux changements",c:true},{t:"Les conséquences d'un conflit entre employés et le niveau de rigidité financière",c:false},{t:"Uniquement la rentabilité du projet sans tenir compte du risque",c:false},{t:"Le montant des dividendes et la politique de recrutement",c:false}],diff:'hard',piege:false,expl:"L'élaboration du plan financier conduit à s'interroger sur : (1) le niveau de risque que l'entreprise est prête à assumer en fonction de l'objectif de rentabilité, et (2) le niveau de flexibilité financière qui permettra à l'entreprise de s'adapter à l'évolution de son environnement.",ref:"Sujet d'examen › Q38"},
+  {q:"Dans le calcul de la VAN, que représente le taux d'actualisation (i) ?",type:'multi',opts:[{t:"Le taux de rentabilité souhaité par l'entreprise, correspondant au coût du capital",c:true},{t:"Le taux d'intérêt bancaire appliqué sur les emprunts",c:false},{t:"Le taux d'inflation prévu sur la durée du projet",c:false},{t:"Le taux de croissance du chiffre d'affaires",c:false}],diff:'hard',piege:false,expl:"Le taux d'actualisation correspond au taux de rentabilité souhaité par l'entreprise. Il correspond au coût du capital finançant le projet et s'exprime en pourcentage.",ref:"Chapitre 3 › 6.1 › Page 24"},
+  {q:"Quels sont les tableaux financiers prévisionnels compris dans un business plan ?",type:'multi',opts:[{t:"Compte de résultat prévisionnel, bilan prévisionnel, plan de financement, budget de trésorerie",c:true},{t:"Uniquement le bilan et le compte de résultat",c:false},{t:"Seulement le plan de trésorerie et le plan de financement",c:false},{t:"Uniquement la VAN et le TRI",c:false}],diff:'med',piege:false,expl:"Les tableaux financiers prévisionnels du business plan comprennent : le compte de résultat et le bilan prévisionnel, le plan de financement et le budget de trésorerie.",ref:"Chapitre 3 › Introduction › Page 18"},
+  {q:"Comment évalue-t-on le montant du chiffre d'affaires prévisionnel ?",type:'multi',opts:[{t:"CA = Quantité vendue × Prix de vente unitaire",c:true},{t:"CA = Charges totales + Bénéfice souhaité",c:false},{t:"CA = Investissements ÷ Taux de rentabilité",c:false},{t:"CA = BFR × Rotation des stocks",c:false}],diff:'easy',piege:false,expl:"Pour évaluer le montant du CA, il suffit de multiplier la quantité de marchandises vendues (activité commerciale) ou la production vendue (activité industrielle) par leurs prix de vente respectifs.",ref:"Chapitre 3 › 1.2 › Page 18"},
+  {q:"Le schéma de financement d'un projet peut également être désigné sous quelle appellation ?",type:'multi',opts:[{t:"Plan de financement initial ou structure financière du projet",c:true},{t:"Plan de trésorerie ou budget d'exploitation",c:false},{t:"Tableau de bord financier ou rapport annuel",c:false},{t:"Business plan ou étude de marché",c:false}],diff:'med',piege:false,expl:"Le schéma de financement d'un projet est encore désigné par 'plan de financement initial' ou 'structure financière d'un projet'. Ces termes sont utilisés de façon interchangeable.",ref:"Sujet d'examen › Q33"},
+  {q:"Dans le plan de financement sur 3 à 5 exercices, comment inscrit-on les emprunts obligataires ?",type:'multi',opts:[{t:"Pour leur prix d'émission",c:true},{t:"Pour leur valeur nominale",c:false},{t:"Pour leur valeur de remboursement",c:false},{t:"Pour leur valeur actualisée nette",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Les emprunts indivis sont inscrits pour leur valeur nominale, MAIS les emprunts obligataires sont inscrits pour leur PRIX D'ÉMISSION. Ne pas confondre les deux.",ref:"Chapitre 2 › B › Page 15"},
+  {q:"Quel est le rôle des subventions dans le plan de financement ?",type:'multi',opts:[{t:"L'année où elle est perçue, la subvention constitue une ressource pour son montant total",c:true},{t:"La subvention est toujours étalée sur la durée du projet",c:false},{t:"La subvention constitue un besoin à financer",c:false},{t:"La subvention est inscrite en ressources seulement si remboursable",c:false}],diff:'med',piege:false,expl:"L'année où elle est perçue, la subvention constitue une ressource pour son montant total. Son imposition est prise en compte dans le calcul de la CAF.",ref:"Chapitre 2 › B › Page 15"},
+  {q:"Le plan de trésorerie anticipant la situation financière uniquement sur le court terme est-il vrai ?",type:'multi',opts:[{t:"Faux : il anticipe à court terme mais aussi intègre opérations d'investissement et financement",c:true},{t:"Vrai : le plan de trésorerie ne couvre que le court terme",c:false},{t:"Vrai : il se limite strictement à la première année",c:false},{t:"Vrai : il ne prend en compte que les encaissements clients",c:false}],diff:'med',piege:true,expl:"PIÈGE : L'affirmation 'le plan de trésorerie anticipe uniquement sur le court terme' est FAUSSE. Le plan de trésorerie intègre les flux d'exploitation, d'investissement ET de financement — il ne se limite pas au court terme.",ref:"Sujet d'examen › Q31 & Chapitre 3 › IV › Page 22"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : QCM CAS PRATIQUES
+const serie2 = [
+  {q:"L'entreprise ECOVERT achète un broyeur plastique à 3 660 000 FCFA HT. Elle doit l'importer du Chine avec des frais de transport de 400 000 FCFA et des taxes douanières de 32,5%. Quel est le montant total TTC à intégrer dans le plan d'investissement ?",type:'multi',opts:[{t:"(3 660 000 + 400 000) × 1,325 = 5 373 500 FCFA",c:true},{t:"3 660 000 × 1,325 = 4 849 500 FCFA",c:false},{t:"3 660 000 + 400 000 = 4 060 000 FCFA",c:false},{t:"3 660 000 FCFA uniquement (hors taxes)",c:false}],diff:'hard',piege:true,expl:"PIÈGE TAXES : Le montant de base = 3 660 000 + 400 000 frais transport = 4 060 000 FCFA. Puis on applique les taxes douanières : 4 060 000 × 1,325 = 5 379 500 FCFA. Il faut TOUJOURS inclure frais de transport ET taxes dans le coût d'investissement TTC.",ref:"Chapitre 2 › 2.1.1 › Page 10"},
+  {q:"La société SOLAIRE-BF prévoit un investissement total de 52 000 000 FCFA. Pour couvrir les imprévus, quel est le montant minimum et maximum à provisionner ?",type:'multi',opts:[{t:"Min = 2 600 000 FCFA (5%) · Max = 7 800 000 FCFA (15%)",c:true},{t:"Min = 1 040 000 FCFA (2%) · Max = 5 200 000 FCFA (10%)",c:false},{t:"Exactement 5 200 000 FCFA (10%)",c:false},{t:"Min = 5 200 000 FCFA · Max = 10 400 000 FCFA",c:false}],diff:'med',piege:false,expl:"Pour les imprévus (aléas techniques et financiers), on prend entre 5 et 15% des estimations initiales totales. Sur 52 000 000 FCFA : minimum = 52 000 000 × 5% = 2 600 000 FCFA ; maximum = 52 000 000 × 15% = 7 800 000 FCFA.",ref:"Chapitre 2 › I › Page 9"},
+  {q:"L'entreprise AGRI-PRO prévoit pour la première année : stocks de matières premières (2 mois d'achats = 2 200 000 FCFA), salaires 2 mois (3 000 000 FCFA), frais généraux 2 mois (800 000 FCFA). Elle n'a pas de dettes fournisseurs. Quel est son BFR initial ?",type:'multi',opts:[{t:"6 000 000 FCFA",c:true},{t:"5 200 000 FCFA",c:false},{t:"3 800 000 FCFA",c:false},{t:"8 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"BFR initial = Total des besoins – Total des ressources (dettes) = (2 200 000 + 3 000 000 + 800 000) – 0 = 6 000 000 FCFA. Puisqu'il n'y a pas de dettes fournisseurs, le BFR correspond à l'intégralité des besoins.",ref:"Chapitre 2 › 2.1.1 › Page 11"},
+  {q:"Un projet génère les cash flows annuels suivants sur 3 ans : 10 000 000 / 12 000 000 / 15 000 000 FCFA. Le capital investi est de 30 000 000 FCFA. Le taux d'actualisation est 10%. La VAN est-elle positive ?",type:'multi',opts:[{t:"Oui, VAN positive car la somme actualisée dépasse 30 000 000 FCFA",c:true},{t:"Non, VAN négative car les flux cumulés (37 000 000) ne dépassent pas 30 000 000 × facteur d'intérêts composés",c:false},{t:"VAN = 0 car le TRI = 10%",c:false},{t:"Impossible à dire sans le calcul exact",c:false}],diff:'hard',piege:true,expl:"VAN = -30 000 000 + 10 000 000/1,1 + 12 000 000/1,21 + 15 000 000/1,331 = -30 000 000 + 9 090 909 + 9 917 355 + 11 270 097 = +278 361 FCFA. VAN > 0 donc projet rentable.",ref:"Chapitre 3 › 6.1 › Page 24"},
+  {q:"L'entreprise TECH-BURKINA a un Salaire Brut mensuel total de 2 500 000 FCFA pour 10 employés. Quel est le montant mensuel total des charges de personnel (SB + charges sociales) ?",type:'multi',opts:[{t:"2 900 000 FCFA (2 500 000 × 1,16)",c:true},{t:"2 750 000 FCFA (2 500 000 × 1,10)",c:false},{t:"2 500 000 FCFA (SB seul suffit)",c:false},{t:"3 000 000 FCFA (2 500 000 × 1,20)",c:false}],diff:'easy',piege:false,expl:"Charges sociales = 16% × SB = 0,16 × 2 500 000 = 400 000 FCFA. Total charges personnel = SB + Charges sociales = 2 500 000 + 400 000 = 2 900 000 FCFA.",ref:"Chapitre 3 › 2.8 › Page 20–21"},
+  {q:"Le plan de financement initial de SAVANE-INVEST montre : Besoins totaux = 45 000 000 FCFA. Ressources disponibles : fonds propres = 15 000 000 FCFA. Quel est le montant d'emprunt minimum pour respecter la règle des fonds propres ?",type:'multi',opts:[{t:"Les fonds propres représentent 33% du total > 25% → l'emprunt de 30 000 000 est acceptable",c:true},{t:"Il faut augmenter les fonds propres à 22 500 000 FCFA minimum",c:false},{t:"L'emprunt doit être inférieur aux fonds propres",c:false},{t:"Les fonds propres de 15 000 000 sont insuffisants (< 25% de 45 000 000 = 11 250 000)",c:false}],diff:'hard',piege:true,expl:"PIÈGE CALCUL : La règle est que les fonds propres représentent au moins 25 à 30% du financement GLOBAL. 15 000 000 / 45 000 000 = 33,3% > 25%. Donc les fonds propres sont SUFFISANTS. L'emprunt de 30 000 000 est acceptable.",ref:"Chapitre 1 › III › Page 7"},
+  {q:"Dans le plan de trésorerie de MAPRO-CI (mois 1), les encaissements CA TTC sont de 5 000 000 FCFA, les créances clients reportées = 1 500 000 FCFA. Les achats TTC = 2 000 000, charges personnel = 1 200 000, TVA = 500 000. Quel est le flux net d'exploitation du mois 1 ?",type:'multi',opts:[{t:"-200 000 FCFA",c:true},{t:"800 000 FCFA",c:false},{t:"1 300 000 FCFA",c:false},{t:"-700 000 FCFA",c:false}],diff:'hard',piege:false,expl:"Encaissements réels = 5 000 000 – 1 500 000 créances = 3 500 000. Décaissements = 2 000 000 + 1 200 000 + 500 000 = 3 700 000. Flux net exploitation = 3 500 000 – 3 700 000 = -200 000 FCFA.",ref:"Chapitre 3 › IV › Page 22"},
+  {q:"SOLAR-INVEST demande un prêt bancaire de 36 000 000 FCFA sur 5 ans au taux de 10%. Le remboursement annuel constant est de 7 238 888 FCFA. La trésorerie initiale en Année 1 est 0. Quelle est la trésorerie cumulée fin d'Année 1 si la CAF = 20 642 551 FCFA et la variation BFR = -5 773 691 FCFA ?",type:'multi',opts:[{t:"Environ 19 177 354 FCFA",c:true},{t:"26 000 000 FCFA",c:false},{t:"13 403 663 FCFA",c:false},{t:"7 403 663 FCFA",c:false}],diff:'hard',piege:false,expl:"Besoins An1 = Variation BFR (5 773 691) + Remboursement emprunt (7 238 888) = 13 012 579. Trésorerie dégagée = CAF – Besoins = 20 642 551 – (5 773 691 + 7 238 888) = 19 629 972 ≈ 19 177 354 FCFA. (Le cours indique exactement 19 177 354 FCFA dans l'exemple.)",ref:"Chapitre 2 › Plan de Financement › Page 16"},
+  {q:"PLASTIQUE-BF réalise un investissement de 42 279 398 FCFA et un BFR initial de 10 591 337 FCFA. Elle apporte 16 676 294 FCFA en fonds propres. Quel est le montant d'emprunt nécessaire pour équilibrer le plan de financement initial ?",type:'multi',opts:[{t:"36 194 441 FCFA",c:true},{t:"25 603 104 FCFA",c:false},{t:"42 279 398 FCFA",c:false},{t:"52 870 735 FCFA",c:false}],diff:'hard',piege:false,expl:"Total besoins = 42 279 398 + 10 591 337 = 52 870 735 FCFA. Emprunts = Total besoins – Fonds propres = 52 870 735 – 16 676 294 = 36 194 441 FCFA. C'est l'exemple exact du cours.",ref:"Chapitre 2 › Plan de Financement › Page 16"},
+  {q:"Une entreprise réalise un résultat avant impôts de 5 000 000 FCFA. Quel est le montant de l'IBIC et du résultat net ?",type:'multi',opts:[{t:"IBIC = 1 900 000 FCFA · Résultat net = 3 100 000 FCFA",c:true},{t:"IBIC = 1 500 000 FCFA · Résultat net = 3 500 000 FCFA",c:false},{t:"IBIC = 2 500 000 FCFA · Résultat net = 2 500 000 FCFA",c:false},{t:"IBIC = 900 000 FCFA · Résultat net = 4 100 000 FCFA",c:false}],diff:'med',piege:false,expl:"IBIC = 38% × Résultat avant impôts = 38% × 5 000 000 = 1 900 000 FCFA. Résultat net = 5 000 000 – 1 900 000 = 3 100 000 FCFA.",ref:"Chapitre 3 › III › Page 22"},
+  {q:"L'entreprise FASO-BUILD souhaite réaliser un test de sensibilité sur son projet. Son CA prévisionnel est de 80 000 000 FCFA. Quel CA doit-elle retenir pour l'hypothèse 1 (baisse de 10%) ?",type:'multi',opts:[{t:"72 000 000 FCFA",c:true},{t:"70 000 000 FCFA",c:false},{t:"68 000 000 FCFA",c:false},{t:"76 000 000 FCFA",c:false}],diff:'easy',piege:false,expl:"La première hypothèse du test de sensibilité est une baisse de 10% du CA. CA test = 80 000 000 × (1 – 0,10) = 80 000 000 × 0,90 = 72 000 000 FCFA.",ref:"Chapitre 3 › VII › Page 27"},
+  {q:"ECOPLAST-BF aménage les bureaux administratifs d'un local loué pour 5 000 000 FCFA HT, TVA 18%. Dans quel poste et pour quel montant TTC enregistre-t-on cet investissement ?",type:'multi',opts:[{t:"Installations générales, agencement divers · 5 900 000 FCFA TTC",c:true},{t:"Bâtiments et aménagements · 5 900 000 FCFA TTC",c:false},{t:"Installations générales · 5 000 000 FCFA HT",c:false},{t:"Charges immobilisées · 5 900 000 FCFA TTC",c:false}],diff:'hard',piege:true,expl:"Travaux dans un local non propriété → poste 'Installations générales, agencement, aménagements divers'. Montant TTC = 5 000 000 × 1,18 = 5 900 000 FCFA.",ref:"Sujet d'examen › Q36 & Chapitre 2 › 2.1.1"},
+  {q:"Un entrepreneur souhaite financer son projet de 60 000 000 FCFA. Il dispose de 18 000 000 FCFA en fonds propres. Quel pourcentage représentent ses fonds propres et cette structure est-elle acceptable selon le cours ?",type:'multi',opts:[{t:"30% → acceptable (≥ 25–30% exigés)",c:true},{t:"30% → pas acceptable (il faut 50% minimum)",c:false},{t:"30% → acceptable mais insuffisant (il faut 40% minimum)",c:false},{t:"18% → non acceptable",c:false}],diff:'med',piege:false,expl:"18 000 000 / 60 000 000 = 30%. Le cours indique que les fonds propres doivent représenter AU MOINS 25 à 30% du financement global. Avec exactement 30%, cette structure est à la limite mais acceptable.",ref:"Chapitre 1 › III › Page 7"},
+  {q:"La société INNOV-WEST prévoit la formation de son personnel pour 2 000 000 FCFA avant le démarrage. Dans quelle rubrique d'investissement intègre-t-on cette dépense ?",type:'multi',opts:[{t:"Charges immobilisées (frais de premier établissement)",c:true},{t:"Services extérieurs (frais de formation)",c:false},{t:"Charges de personnel de l'exercice 1",c:false},{t:"Plan de trésorerie uniquement",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Les frais de formation du personnel AVANT le démarrage font partie des investissements initiaux liés à la mise en route du projet — classés dans les 'charges immobilisées' (frais de premier établissement). Les formations EN COURS d'exploitation vont dans les services extérieurs.",ref:"Chapitre 2 › I › Page 8"},
+  {q:"ENERGIE-SAHEL a une CAF d'exploitation de 25 000 000 FCFA. Son EBE est de 35 000 000 FCFA. Quel est le montant de l'impôt sur les sociétés applicable sur le résultat d'exploitation ?",type:'multi',opts:[{t:"10 000 000 FCFA",c:true},{t:"13 300 000 FCFA",c:false},{t:"9 500 000 FCFA",c:false},{t:"3 800 000 FCFA",c:false}],diff:'hard',piege:false,expl:"CAF d'exploitation = EBE – Impôt sur les sociétés sur résultat d'exploitation. Donc : 25 000 000 = 35 000 000 – IS. IS = 35 000 000 – 25 000 000 = 10 000 000 FCFA.",ref:"Chapitre 3 › 6.1 › Page 25"},
+  {q:"Un investisseur compare deux projets A et B, de même coût. TRI(A) = 18% et TRI(B) = 12%. Lequel devrait être entrepris en priorité ?",type:'multi',opts:[{t:"Projet A car TRI(A) > TRI(B) → plus de croissance potentielle",c:true},{t:"Projet B car TRI(B) est plus prudent et moins risqué",c:false},{t:"Les deux projets sont équivalents car la VAN doit être calculée",c:false},{t:"Le projet B car 12% est un taux plus standard",c:false}],diff:'med',piege:false,expl:"Quand les coûts d'investissement sont les mêmes, celui dont le TRI est le plus élevé devrait être entrepris en premier. TRI(A) = 18% > TRI(B) = 12%, donc projet A en priorité.",ref:"Chapitre 3 › 6.2.3 › Page 26"},
+  {q:"HORIZON-BF achète 3 machines à presse au prix unitaire de 2 175 000 FCFA HT avec une TVA de 18%. Quel est le montant TTC à inscrire dans le plan d'investissement ?",type:'multi',opts:[{t:"7 699 500 FCFA",c:true},{t:"6 525 000 FCFA",c:false},{t:"7 098 750 FCFA",c:false},{t:"6 525 000 + 18% = 7 699 500 / 3 = 2 566 500 par machine",c:false}],diff:'med',piege:false,expl:"Prix HT total = 3 × 2 175 000 = 6 525 000 FCFA. TVA = 6 525 000 × 18% = 1 174 500 FCFA. Total TTC = 6 525 000 + 1 174 500 = 7 699 500 FCFA.",ref:"Chapitre 2 › 2.1.1 › Exemple page 11"},
+  {q:"L'entreprise BATISS-INVEST construit dans le cadre de son projet un plan de financement initial avec : Investissements TTC = 61 093 244, Imprévus (5%) = 3 052 662, BFR initial = 10 593 693. Les fonds propres disponibles sont de 17 150 713. Quel est le montant de financement externe recherché ?",type:'multi',opts:[{t:"Environ 57 588 886 FCFA",c:true},{t:"43 942 531 FCFA",c:false},{t:"61 093 244 FCFA",c:false},{t:"74 739 599 FCFA",c:false}],diff:'hard',piege:false,expl:"Total besoins = 61 093 244 + 3 052 662 + 10 593 693 = 74 739 599 FCFA. Financement externe = 74 739 599 – 17 150 713 = 57 588 886 FCFA.",ref:"Chapitre 2 › 2.1.2 › Page 12–13"},
+  {q:"Le plan de financement sur 5 ans de RECYCLO-BF affiche : Trésorerie cumulée An4 = 51 966 845 FCFA. Solde dégagé en An5 = 24 768 899 FCFA. Quelle est la trésorerie cumulée en An5 ?",type:'multi',opts:[{t:"76 735 744 FCFA",c:true},{t:"24 768 899 FCFA",c:false},{t:"27 197 946 FCFA",c:false},{t:"51 966 845 FCFA",c:false}],diff:'med',piege:false,expl:"Trésorerie cumulée An5 = Trésorerie cumulée An4 + Solde dégagé An5 = 51 966 845 + 24 768 899 = 76 735 744 FCFA. C'est l'application directe de la formule du cours.",ref:"Chapitre 2 › C › Page 16"},
+  {q:"L'entreprise SAHEL-TECH prévoit 2 mois de stock de matières plastiques (achat mensuel = 1 121 912 FCFA) et 2 mois de salaires (mensuel = 1 513 800 FCFA). Quel est le montant du BFR partiel correspondant à ces deux seuls postes ?",type:'multi',opts:[{t:"5 271 424 FCFA",c:true},{t:"2 635 712 FCFA",c:false},{t:"3 027 600 FCFA",c:false},{t:"4 271 424 FCFA",c:false}],diff:'med',piege:false,expl:"Stock matières = 2 × 1 121 912 = 2 243 824 FCFA. Salaires = 2 × 1 513 800 = 3 027 600 FCFA. BFR partiel = 2 243 824 + 3 027 600 = 5 271 424 FCFA.",ref:"Chapitre 2 › 2.1.1 › Exemple page 12"},
+  {q:"Un projet doit financer ses besoins avec emprunt + fonds propres uniquement (pas de subvention). Les fonds propres de 20 000 000 FCFA représentent 25% du total. Quel est le montant de l'emprunt ?",type:'multi',opts:[{t:"60 000 000 FCFA",c:true},{t:"40 000 000 FCFA",c:false},{t:"80 000 000 FCFA",c:false},{t:"15 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"Si fonds propres = 25% du total, alors total = 20 000 000 / 0,25 = 80 000 000 FCFA. Emprunt = Total – Fonds propres = 80 000 000 – 20 000 000 = 60 000 000 FCFA.",ref:"Chapitre 1 › III › Page 7"},
+  {q:"ENERGIE-VERT réalise en An3 : Chiffre d'affaires = 120 000 000 FCFA, Achats + Δ stocks = 45 000 000, Transports = 5 000 000, Services ext. = 10 000 000, Impôts & taxes = 2 000 000. Quelle est la Valeur Ajoutée ?",type:'multi',opts:[{t:"58 000 000 FCFA",c:true},{t:"63 000 000 FCFA",c:false},{t:"68 000 000 FCFA",c:false},{t:"75 000 000 FCFA",c:false}],diff:'hard',piege:false,expl:"VA = CA – (Achats + Δ stocks) – Transports – Services extérieurs – Impôts et taxes = 120 000 000 – 45 000 000 – 5 000 000 – 10 000 000 – 2 000 000 = 58 000 000 FCFA.",ref:"Chapitre 3 › III › Page 22"},
+  {q:"Un entrepreneur souhaite créer une fromagerie artisanale. Il n'a pas d'historique de ventes. Il rencontre 50 clients potentiels dont 30 lui signent une promesse d'achat de 500 000 FCFA/mois chacun. Quelle méthode de calcul du CA utilise-t-il et quel est le CA mensuel prévisionnel ?",type:'multi',opts:[{t:"Méthode par les produits · CA = 30 × 500 000 = 15 000 000 FCFA/mois",c:true},{t:"Méthode par imitation · CA = 15 000 000 FCFA/mois",c:false},{t:"Méthode par les charges · CA = 15 000 000 FCFA/mois",c:false},{t:"Méthode par le marché · CA = 25 000 000 FCFA/mois",c:false}],diff:'med',piege:true,expl:"La méthode 'par les produits' correspond aux promesses d'achat conditionnelles ou fermes recueillies auprès de clients potentiels. CA mensuel = 30 × 500 000 = 15 000 000 FCFA/mois.",ref:"Chapitre 3 › 1.2 › Page 18"},
+  {q:"Un entrepreneur demande un prêt bancaire pour démarrer son activité sans avoir encore réalisé une seule vente. Quelle est la recommandation du cours M19 ?",type:'multi',opts:[{t:"C'est fortement déconseillé : en cas de défaillance, les cautions (biens immobiliers) seront saisies",c:true},{t:"C'est recommandé car le prêt bancaire offre les taux les plus bas",c:false},{t:"C'est indifférent, l'entrepreneur choisit librement",c:false},{t:"C'est conseillé car cela force à avoir un business plan solide",c:false}],diff:'easy',piege:false,expl:"Le cours dit explicitement qu'il est FORTEMENT DÉCONSEILLÉ aux entrepreneurs de recourir aux prêts bancaires au démarrage sans être sûrs et certains des ventes réelles. Les cautions (biens immobiliers, biens précieux) sont saisies en cas de non-respect des remboursements.",ref:"Chapitre 4 › 7 › Page 33"},
+  {q:"BIOGREEN-SA prévoit de souscrire un emprunt obligataire d'une valeur nominale de 50 000 000 FCFA émis à 95% de la valeur nominale. Pour quel montant cet emprunt sera-t-il inscrit dans le plan de financement ?",type:'multi',opts:[{t:"47 500 000 FCFA (prix d'émission = 95% × 50 000 000)",c:true},{t:"50 000 000 FCFA (valeur nominale)",c:false},{t:"52 500 000 FCFA (valeur de remboursement estimée)",c:false},{t:"Le montant effectivement reçu à la fin du mois",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Les emprunts obligataires sont inscrits pour leur PRIX D'ÉMISSION (et non la valeur nominale). Prix d'émission = 50 000 000 × 95% = 47 500 000 FCFA.",ref:"Chapitre 2 › B › Page 15"},
+  {q:"PLASTIK-RECYCLE a une valeur résiduelle en fin de projet composée de : valeur vénale équipement = 5 000 000 FCFA et BFR d'exploitation récupéré = 3 000 000 FCFA. Quelle est la valeur résiduelle totale à intégrer dans le calcul de la VAN ?",type:'multi',opts:[{t:"8 000 000 FCFA",c:true},{t:"5 000 000 FCFA",c:false},{t:"3 000 000 FCFA",c:false},{t:"2 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"La valeur résiduelle = valeur vénale de l'investissement en fin de projet + BFR d'exploitation récupéré en fin de projet = 5 000 000 + 3 000 000 = 8 000 000 FCFA.",ref:"Chapitre 3 › 6.1 › Page 25"},
+  {q:"Une startup a remporté un concours entrepreneurial et reçoit 15 000 000 FCFA de prix. Dans quel groupe de sources de financement classe-t-on cette ressource ?",type:'multi',opts:[{t:"Fonds propres (apports personnels)",c:true},{t:"Subventions publiques",c:false},{t:"Emprunts",c:false},{t:"Crowdfunding",c:false}],diff:'med',piege:true,expl:"PIÈGE : Les prix remportés lors des concours entrepreneuriaux constituent des APPORTS PERSONNELS (fonds propres) — ils permettent de démarrer librement les activités. Ils ne sont pas des subventions au sens strict du cours.",ref:"Chapitre 4 › 3 › Page 30"},
+  {q:"Pour le test de sensibilité hypothèse 2 d'HYDRO-BURKINA : CA maintenu à 100 000 000 FCFA, charges augmentées de 10% (charges initiales = 70 000 000 FCFA). Quel est le résultat avant IS dans ce scénario ?",type:'multi',opts:[{t:"23 000 000 FCFA",c:true},{t:"30 000 000 FCFA",c:false},{t:"7 000 000 FCFA",c:false},{t:"37 000 000 FCFA",c:false}],diff:'hard',piege:false,expl:"Charges après hausse 10% = 70 000 000 × 1,10 = 77 000 000 FCFA. Résultat avant IS = CA – Charges = 100 000 000 – 77 000 000 = 23 000 000 FCFA.",ref:"Chapitre 3 › VII › Page 27"},
+  {q:"SOLAIRE-INVEST veut élaborer son plan de financement initial. En quelle étape faut-il calculer le BFR selon le cours ?",type:'multi',opts:[{t:"Étape 3 : après avoir budgétisé les frais de création et recensé les investissements",c:true},{t:"Étape 1 : en premier lieu avant tout autre calcul",c:false},{t:"Étape 6 : à la toute fin après l'équilibrage",c:false},{t:"Étape 2 : avant les investissements mais après les frais de création",c:false}],diff:'med',piege:false,expl:"Le cours donne 6 étapes : 1) Budgétiser frais de création, 2) Recenser investissements, 3) Calculer le BFR, 4) Recenser les apports, 5) Rechercher les financements, 6) Équilibrer et analyser. Le BFR est donc à l'étape 3.",ref:"Chapitre 2 › 2.1.2 › Page 12"},
+  {q:"AGROTECH-BF prévoit des distributions de dividendes de 5 000 000 FCFA en An3. Cette charge doit-elle figurer dans les 'emplois' ou les 'ressources' du plan de financement ?",type:'multi',opts:[{t:"Dans les emplois (besoins), car c'est une amputation de l'autofinancement",c:true},{t:"Dans les ressources, car c'est un flux sortant de l'entreprise",c:false},{t:"Uniquement dans le compte de résultat",c:false},{t:"Cela n'apparaît pas dans le plan de financement",c:false}],diff:'hard',piege:true,expl:"Les dividendes distribués figurent dans les EMPLOIS (besoins) car c'est une amputation des ressources d'autofinancement. Alternativement, on peut inscrire en ressources une CAF nette de dividendes versés aux actionnaires.",ref:"Chapitre 2 › 2.2.2 › Page 14"},
+  {q:"INNOV-SAHEL réalise des ventes de 50 000 000 FCFA/an. Son BFR représente 15% du CA (ratio sectoriel). Quel est le BFR prévisionnel ?",type:'multi',opts:[{t:"7 500 000 FCFA",c:true},{t:"5 000 000 FCFA",c:false},{t:"15 000 000 FCFA",c:false},{t:"750 000 FCFA",c:false}],diff:'easy',piege:false,expl:"BFR = Ratio BFR/CA × CA = 15% × 50 000 000 = 7 500 000 FCFA. Le cours mentionne qu'on peut évaluer les besoins supplémentaires à partir du ratio BFR/CA observé par le passé.",ref:"Chapitre 2 › 2.2.2 › Page 14"},
+  {q:"ENERGIE-VERTE vend ses systèmes solaires. Le CA de l'An1 est estimé à 30 000 000 FCFA, et croît de 20% par an. Quel est le CA prévisionnel de l'An3 ?",type:'multi',opts:[{t:"43 200 000 FCFA",c:true},{t:"42 000 000 FCFA",c:false},{t:"36 000 000 FCFA",c:false},{t:"54 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"An2 = 30 000 000 × 1,20 = 36 000 000 FCFA. An3 = 36 000 000 × 1,20 = 43 200 000 FCFA. (Croissance composée de 20% sur 2 ans depuis An1.)",ref:"Chapitre 3 › 1 › Page 18"},
+  {q:"FASO-INDUSTRIE contracte un microcrédit. Pour quelle situation typique le microcrédit est-il prévu ?",type:'multi',opts:[{t:"Entrepreneurs ne pouvant accéder aux prêts bancaires classiques, sans garanties réelles",c:true},{t:"Grandes entreprises souhaitant diversifier leurs sources de financement",c:false},{t:"Uniquement les associations à but non lucratif",c:false},{t:"Les entrepreneurs ayant déjà un prêt bancaire en cours",c:false}],diff:'easy',piege:false,expl:"Le microcrédit s'adresse généralement à ceux qui ne disposent pas de garanties réelles, d'apport personnel suffisant, et dont le besoin est trop faible pour intéresser les banques. C'est une alternative au prêt bancaire classique.",ref:"Chapitre 4 › 6 › Page 33"},
+  {q:"Dans le plan de trésorerie d'AGRI-PLAN au mois 3, on note : flux net d'exploitation = +2 000 000 FCFA, flux net hors exploitation = -8 000 000 FCFA. Trésorerie cumulée fin mois 2 = +5 000 000 FCFA. Quelle est la trésorerie cumulée fin mois 3 ?",type:'multi',opts:[{t:"-1 000 000 FCFA",c:true},{t:"+7 000 000 FCFA",c:false},{t:"-3 000 000 FCFA",c:false},{t:"+9 000 000 FCFA",c:false}],diff:'hard',piege:false,expl:"Flux mensuel total = Flux exploitation + Flux hors exploitation = 2 000 000 + (-8 000 000) = -6 000 000 FCFA. Trésorerie cumulée fin mois 3 = 5 000 000 + (-6 000 000) = -1 000 000 FCFA.",ref:"Chapitre 3 › IV › Page 22–23"},
+  {q:"Une cession d'actif (équipement remplacé, valeur vénale = 8 000 000 FCFA) intervient en An4 du plan de financement. Comment doit-on l'enregistrer ?",type:'multi',opts:[{t:"En ressources en An4 pour 8 000 000 FCFA",c:true},{t:"En emplois (besoins) en An4",c:false},{t:"En réduction du montant d'investissement de l'An4",c:false},{t:"Cela n'apparaît pas dans le plan de financement",c:false}],diff:'hard',piege:true,expl:"Les cessions d'éléments de l'actif constituent une SOURCE DE FINANCEMENT potentielle. Elles s'inscrivent en RESSOURCES dans le plan de financement pour leur valeur vénale estimée (de façon prudente).",ref:"Chapitre 2 › B › Page 15"},
+  {q:"L'EBE d'HYDRO-BURKINA en An2 est de 18 000 000 FCFA. Les dotations aux amortissements sont de 4 500 000 FCFA. Quel est le résultat d'exploitation ?",type:'multi',opts:[{t:"13 500 000 FCFA",c:true},{t:"22 500 000 FCFA",c:false},{t:"18 000 000 FCFA",c:false},{t:"4 500 000 FCFA",c:false}],diff:'easy',piege:false,expl:"Résultat d'exploitation = EBE – Dotations aux amortissements = 18 000 000 – 4 500 000 = 13 500 000 FCFA.",ref:"Chapitre 3 › III › Page 22"},
+  {q:"Dans le 'Love money', l'entrepreneur emprunte 10 000 000 FCFA à son oncle. Quel document formel est VIVEMENT recommandé par le cours ?",type:'multi',opts:[{t:"Établir des bases solides et des termes de remboursement préalablement convenus pour éviter des conflits",c:true},{t:"Un contrat notarié obligatoire imposé par la loi OHADA",c:false},{t:"Une garantie bancaire obligatoire",c:false},{t:"Aucun document n'est nécessaire entre proches",c:false}],diff:'med',piege:false,expl:"Le cours recommande d'établir des bases solides et de s'assurer du bon fonctionnement de l'entreprise en termes d'entrée des fonds, et de convenir des termes de remboursement à l'avance — essentiel pour éviter des conflits à l'avenir.",ref:"Chapitre 4 › 2 › Page 29"},
+  {q:"SOLAIRE-BF comptabilise 15 climatiseurs de bureau à 275 000 FCFA/unité, TVA 18%. Dans quel poste et pour quel montant TTC ?",type:'multi',opts:[{t:"Matériel et mobilier divers · 324 500 FCFA TTC par unité (soit 4 867 500 pour 15)",c:true},{t:"Équipements de production · 275 000 FCFA HT par unité",c:false},{t:"Services extérieurs · 275 000 FCFA",c:false},{t:"Charges immobilisées · 324 500 FCFA",c:false}],diff:'med',piege:false,expl:"Les climatiseurs de bureau = Matériel et Mobiliers Divers. Prix TTC = 275 000 × 1,18 = 324 500 FCFA par unité. Total 15 unités = 15 × 324 500 = 4 867 500 FCFA.",ref:"Chapitre 2 › 2.1.1 › Exemple page 11"},
+  {q:"L'entreprise PLAST-INNOVATION achète 15 tricycles pour la livraison au prix unitaire de 1 000 000 FCFA avec TVA 18%. Dans quel poste d'investissement ?",type:'multi',opts:[{t:"Matériel roulant · 2 360 000 FCFA TTC pour 2 unités (ou 1 180 000 par unité)",c:true},{t:"Équipements de production · 1 000 000 FCFA HT",c:false},{t:"Services extérieurs · Transport sur achats",c:false},{t:"Matériel et mobilier de bureau",c:false}],diff:'med',piege:true,expl:"Les tricycles pour transport/livraison = Matériel Roulant. Le cours montre 2 tricycles × 1 000 000 = 2 000 000 HT + TVA 18% (360 000) = 2 360 000 FCFA TTC. Pour 1 unité : 1 000 000 × 1,18 = 1 180 000 FCFA TTC.",ref:"Chapitre 2 › 2.1.1 › Exemple page 11"},
+  {q:"AGRO-FASO veut comparer deux projets : Projet X (TRI = 15%, coût = 40M FCFA) et Projet Y (TRI = 22%, coût = 80M FCFA). Comment utiliser le TRI pour ce choix ?",type:'multi',opts:[{t:"Le TRI ne peut comparer que des projets de coût similaire ; avec des coûts différents, la VAN est plus adaptée",c:true},{t:"Choisir Projet Y car TRI(Y) > TRI(X) dans tous les cas",c:false},{t:"Choisir Projet X car le coût est moindre",c:false},{t:"Les deux projets sont rentables, donc indifférents",c:false}],diff:'hard',piege:true,expl:"PIÈGE : Le TRI s'utilise 'à titre de comparaison entre des projets dont les coûts d'investissement sont les MÊMES'. Lorsque les coûts diffèrent significativement, la VAN reste le meilleur indicateur de valeur réelle.",ref:"Chapitre 3 › 6.2.3 › Page 26"},
+  {q:"BIOTEX-BF a besoin de financer son projet. Elle obtient une subvention de 10 000 000 FCFA perçue en An2. En An2, comment cette subvention apparaît-elle dans le plan de financement ?",type:'multi',opts:[{t:"En ressources pour 10 000 000 FCFA en An2",c:true},{t:"En ressources étalées sur 5 ans à 2 000 000/an",c:false},{t:"En besoins (emplois) à rembourser ultérieurement",c:false},{t:"Elle n'apparaît pas dans le plan de financement mais dans le compte de résultat",c:false}],diff:'med',piege:false,expl:"L'année où elle est perçue, la subvention constitue une ressource pour son montant TOTAL. Elle est donc inscrite intégralement en An2 dans les ressources. Son imposition est prise en compte dans la CAF.",ref:"Chapitre 2 › B › Page 15"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (Questions du sujet PDF dans l'ordre)
+const serie3 = [
+  {q:"[Q31] Laquelle de ces affirmations concernant le plan de trésorerie est vraie ?",type:'multi',opts:[{t:"Le plan de trésorerie anticipe la situation financière de l'entreprise que sur le court terme.",c:false},{t:"Le plan de trésorerie reste constant quel que soit les opérations courantes d'exploitation.",c:false},{t:"Le plan de trésorerie varie en fonction des opérations courantes d'exploitation, mais aussi des opérations liées à l'investissement et au financement.",c:true},{t:"Le plan de trésorerie n'a pas besoin du compte de résultat prévisionnel et du plan de financement initial pour son établissement.",c:false}],diff:'med',piege:true,expl:"✅ Réponse C. Le plan de trésorerie varie en fonction de TROIS types d'opérations : exploitation, investissement ET financement. Les autres affirmations sont fausses : il n'anticipe pas QUE sur le court terme (A faux), il n'est pas constant (B faux), et il a besoin des autres documents (D faux).",ref:"Sujet Examen UE7 › Q31 & Chapitre 3 › IV › Page 22"},
+  {q:"[Q32] Parmi ces affirmations relatives au plan financier, laquelle est fausse ?",type:'multi',opts:[{t:"Le plan financier récapitule l'ensemble des décisions financières dont la formulation et la mise en œuvre n'engagent l'entreprise que sur le moyen terme.",c:true},{t:"Le plan financier revêt un caractère intégrateur dans la mesure où il reflète les implications financières de tous les projets arrêtés par l'entreprise et permet ainsi de tester leur cohérence et leur comptabilité.",c:false},{t:"Le plan financier est une présentation schématique, d'une part, des frais que va coûter l'investissement, et d'autre part, des moyens qui permettront de le financer.",c:false},{t:"Le plan financier découle de la politique et de la stratégie générale d'un projet ou d'une entreprise.",c:false}],diff:'hard',piege:true,expl:"✅ Réponse A (la fausse). Le plan financier engage l'entreprise sur le LONG terme — pas uniquement le moyen terme. Cette affirmation est délibérément fausse. Les réponses B, C et D sont correctes.",ref:"Sujet Examen UE7 › Q32 & Chapitre 2 › II › Page 8–9"},
+  {q:"[Q33] Laquelle de ces affirmations portant sur le schéma de financement est fausse ?",type:'multi',opts:[{t:"Le schéma de financement assure l'ajustement entre les échéanciers concernant respectivement les emplois prévisionnels des fonds et les sources prévisionnelles de financement.",c:false},{t:"Le schéma de financement découle du plan d'investissement et indique pour chaque rubrique d'investissement, les sources de financement prévues.",c:false},{t:"Le schéma de financement d'un projet est encore désigné par plan de financement initiale ou structure financière d'un projet.",c:false},{t:"Les principales sources de financement possible du schéma de financement sont les fonds propres, les apports personnels, et les subventions.",c:true}],diff:'hard',piege:true,expl:"✅ Réponse D (la fausse). Les 3 groupes principaux sont : fonds propres + EMPRUNTS + subventions. L'option D remplace 'emprunts' par 'apports personnels' — ce qui est faux. Les apports personnels font partie des fonds propres mais ne constituent pas un groupe séparé des emprunts.",ref:"Sujet Examen UE7 › Q33 & Chapitre 4 › I › Page 28"},
+  {q:"[Q34] Les frais de transport sont relatifs au transport lié d'une part à la vente des produits (biens et services) proposés par le projet et l'entreprise et d'autre part à l'achat des marchandises et matières nécessaires à l'activité du projet.",type:'multi',opts:[{t:"Vrai",c:true},{t:"Faux",c:false}],diff:'easy',piege:false,expl:"✅ VRAI. Les frais de transport couvrent les deux sens : transport sur les ventes ET transport sur les achats. Le cours mentionne explicitement 'Transport (sur achat, sur vente, …)' dans le tableau des charges d'exploitation.",ref:"Sujet Examen UE7 › Q34 & Chapitre 3 › 2.5 › Page 20"},
+  {q:"[Q35] L'élaboration de plan financier comprend plusieurs niveaux et ce en fonction de l'horizon de planification retenue qui peut être : (plusieurs réponses possibles)",type:'multi',opts:[{t:"L'horizon de court terme de 1 an.",c:true},{t:"L'horizon de moyen terme allant de 2 à 3 ans.",c:true},{t:"L'horizon de long terme allant de 4 à 10 ans.",c:false},{t:"L'horizon de moyen et long terme allant de 3 à 5 ans.",c:true}],diff:'hard',piege:true,expl:"✅ Réponses A, B et D. Les horizons sont : court terme (1 an), moyen terme (2–3 ans), et moyen & long terme (3–5 ans). L'horizon 'long terme allant de 4 à 10 ans' (C) n'est pas mentionné dans le cours comme horizon standard — le cours parle de 3 à 5 ans maximum.",ref:"Sujet Examen UE7 › Q35 & Chapitre 1 › II › Page 7"},
+  {q:"[Q36] Si des travaux sont réalisés dans des constructions n'appartenant pas à l'entreprise ou au projet, dans lequel de ces postes devons-nous enregistrer la dépense ?",type:'multi',opts:[{t:"Installation spéciale du locale.",c:false},{t:"Bâtiments à installation spéciale.",c:false},{t:"Bâtiments installations techniques et agencement.",c:false},{t:"Installation générales, agencement, aménagement divers.",c:true}],diff:'hard',piege:true,expl:"✅ Réponse D. Les travaux réalisés dans des constructions n'appartenant pas à l'entreprise/projet s'enregistrent dans 'Installations générales, agencement, aménagements divers'. C'est un piège classique d'examen.",ref:"Sujet Examen UE7 › Q36"},
+  {q:"[Q37] Laquelle de ces affirmations portant sur le plan financier est fausse ?",type:'multi',opts:[{t:"Après son élaboration, le plan financier reste invariable quel que soit l'évolution de la situation économique et financière de l'entreprise/projet.",c:true},{t:"Le plan financier présente des états prévisionnels chiffrés des activités à réaliser et des moyens financiers dont l'entreprise/le projet doit disposer à cette fin.",c:false},{t:"Le plan financier est un rapport composé d'une série de tableaux qui valorise les hypothèses de travail dans un business plan.",c:false},{t:"Le plan financier constitue un outil permanent de gestion utilisé pour suivre, contrôler et guider le développement de l'entreprise/projet.",c:false}],diff:'hard',piege:true,expl:"✅ Réponse A (la fausse). Le plan financier n'est PAS invariable — c'est un outil permanent de gestion (voir réponse D qui est vraie). Il doit évoluer avec la situation économique. L'affirmation A est délibérément fausse.",ref:"Sujet Examen UE7 › Q37"},
+  {q:"[Q38] L'élaboration de plan financier conduit à s'interroger essentiellement sur deux points ; lesquels ? (plusieurs réponses possibles)",type:'multi',opts:[{t:"Les conséquences d'un conflit entre employés.",c:false},{t:"Le niveau de risque que l'entreprise est prête à assumer en fonction de l'objectif de rentabilité.",c:true},{t:"Le niveau de rigidité financière qui permettra à l'entreprise de résister au changement de son environnement.",c:false},{t:"Le niveau de flexibilité financière qui permettra à l'entreprise de s'adapter à l'évolution de son environnement.",c:true}],diff:'hard',piege:true,expl:"✅ Réponses B et D. Les deux points essentiels sont : (1) le niveau de RISQUE assumé vs objectif de rentabilité, et (2) le niveau de FLEXIBILITÉ financière pour s'adapter à l'environnement. Note : 'rigidité' (C) est l'opposé de 'flexibilité' — c'est un piège !",ref:"Sujet Examen UE7 › Q38"},
+  {q:"[Q39] Par l'indicateur de la Valeur Actuelle Nette (VAN), un projet est rentable si sa VAN est positive.",type:'multi',opts:[{t:"Vrai",c:true},{t:"Faux",c:false}],diff:'easy',piege:false,expl:"✅ VRAI. Le projet est acceptable dès lors que VAN > 0. Une VAN positive signifie que le projet génère plus de valeur que le coût du capital — c'est le critère fondamental de rentabilité.",ref:"Sujet Examen UE7 › Q39 & Chapitre 3 › 6.1 › Page 25"},
+  {q:"[Q40] Laquelle de ces phrases contient les trois groupes de forme de financement disponibles pour satisfaire aux besoins d'une entreprise ou d'un projet ?",type:'multi',opts:[{t:"Financement par crédit-bail, par ligne de crédit et par leasing.",c:false},{t:"Financement par crédit-bail, par subvention et par fonds propres.",c:false},{t:"Financement par emprunt, par subvention et par fonds propres.",c:true},{t:"Financement par emprunt, par subvention et par leasing.",c:false}],diff:'hard',piege:true,expl:"✅ Réponse C. Les 3 groupes sont : EMPRUNT + SUBVENTION + FONDS PROPRES. Les pièges : crédit-bail et leasing sont des modalités d'emprunt (pas des groupes distincts), et 'ligne de crédit' n'est pas un groupe principal.",ref:"Sujet Examen UE7 › Q40 & Chapitre 4 › I › Page 28"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M19';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div style="margin-bottom:20px">
+  <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px">🔬 Méthode & Anti-Pièges — M19 Plan Financier</div>
+  <div style="font-size:12px;color:var(--text3)">Calvin TIAM · Institut 2iE · Mots-pièges, chiffres-clés, schémas de décision</div>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-Pièges Fatals</div>
+    <span class="piege-word">moyen terme</span>
+    <span class="piege-word">constant</span>
+    <span class="piege-word">court terme seulement</span>
+    <span class="piege-word">invariable</span>
+    <span class="piege-word">rigidité</span>
+    <span class="piege-word">crédit-bail</span>
+    <span class="piege-word">leasing</span>
+    <span class="piege-word">HT</span>
+    <span class="piege-word">apports personnels</span>
+    <span class="piege-word">VAN = 0</span>
+    <span class="piege-word">directement calculable</span>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3)">Ces mots dans une option → suspect immédiat !</div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🔢 Chiffres-Clés à Mémoriser</div>
+    <table class="chiffres-table">
+      <tr><th>Valeur</th><th>Signification</th></tr>
+      <tr><td>3–5 ans</td><td>Durée standard du plan financier</td></tr>
+      <tr><td>5–15%</td><td>Fourchette des imprévus sur investissements</td></tr>
+      <tr><td>25–30%</td><td>Part minimale des fonds propres dans le financement global</td></tr>
+      <tr><td>16%</td><td>Charges sociales sur le salaire brut</td></tr>
+      <tr><td>38%</td><td>Taux IBIC (Impôt sur Bénéfices Industriels et Commerciaux)</td></tr>
+      <tr><td>10%</td><td>Variation utilisée dans les tests de sensibilité</td></tr>
+      <tr><td>2 mois</td><td>Hypothèse standard pour le calcul du BFR initial</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-bottom:12px">
+  <div class="methode-card-title">📐 Schéma : Élaboration Plan Financement Initial (Étapes)</div>
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Budgétiser les frais de création</strong> (immatriculation, EIES, autorisations)</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Recenser et évaluer tous les investissements</strong> TTC (inclure transport maritime + taxes douanières + TVA + imprévus 5–15%)</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Calculer le BFR au démarrage</strong> (généralement 2 mois de stocks + 2 mois salaires + 2 mois frais généraux)</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Recenser les apports des associés</strong> (numéraire, nature, compte courant) → vérifier ≥ 25–30% du total</div></div>
+  <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Rechercher les financements externes</strong> (emprunts, subventions) → Emprunt = Total besoins – Fonds propres</div></div>
+  <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Équilibrer et analyser la cohérence</strong> (Ressources ≥ Besoins, vérifier la trésorerie cumulée positive)</div></div>
+</div>
+
+<div class="methode-card" style="margin-bottom:12px">
+  <div class="methode-card-title">📊 Schéma : Compte d'Exploitation Prévisionnel (Cascade)</div>
+  <div class="schema-step"><div class="schema-num">→</div><div class="schema-text"><strong>Chiffre d'Affaires</strong><br>− Achats et variations de stocks<br>− Transports consommés<br>− Services extérieurs A&B<br>− Impôts et taxes<br>= <strong style="color:var(--accent)">VALEUR AJOUTÉE (VA)</strong></div></div>
+  <div class="schema-step"><div class="schema-num">→</div><div class="schema-text"><strong>Valeur Ajoutée</strong><br>− Charges du personnel (SB + 16% charges sociales)<br>= <strong style="color:var(--accent)">EBE (Excédent Brut d'Exploitation)</strong></div></div>
+  <div class="schema-step"><div class="schema-num">→</div><div class="schema-text"><strong>EBE</strong><br>− Dotations aux amortissements<br>= <strong style="color:var(--accent)">RÉSULTAT D'EXPLOITATION</strong></div></div>
+  <div class="schema-step"><div class="schema-num">→</div><div class="schema-text"><strong>Résultat d'exploitation</strong><br>− Frais financiers (intérêts emprunts)<br>= <strong style="color:var(--accent)">RÉSULTAT AVANT IMPÔTS</strong></div></div>
+  <div class="schema-step"><div class="schema-num">→</div><div class="schema-text"><strong>Résultat avant impôts</strong><br>− IBIC (38%)<br>= <strong style="color:var(--accent)">RÉSULTAT NET</strong></div></div>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">🎯 Schéma Décisionnel VAN/TRI</div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text"><strong>VAN &gt; 0 ?</strong><br>OUI → projet rentable ✅<br>NON → projet à rejeter ❌</div></div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text"><strong>Comparer 2 projets (même coût) ?</strong><br>→ Choisir le TRI le plus élevé</div></div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text"><strong>TRI vs coût du capital ?</strong><br>TRI &gt; coût capital → rentable ✅<br>TRI &lt; coût capital → non rentable ❌</div></div>
+    <div class="piege-box"><div class="piege-title">⚠ PIÈGE TRI</div><div class="piege-text">Le TRI ne se calcule PAS directement par formule — il faut itérer (tâtonner) ou utiliser un logiciel.</div></div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🌱 Sources de Financement — Classification</div>
+    <div class="def-grid">
+      <div class="def-item"><div class="def-term">Groupe 1 — Fonds Propres</div><div class="def-text">Apport personnel, love money, concours, crowdfunding, prêt d'honneur (taux 0%)</div></div>
+      <div class="def-item"><div class="def-term">Groupe 2 — Emprunts</div><div class="def-text">Prêt bancaire (⚠ risqué au démarrage), microcrédit, emprunts MLT</div></div>
+    </div>
+    <div class="def-item" style="margin-top:8px"><div class="def-term">Groupe 3 — Subventions</div><div class="def-text">Aides publiques, subventions d'équipement (inscrire l'année de perception, montant total)</div></div>
+    <div class="piege-box" style="margin-top:10px"><div class="piege-title">⚠ PIÈGE Q40 EXAMEN</div><div class="piege-text">Réponse correcte = <strong>Emprunt + Subvention + Fonds propres</strong>. Ni crédit-bail, ni leasing ne sont des groupes distincts.</div></div>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-bottom:12px">
+  <div class="methode-card-title">🔬 Confusions Classiques M19</div>
+  <table class="chiffres-table">
+    <tr><th>Confusion</th><th>Bonne réponse</th><th>Piège courant</th></tr>
+    <tr><td>Durée plan financier</td><td>Long terme (3–5 ans)</td><td>Dire "moyen terme" → FAUX</td></tr>
+    <tr><td>Amortissements</td><td>Comptes de production uniquement</td><td>Penser qu'ils sont dans la trésorerie → FAUX</td></tr>
+    <tr><td>VAN = 0</td><td>TRI = taux d'actualisation (neutre)</td><td>Penser que c'est rentable → FAUX</td></tr>
+    <tr><td>Plan de trésorerie</td><td>Varie : exploitation + investissement + financement</td><td>Dire "constant" ou "court terme uniquement" → FAUX</td></tr>
+    <tr><td>Prêt d'honneur</td><td>Taux 0%, sans garantie</td><td>Confondre avec prêt bancaire classique</td></tr>
+    <tr><td>BFR initial</td><td>Inclut stocks + salaires + frais généraux (2 mois)</td><td>Penser que c'est juste les stocks</td></tr>
+    <tr><td>Charges sociales</td><td>16% du Salaire Brut</td><td>Utiliser 18% ou 10%</td></tr>
+    <tr><td>Travaux dans local loué</td><td>Installations générales, agencement, aménagements divers</td><td>Choisir "Bâtiments" → FAUX</td></tr>
+  </table>
+</div>
+
+<div class="methode-card">
+  <div class="methode-card-title">💡 Formules Essentielles M19</div>
+  <div class="key-box"><div class="key-title">Formules à maîtriser</div><div class="key-text">
+    <ul>
+      <li><strong>Trésorerie fin période</strong> = Trésorerie début + Solde plan financement</li>
+      <li><strong>BFR initial</strong> = Total besoins démarrage – Dettes fournisseurs</li>
+      <li><strong>VAN</strong> = –C + Σ[Rt / (1+i)^t] + V/(1+i)^n</li>
+      <li><strong>CAF d'exploitation</strong> = EBE – Impôt sur les sociétés/résultat d'exploitation</li>
+      <li><strong>Charges de personnel</strong> = Salaire Brut × 1,16</li>
+      <li><strong>IBIC</strong> = Résultat avant impôts × 38%</li>
+      <li><strong>Résultat Net</strong> = Résultat avant impôts × (1 – 38%)</li>
+      <li><strong>Investissement TTC</strong> = Prix HT × (1 + taux de taxe applicable)</li>
+      <li><strong>Imprévus</strong> = Coût total investissements × (5% à 15%)</li>
+    </ul>
+  </div></div>
+</div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

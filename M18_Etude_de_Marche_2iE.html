@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M18 — Étude de Marché · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-size: 10px; color: var(--text3); font-family: 'Space Mono', monospace; }
+.score-card { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px; text-align: center; }
+.score-big { font-family: 'Space Mono', monospace; font-size: 56px; color: var(--accent); font-weight: 700; }
+.score-label { font-size: 14px; color: var(--text2); margin: 8px 0 20px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 12px; -webkit-justify-content: center; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 20px; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); } .score-stat.red { border-color: rgba(255,77,106,0.4); } .score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; border-radius: var(--r2); border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; border-radius: var(--r2); border: 1px solid rgba(255,140,66,0.5); background: rgba(255,140,66,0.1); color: var(--orange); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-retry:hover { background: rgba(255,140,66,0.2); }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M18</div>
+  <div class="header-title">Étude de Marché — Calvin TIAM · 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '🎯',
+    title: "Définition & Importance de l'Étude de Marché",
+    subtitle: "Chapitre 1 — Concepts fondamentaux",
+    content: `
+      <div class="memo-section-title">📌 Définition</div>
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Étude de marché</div>
+          <div class="def-text">Démarche permettant au promoteur de <strong>comprendre le marché</strong> sur lequel il projette de s'implanter, en collectant et analysant des informations sur clients, concurrents, environnement et canaux de distribution. (p.4)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Marché (sens 1er)</div>
+          <div class="def-text">Ensemble des <strong>données chiffrées</strong> relatives à un produit ou service, plus ou moins segmenté. Ex : marché de la téléphonie, marché du bétail. (p.5)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Marché (sens étendu)</div>
+          <div class="def-text">Lieu réel ou virtuel de <strong>rencontre des offres et des demandes</strong> à travers une structure de prix dans un environnement donné. (p.6)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Définition Eric Vernette</div>
+          <div class="def-text">Mise en œuvre d'un ensemble de techniques de collecte et traitement d'informations pour <strong>mieux connaître un marché</strong> et réduire l'incertitude des décisions. (p.16)</div>
+        </div>
+      </div>
+      <div class="key-box">
+        <div class="key-title">🔑 Les 4 composantes du marché</div>
+        <div class="key-text"><ul>
+          <li><strong>L'offre</strong> : le produit et les produits concurrents</li>
+          <li><strong>La demande</strong> : les clients acheteurs</li>
+          <li><strong>L'environnement</strong> : époque, lieu, tendances, législation</li>
+          <li><strong>Les canaux de distribution</strong> : stratégie commerciale/marketing</li>
+        </ul></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ PIÈGE FRÉQUENT</div>
+        <div class="piege-text">L'étude de marché se fait <strong>AVANT</strong> de lancer l'activité, pas pendant. Elle permet d'évaluer la viabilité et la rentabilité du projet. Un résultat négatif ne signifie pas abandon mais <strong>ajustement</strong> du projet.</div>
+      </div>
+    `
+  },
+  {
+    icon: '🗂️',
+    title: "Types de Marché & Segmentation",
+    subtitle: "Chapitre 1 — Sections A, B, C, D",
+    content: `
+      <div class="memo-section-title">📊 Les 4 types de marché (examen PDF)</div>
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Marché générique</div>
+          <div class="def-text">Marché global d'un besoin large. Ex : marché de l'alimentation.</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Marché principal</div>
+          <div class="def-text">Ensemble des produits semblables au produit étudié et directement concurrents. Ex : marché des yaourts.</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Marché de substitution</div>
+          <div class="def-text">Produits différents satisfaisant le même besoin. Ex : beurre vs margarine.</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Marché complémentaire</div>
+          <div class="def-text">Ensemble des marques ou entreprises offrant des <strong>produits complémentaires</strong> à un autre type de produit donné, sur un marché précis. (p. examen Q29)</div>
+        </div>
+      </div>
+      <div class="memo-section-title">✂️ Segmentation</div>
+      <div class="key-box">
+        <div class="key-title">🔑 Démarche SCP (3 temps)</div>
+        <div class="key-text"><ul>
+          <li><strong>S</strong>egmentation → découper le marché en groupes homogènes</li>
+          <li><strong>C</strong>iblage → choisir le(s) segment(s) à attaquer</li>
+          <li><strong>P</strong>ositionnement → se placer dans l'esprit du consommateur</li>
+        </ul></div>
+      </div>
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Segment consommateurs</div>
+          <div class="def-text">Critères : démographiques, géographiques, économiques, goûts, habitudes d'achat. (p.6)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Segment produits</div>
+          <div class="def-text">Subdivision des ventes d'un produit générique en sous-groupes. Ex : lait → yaourt, boissons lactées, desserts lactés. (p.7)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Niche</div>
+          <div class="def-text">Segment étroit aux besoins très spécifiques, ciblé en général par 1 ou 2 entreprises seulement. Potentiel de rentabilité élevé. (p.7)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">One-to-one</div>
+          <div class="def-text">Marketing personnalisé : chaque client est unique et mérite un traitement individuel. (p.7)</div>
+        </div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ PIÈGE</div>
+        <div class="piege-text">La procédure de segmentation = 3 phases : <strong>enquête → analyse → identification</strong>. Ne pas confondre avec la démarche SCP (Segmentation-Ciblage-Positionnement).</div>
+      </div>
+    `
+  },
+  {
+    icon: '📍',
+    title: "Positionnement, Part de Marché & Différenciation",
+    subtitle: "Chapitre 1 — Sections B & C",
+    content: `
+      <div class="memo-section-title">📍 Types de positionnement</div>
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Positionnement géographique</div>
+          <div class="def-text">Local, régional, national, international. Dépend des ambitions et moyens financiers. Internet a permis aux PME d'élargir leur marché. (p.8)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Positionnement prix</div>
+          <div class="def-text">Plus cher + services supplémentaires, ou même prix + valeur ajoutée → <strong>avantage concurrentiel</strong>. (p.8)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Image de marque</div>
+          <div class="def-text">Très qualitative (prix élevé) ou discounter (prix bas, moins de garantie qualité). (p.8)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Critères de positionnement</div>
+          <div class="def-text">Technologie / Coût / Qualité / Service. Évaluer ces critères vs concurrents pour dégager l'avantage concurrentiel. (p.8)</div>
+        </div>
+      </div>
+      <div class="memo-section-title">📊 Part de Marché</div>
+      <div class="key-box">
+        <div class="key-title">🔑 Formule</div>
+        <div class="key-text">Part de marché = <strong>Ventes du produit / Ventes totales du marché</strong><br>→ En volume (unités vendues) ou en valeur (CA généré)<br>→ Évolue en permanence — dépendante d'une période donnée (p.9)</div>
+      </div>
+      <div class="memo-section-title">🌟 Différenciation (5 types)</div>
+      <table class="chiffres-table">
+        <tr><th>Type</th><th>Exemples</th></tr>
+        <tr><td>Par le produit</td><td>Forme, fonctionnalités, durabilité, style, design</td></tr>
+        <tr><td>Par le service</td><td>Livraison, installation, conseil, réparation</td></tr>
+        <tr><td>Par le personnel</td><td>Compétences, attitude</td></tr>
+        <tr><td>Par le point de vente</td><td>Distribution, accessibilité</td></tr>
+        <tr><td>Par l'image</td><td>Symboles, environnement physique, événements</td></tr>
+      </table>
+      <div class="key-box">
+        <div class="key-title">🔑 Benchmarking</div>
+        <div class="key-text">Se situer par rapport aux concurrents : déterminer des normes ou données moyennes d'un marché particulier. (p.9)</div>
+      </div>
+    `
+  },
+  {
+    icon: '🔍',
+    title: "Les 4 Phases Clés pour Réaliser une Étude de Marché",
+    subtitle: "Chapitre 2 — Section IV",
+    content: `
+      <div class="memo-section-title">🔢 Les 4 phases</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Définir le marché de façon globale</strong> : identifier le marché et anticiper ses évolutions, connaître les produits concurrents et indirects, identifier tous les acteurs (clients, concurrents, prescripteurs, fournisseurs). (p.12)</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Analyser précisément la demande</strong> : quantifier la taille du marché, connaître les habitudes d'achat des clients, segmenter la demande pour identifier la cible prioritaire. (p.13)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Analyser précisément l'offre</strong> : connaître tous les produits/services présents sur le marché, étudier les concurrents (prix, stratégie, part de marché, résultats financiers). (p.13-14)</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Analyser l'environnement</strong> (PESTEL) : Politique, Économique, Social, Technologique, Écologique, Légal. (p.14)</div></div>
+      <div class="key-box">
+        <div class="key-title">🔑 Qui peut réaliser une étude de marché ?</div>
+        <div class="key-text"><ul>
+          <li><strong>Vous-même</strong> : pas besoin d'études d'économie, juste du temps et les bons outils</li>
+          <li><strong>Un tiers</strong> : mais vous devez impérativement y participer de près (p.12)</li>
+        </ul></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ PIÈGE</div>
+        <div class="piege-text">L'étude de marché est réalisée <strong>au stade d'idée ET tout au long de l'existence</strong> de l'entreprise — pas uniquement à la création ! (Cf. sujet examen Q28)</div>
+      </div>
+    `
+  },
+  {
+    icon: '⚙️',
+    title: "Méthodologie : Les 5 Étapes",
+    subtitle: "Chapitre 3 — Méthodologie complète",
+    content: `
+      <div class="memo-section-title">🔢 Les 5 grandes étapes (Kotler, Keller, Manceau 2015)</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Définition du problème</strong> : ni trop large (infos inutiles), ni trop étroit (oublis importants). La valeur de l'étude dépend des informations utiles recueillies. (p.16)</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Conception du plan d'étude</strong> : données secondaires (existantes : internes + externes) + données primaires (collectées : analyse qualitative ou quantitative). (p.17)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Collecte de l'information</strong> : phase la plus coûteuse. Outils : enquêtes terrain, questionnaires, CAPI (Computer Assisted Personal Interviewing). (p.19)</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Analyse des résultats</strong> : calcul des moyennes, mesures de dispersion, tableaux croisés, coefficients de corrélation, techniques multivariées. (p.19)</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Présentation des résultats</strong> : rapport centré sur les conclusions et recommandations (pas de surcharge de chiffres). Exprimé dans l'optique de l'utilisateur. (p.19-20)</div></div>
+      <div class="memo-section-title">📊 Données primaires : Quali vs Quanti</div>
+      <table class="chiffres-table">
+        <tr><th>Critère</th><th>Qualitative</th><th>Quantitative</th></tr>
+        <tr><td>Objectif</td><td>Comprendre, observer, analyser</td><td>Mesurer, chiffrer, comparer</td></tr>
+        <tr><td>Méthodes</td><td>Entretiens face-à-face, groupes consommateurs, groupes créativité</td><td>Sondages, questionnaires</td></tr>
+        <tr><td>Résultats</td><td>Critères psychologiques et comportementaux</td><td>Données chiffrées, statistiques</td></tr>
+        <tr><td>Nb entretiens</td><td>Moindre (dizaine environ)</td><td>Échantillon représentatif</td></tr>
+      </table>
+    `
+  },
+  {
+    icon: '👥',
+    title: "Acteurs du Marché : Clients, Prescripteurs, Concurrents",
+    subtitle: "Chapitres 1 & 2 — Acteurs clés",
+    content: `
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Prescripteurs</div>
+          <div class="def-text">Associations ou organisations professionnelles ou non gouvernementales qui <strong>recommandent ou non</strong> l'achat ou la consommation d'un produit. (Sujet Q30)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Non-clients absolus</div>
+          <div class="def-text">Individus identifiés comme <strong>ne consommant pas</strong> le produit ou service au moment de l'étude. (Sujet Q23)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Leaders d'opinion</div>
+          <div class="def-text">Acteurs pouvant influencer les ventes d'un produit ou service. Inclus dans la définition étendue du marché. (p.5)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Veille concurrentielle</div>
+          <div class="def-text">Suivi permanent de l'évolution du marché et de l'offre pour anticiper les stratégies concurrentes : baisses de prix, nouveaux produits. (p.8)</div>
+        </div>
+      </div>
+      <div class="memo-section-title">📋 Intérêt de l'étude de marché</div>
+      <div class="key-box">
+        <div class="key-title">🔑 Selon le sujet d'examen (Q24, Q25, Q26)</div>
+        <div class="key-text"><ul>
+          <li>Réduire les risques décisionnels (démarrage, innovation, croissance)</li>
+          <li>Mieux comprendre les clients et leurs préférences (4P)</li>
+          <li>Tracer le profil de la clientèle (lieu, âge, sexe, revenu)</li>
+          <li>Fournir des <strong>informations stratégiques utiles à la prise de décisions</strong> (Q25)</li>
+          <li>Connaître le marché et attirer/fidéliser les clients (Q26)</li>
+        </ul></div>
+      </div>
+      <div class="memo-section-title">🔄 Marketing : définition (Q27)</div>
+      <div class="key-box">
+        <div class="key-title">🔑 Le marketing est (plusieurs réponses)</div>
+        <div class="key-text"><ul>
+          <li>Un <strong>processus global</strong> pour fournir le produit/service au marché et satisfaire un besoin</li>
+          <li>Un <strong>ensemble de moyens</strong> dont dispose l'entreprise pour vendre de manière rentable</li>
+        </ul></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ PIÈGE</div>
+        <div class="piege-text">L'étude de marché est le <strong>marketing d'étude</strong> (Q22), PAS le marketing opérationnel (qui concerne l'action) ni le marketing stratégique (qui concerne la stratégie globale).</div>
+      </div>
+    `
+  },
+  {
+    icon: '📣',
+    title: "Mix Marketing — Les 4P",
+    subtitle: "Chapitre 4 — Cas pratique",
+    content: `
+      <div class="def-grid">
+        <div class="def-item">
+          <div class="def-term">Produit (Product)</div>
+          <div class="def-text">Conception, modèle, apparence, style, nom de marque, étiquetage, garantie, qualité des matières premières. (p.22)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Prix (Price)</div>
+          <div class="def-text">Stratégies : profit max court terme / profit optimal long terme. Méthodes : à base des coûts, de la demande, ou par rapport à la concurrence. (p.22-23)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Place (Distribution)</div>
+          <div class="def-text">Emplacement stratégique proche de la clientèle. Accessibilité, zone d'exploitation, canaux de distribution. (p.22)</div>
+        </div>
+        <div class="def-item">
+          <div class="def-term">Promotion</div>
+          <div class="def-text">Médias : journaux, radio, TV, plaques publicitaires, dépliants, exhibitions, foires, bouche-à-oreille. (p.23)</div>
+        </div>
+      </div>
+      <div class="key-box">
+        <div class="key-title">🔑 Résultat de l'étude : que faire ?</div>
+        <div class="key-text"><ul>
+          <li>Résultat <strong>concluant</strong> → passer à la réalisation du <strong>business plan</strong></li>
+          <li>Résultat <strong>négatif</strong> → ajuster et/ou repenser le projet (ne pas abandonner)</li>
+        </ul></div>
+      </div>
+      <div class="memo-section-title">📋 Données secondaires internes</div>
+      <div class="key-text" style="font-size:12px;color:var(--text2);margin-top:8px;">Commandes, CA réalisé/en cours/à venir, volumes des ventes, quantités produites, factures, retours marchandises, rentabilité par produit, budget communication, résultats promotions antérieurs. (p.17)</div>
+      <div class="memo-section-title">🌐 Données secondaires externes</div>
+      <div class="key-text" style="font-size:12px;color:var(--text2);margin-top:8px;">Presse pro/grand public, organismes professionnels (syndicats, fédérations), instituts nationaux (INSEE, INS), sociétés d'études (Eurostaf). (p.17)</div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quelle est la définition correcte d'une étude de marché selon le cours ?", type:'multi', opts:[
+    {t:"Démarche permettant au promoteur de comprendre le marché sur lequel il projette de s'implanter",c:true},
+    {t:"Technique de vente pour augmenter le chiffre d'affaires",c:false},
+    {t:"Collecte et analyse d'informations sur clients, concurrents, environnement et canaux de distribution",c:true},
+    {t:"Uniquement l'analyse des concurrents directs",c:false}
+  ], diff:'easy', piege:false, expl:"L'étude de marché consiste pour le promoteur à comprendre le marché sur lequel il projette de s'implanter, en collectant et analysant des informations sur les futurs clients et concurrents.", ref:"Chapitre 1 › Définition › Page 4"},
+
+  {q:"Selon Eric Vernette, l'étude de marché est définie comme :", type:'multi', opts:[
+    {t:"La mise en œuvre de techniques de collecte et traitement d'informations pour mieux connaître un marché",c:true},
+    {t:"Un ensemble d'actions commerciales",c:false},
+    {t:"Une démarche visant à réduire l'incertitude des décisions ultérieures",c:true},
+    {t:"L'analyse exclusive des données quantitatives",c:false}
+  ], diff:'med', piege:false, expl:"Vernette définit l'étude de marché comme la mise en œuvre d'un ensemble de techniques de collecte et de traitement d'informations ayant pour objectif de mieux connaître un marché, dans le but de réduire l'incertitude des décisions ultérieures.", ref:"Chapitre 3 › Méthodologie › Page 16"},
+
+  {q:"Quels sont les 4 éléments constitutifs d'un marché selon le cours ?", type:'multi', opts:[
+    {t:"L'offre (produit et concurrents)",c:true},
+    {t:"La demande (clients)",c:true},
+    {t:"L'environnement (époque, lieu, tendances, législation)",c:true},
+    {t:"Les canaux de distribution et stratégie commerciale",c:true}
+  ], diff:'med', piege:true, expl:"Le marché est la rencontre de 4 éléments : l'offre, la demande, l'environnement et les canaux de distribution/stratégie commerciale. Toutes les réponses sont correctes ici — piège classique !", ref:"Chapitre 1 › Section 1.2 › Page 10"},
+
+  {q:"La segmentation du marché est :", type:'multi', opts:[
+    {t:"Le processus de division du marché cible en groupes de clients aux besoins similaires",c:true},
+    {t:"Une technique exclusive aux grandes entreprises",c:false},
+    {t:"Indispensable pour savoir à qui on s'adresse et comment communiquer",c:true},
+    {t:"L'identification de groupes distincts de clients réagissant de la même façon à l'offre",c:true}
+  ], diff:'easy', piege:false, expl:"La segmentation est le processus de division du marché cible en groupes de clients potentiels aux besoins et comportements similaires. Elle est nécessaire quelle que soit la taille de la structure.", ref:"Chapitre 1 › Section A › Page 6"},
+
+  {q:"La démarche SCP correspond à :", type:'multi', opts:[
+    {t:"Segmentation → Ciblage → Positionnement",c:true},
+    {t:"Sondage → Collecte → Présentation",c:false},
+    {t:"Une démarche en trois temps pour se positionner sur le marché",c:true},
+    {t:"Stratégie → Communication → Promotion",c:false}
+  ], diff:'easy', piege:true, expl:"SCP = Segmentation, Ciblage, Positionnement. C'est la démarche standard en 3 temps. Ne pas confondre avec les 3 phases de la procédure de segmentation (enquête, analyse, identification).", ref:"Chapitre 1 › Section A › Page 7"},
+
+  {q:"Une niche de marché est :", type:'multi', opts:[
+    {t:"Un segment étroit aux besoins très spécifiques",c:true},
+    {t:"Ciblée en général par une ou deux entreprises seulement",c:true},
+    {t:"Un marché à faible potentiel de rentabilité",c:false},
+    {t:"Un sous-segment offrant un potentiel de rentabilité et de croissance",c:true}
+  ], diff:'med', piege:true, expl:"La niche est un segment étroit aux besoins spécifiques qui offre un potentiel de RENTABILITÉ et de CROISSANCE. Contrairement aux segments larges, les niches ne sont ciblées que par 1 ou 2 entreprises. La réponse C est le piège (rentabilité n'est pas faible).", ref:"Chapitre 1 › Section A › Page 7"},
+
+  {q:"La part de marché se calcule comme :", type:'multi', opts:[
+    {t:"Ventes du produit / Ventes totales du marché",c:true},
+    {t:"CA de l'entreprise / Taille globale du marché",c:true},
+    {t:"Nombre de clients / Population totale",c:false},
+    {t:"Un ratio qui peut être mesuré en volume ou en valeur",c:true}
+  ], diff:'med', piege:false, expl:"La part de marché = ventes d'un produit / ventes totales du marché. Elle peut être en volume (unités vendues) ou en valeur (CA généré). Le potentiel de croissance = évolution globale du marché + évolution de sa part de marché.", ref:"Chapitre 1 › Section C › Page 9"},
+
+  {q:"Le benchmarking consiste à :", type:'multi', opts:[
+    {t:"Se situer par rapport aux concurrents",c:true},
+    {t:"Déterminer des normes ou données moyennes d'un marché particulier",c:true},
+    {t:"Copier les stratégies des concurrents directement",c:false},
+    {t:"Comparer ses propres performances aux standards du marché",c:true}
+  ], diff:'med', piege:false, expl:"Le benchmarking correspond à la notion de se situer par rapport aux concurrents : il consiste à déterminer des normes ou données moyennes d'un marché particulier. Ce n'est PAS copier les concurrents.", ref:"Chapitre 1 › Section C › Page 9"},
+
+  {q:"Les 5 grandes étapes d'une étude de marché sont :", type:'multi', opts:[
+    {t:"Définition du problème, conception du plan, collecte, analyse, présentation des résultats",c:true},
+    {t:"Segmentation, ciblage, positionnement, communication, vente",c:false},
+    {t:"Identification, planification, terrain, synthèse, rapport",c:false},
+    {t:"Dans cet ordre exact selon Kotler, Keller, Manceau 2015",c:true}
+  ], diff:'easy', piege:false, expl:"Les 5 étapes sont : 1) Définition du problème, 2) Conception du plan d'étude, 3) Collecte de l'information, 4) Analyse des résultats, 5) Présentation des résultats. Référence : Kotler, Keller, Manceau (2015, p.113).", ref:"Chapitre 3 › Section I › Page 16"},
+
+  {q:"Les données primaires d'une étude de marché sont :", type:'multi', opts:[
+    {t:"Des données collectées spécifiquement dans le cadre de l'étude",c:true},
+    {t:"Obtenues via des analyses qualitatives ou quantitatives",c:true},
+    {t:"Des informations déjà existantes (rapports, statistiques)",c:false},
+    {t:"Plus coûteuses à obtenir que les données secondaires",c:true}
+  ], diff:'med', piege:true, expl:"Les données primaires résultent des méthodologies mises en place (qualitatives ou quantitatives). Les données secondaires sont celles déjà existantes. La collecte d'information (données primaires) est la phase la plus coûteuse.", ref:"Chapitre 3 › Section 2 › Page 17-18"},
+
+  {q:"L'analyse qualitative permet de :", type:'multi', opts:[
+    {t:"Comprendre un processus de décision",c:true},
+    {t:"Observer les attitudes face à la position d'un produit",c:true},
+    {t:"Mesurer des fréquences de comportement sur un grand échantillon",c:false},
+    {t:"Analyser la perception d'une marque",c:true}
+  ], diff:'med', piege:true, expl:"L'analyse qualitative permet de comprendre, observer, connaître, analyser et rechercher. Elle est basée sur des critères psychologiques et comportementaux, avec un nombre d'entretiens MOINDRE comparé au quantitatif. La mesure sur grand échantillon est de l'analyse quantitative.", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Les 3 types d'études qualitatives sont :", type:'multi', opts:[
+    {t:"Entretiens face à face",c:true},
+    {t:"Entretiens de groupes de consommateurs",c:true},
+    {t:"Entretiens de groupes de créativité",c:true},
+    {t:"Questionnaires par internet",c:false}
+  ], diff:'med', piege:true, expl:"Les 3 types d'études qualitatives : entretiens face à face (dizaine d'entretiens d'1-2h), entretiens de groupes de consommateurs (test produit), entretiens de groupes de créativité (nouvelles idées). Les questionnaires internet relèvent du quantitatif.", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"La phase 4 d'une étude de marché (analyse de l'environnement) couvre :", type:'multi', opts:[
+    {t:"Le contexte politique",c:true},
+    {t:"Le contexte économique",c:true},
+    {t:"Le contexte social",c:true},
+    {t:"Le contexte technologique, écologique et légal",c:true}
+  ], diff:'easy', piege:false, expl:"La phase 4 analyse l'environnement du marché via les facteurs PESTEL : Politique, Économique, Social, Technologique, Écologique, Légal. Toutes ces réponses sont correctes.", ref:"Chapitre 2 › Phase n°4 › Page 14"},
+
+  {q:"Le positionnement d'une entreprise sur son marché dépend de :", type:'multi', opts:[
+    {t:"L'identification des acteurs et concurrents",c:true},
+    {t:"Le suivi permanent via la veille concurrentielle",c:true},
+    {t:"Uniquement du prix proposé",c:false},
+    {t:"La technologie, le coût, la qualité et le service",c:true}
+  ], diff:'med', piege:false, expl:"Le positionnement dépend de la connaissance des concurrents (identification, offre, part de marché), de la veille concurrentielle et du choix parmi : technologie, coût, qualité, service.", ref:"Chapitre 1 › Section B › Page 8"},
+
+  {q:"La différenciation par le produit inclut :", type:'multi', opts:[
+    {t:"La forme et les fonctionnalités",c:true},
+    {t:"La durabilité et la fiabilité",c:true},
+    {t:"La livraison et l'installation",c:false},
+    {t:"Le style et le design",c:true}
+  ], diff:'med', piege:true, expl:"La différenciation par le produit : forme, fonctionnalités, performances, conformité, durabilité, fiabilité, séparabilité, style, design. La livraison et l'installation relèvent de la différenciation par le SERVICE.", ref:"Chapitre 1 › Différenciation › Page 9"},
+
+  {q:"La collecte d'information est :", type:'multi', opts:[
+    {t:"La phase la plus coûteuse de l'étude de marché",c:true},
+    {t:"Facilitée par des outils comme le CAPI",c:true},
+    {t:"La phase la plus simple de l'étude",c:false},
+    {t:"Sujette à des erreurs comme les refus de coopérer",c:true}
+  ], diff:'easy', piege:false, expl:"La collecte d'information est la phase la plus coûteuse. Elle est sujette à des erreurs (refus de coopérer, biais). De nouveaux outils existent : questionnaires internet, bornes interactives, CAPI (Computer Assisted Personal Interviewing).", ref:"Chapitre 3 › Section 3 › Page 19"},
+
+  {q:"La présentation des résultats d'une étude de marché doit :", type:'multi', opts:[
+    {t:"Insister sur les conclusions et leur impact sur la décision",c:true},
+    {t:"Être exprimée dans l'optique de l'utilisateur",c:true},
+    {t:"Contenir le maximum de données chiffrées et statistiques",c:false},
+    {t:"Expliquer en quoi les résultats influencent la décision à prendre",c:true}
+  ], diff:'easy', piege:true, expl:"La présentation des résultats doit insister sur les conclusions, éviter de surcharger de chiffres, être exprimée dans l'optique de l'utilisateur et expliquer comment les résultats influencent la décision.", ref:"Chapitre 3 › Section 5 › Page 19-20"},
+
+  {q:"L'intérêt principal d'une étude de marché pour un entrepreneur est de :", type:'multi', opts:[
+    {t:"Obtenir le maximum d'informations sur le secteur d'activité",c:true},
+    {t:"Analyser l'offre et la demande pour prendre des décisions utiles",c:true},
+    {t:"Garantir le succès du projet",c:false},
+    {t:"Convaincre d'éventuels investisseurs",c:true}
+  ], diff:'easy', piege:true, expl:"L'étude de marché permet d'obtenir des informations, d'analyser offre et demande, de convaincre des investisseurs — mais elle ne GARANTIT PAS le succès. C'est l'erreur classique.", ref:"Chapitre 2 › Intérêt › Page 11"},
+
+  {q:"Les données secondaires internes comprennent :", type:'multi', opts:[
+    {t:"Le chiffre d'affaires et les volumes de ventes",c:true},
+    {t:"Les factures et encaissements",c:true},
+    {t:"Les études publiées par les instituts nationaux (INSEE, INS)",c:false},
+    {t:"Les résultats de promotions antérieures",c:true}
+  ], diff:'med', piege:true, expl:"Les données secondaires internes : commandes, CA, volumes ventes, quantités produites, factures, retours marchandises, rentabilité, budget communication, résultats promotions. L'INSEE/INS sont des sources EXTERNES.", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"Selon le cours, quand faut-il réaliser une étude de marché ?", type:'multi', opts:[
+    {t:"Avant de lancer une activité lors d'une création d'entreprise",c:true},
+    {t:"Avant de lancer un nouveau produit pour une entreprise existante",c:true},
+    {t:"Uniquement au moment de la création",c:false},
+    {t:"Pour mieux ajuster ses stratégies même pour une entreprise en activité",c:true}
+  ], diff:'easy', piege:true, expl:"L'étude de marché est nécessaire : lors d'une création (avant de se lancer), lors du lancement d'un nouveau produit, et même pour une entreprise déjà en activité qui veut ajuster ses stratégies.", ref:"Chapitre 3 › Intro › Page 16"},
+
+  {q:"La définition trop large d'un problème lors d'une étude de marché :", type:'multi', opts:[
+    {t:"Permet de récolter des informations peut-être sans rapport avec le problème",c:true},
+    {t:"Réduit les coûts de l'étude",c:false},
+    {t:"Empêche de prendre des décisions en toute connaissance de cause",c:true},
+    {t:"Est préférable à une définition trop étroite",c:false}
+  ], diff:'hard', piege:true, expl:"Une définition trop large = infos potentiellement inutiles, impossibilité de décider correctement. Une définition trop étroite = oublis d'éléments importants. Mieux vaut définir précisément le problème. Aucune des deux extrêmes n'est préférable.", ref:"Chapitre 3 › Section 1 › Page 16-17"},
+
+  {q:"Le segment de consommateurs se base sur des critères :", type:'multi', opts:[
+    {t:"Démographiques (enfants, jeunes, adultes)",c:true},
+    {t:"Géographiques (marché burkinabé, sénégalais)",c:true},
+    {t:"Économiques et habitudes d'achat",c:true},
+    {t:"Exclusivement sur le revenu",c:false}
+  ], diff:'easy', piege:false, expl:"Le segment de consommateurs regroupe les clients selon des critères : démographiques, géographiques, économiques, goûts, habitudes d'achat. Pas exclusivement le revenu.", ref:"Chapitre 1 › Section A › Page 6"},
+
+  {q:"La veille concurrentielle permet de :", type:'multi', opts:[
+    {t:"Anticiper l'évolution du marché",c:true},
+    {t:"Deviner la stratégie des concurrents (baisses de prix, nouveaux produits)",c:true},
+    {t:"Éliminer la concurrence",c:false},
+    {t:"Suivre en permanence l'évolution de l'offre",c:true}
+  ], diff:'med', piege:false, expl:"La veille concurrentielle permet de suivre en permanence l'évolution du marché et de l'offre, pour anticiper les évolutions et deviner les stratégies concurrentes (baisses de prix, nouveaux produits).", ref:"Chapitre 1 › Section B › Page 8"},
+
+  {q:"Pour qu'une étude de marché soit efficace, elle doit répondre à :", type:'multi', opts:[
+    {t:"Le marché",c:true},
+    {t:"L'offre",c:true},
+    {t:"La demande",c:true},
+    {t:"L'environnement du projet",c:true}
+  ], diff:'easy', piege:false, expl:"Une étude de marché efficace doit répondre à 4 sujets majeurs : le marché, l'offre, la demande et l'environnement du projet. Elle doit respecter une démarche ordonnée et structurée.", ref:"Chapitre 3 › Intro › Page 16"},
+
+  {q:"Le marketing one-to-one signifie :", type:'multi', opts:[
+    {t:"Reconnaître que chaque client est unique et mérite un traitement séparé",c:true},
+    {t:"Une stratégie de communication de masse",c:false},
+    {t:"Le marketing personnalisé",c:true},
+    {t:"Vendre à un seul client à la fois",c:false}
+  ], diff:'med', piege:true, expl:"Le marketing one-to-one (personnalisé) reconnaît qu'en définitive chaque client est unique et mérite d'être traité séparément. Ce n'est pas une stratégie de masse ni de vente unitaire.", ref:"Chapitre 1 › Section A › Page 7"},
+
+  {q:"L'analyse quantitative est utilisée pour :", type:'multi', opts:[
+    {t:"Mesurer une fréquence de comportement ou d'attitude",c:true},
+    {t:"Comparer l'offre à la concurrence avec des chiffres",c:true},
+    {t:"Hiérarchiser des critères de choix",c:true},
+    {t:"Comprendre les processus de décision en profondeur",c:false}
+  ], diff:'med', piege:true, expl:"L'analyse quantitative sert à mesurer (fréquences), comparer (concurrence), hiérarchiser (critères), mesurer notoriété/satisfaction. La compréhension des processus de décision relève de l'analyse QUALITATIVE.", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Le plan de l'étude de marché présente habituellement :", type:'multi', opts:[
+    {t:"L'analyse concurrentielle",c:true},
+    {t:"L'évaluation de la notoriété de la marque",c:true},
+    {t:"Le comportement des futurs clients potentiels",c:true},
+    {t:"Le chiffre d'affaires prévisionnel",c:true}
+  ], diff:'med', piege:false, expl:"Le plan de l'étude de marché présente : l'analyse concurrentielle, l'évaluation de la notoriété, le comportement des potentiels futurs clients, le CA prévisionnel et les quantités produites. Toutes correctes ici.", ref:"Chapitre 3 › Section 2 › Page 19"},
+
+  {q:"La différenciation par le service inclut :", type:'multi', opts:[
+    {t:"La facilité de commande et la livraison",c:true},
+    {t:"L'installation et la formation du client",c:true},
+    {t:"Le style et le design du produit",c:false},
+    {t:"Le conseil et la réparation",c:true}
+  ], diff:'med', piege:true, expl:"La différenciation par le service : facilité de commande, livraison, installation, formation du client, conseil, réparation, autres services. Le style et design relèvent de la différenciation par le PRODUIT.", ref:"Chapitre 1 › Différenciation › Page 9"},
+
+  {q:"Le marché complémentaire est :", type:'multi', opts:[
+    {t:"L'ensemble des marques offrant des produits complémentaires à un type de produit donné",c:true},
+    {t:"Sur un marché précis",c:true},
+    {t:"Composé uniquement de produits de grande consommation",c:false},
+    {t:"Un marché de substitution élargi",c:false}
+  ], diff:'med', piege:true, expl:"Le marché complémentaire est l'ensemble des marques ou entreprises qui offrent des produits complémentaires à un autre type de produit donné, sur un marché précis. Pas uniquement la grande consommation.", ref:"Sujet d'examen UE7 › Q29"},
+
+  {q:"Pour définir son choix de positionnement, l'entreprise doit évaluer :", type:'multi', opts:[
+    {t:"La technologie",c:true},
+    {t:"Le coût",c:true},
+    {t:"La qualité",c:true},
+    {t:"Le service",c:true}
+  ], diff:'easy', piege:false, expl:"Pour choisir son positionnement, l'entreprise évalue 4 critères : technologie, coût, qualité, service — en comparaison avec ses concurrents pour dégager l'avantage concurrentiel.", ref:"Chapitre 1 › Section B › Page 8"},
+
+  {q:"Les informations secondaires externes proviennent de :", type:'multi', opts:[
+    {t:"La presse professionnelle et grand public",c:true},
+    {t:"Les organismes professionnels (syndicats, fédérations)",c:true},
+    {t:"Les instituts nationaux comme l'INSEE ou l'INS",c:true},
+    {t:"Les factures internes de l'entreprise",c:false}
+  ], diff:'easy', piege:true, expl:"Les sources externes : presse pro/grand public, organismes professionnels, instituts nationaux (INSEE, INS), sociétés d'études (Eurostaf). Les factures internes sont des données secondaires INTERNES.", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"La phase n°1 pour réaliser une étude de marché consiste à :", type:'multi', opts:[
+    {t:"Identifier le marché et anticiper ses évolutions",c:true},
+    {t:"Connaître les produits directement ou indirectement concurrents",c:true},
+    {t:"Identifier tous les acteurs du marché",c:true},
+    {t:"Quantifier précisément le nombre de clients potentiels",c:false}
+  ], diff:'med', piege:true, expl:"Phase 1 = définir le marché de façon globale : identifier le marché (anticiper évolutions), connaître produits concurrents directs/indirects, identifier les acteurs (clients, concurrents, prescripteurs, fournisseurs). La quantification précise des clients relève de la Phase 2.", ref:"Chapitre 2 › Phase n°1 › Page 12"},
+
+  {q:"Le potentiel de croissance d'une entreprise est la combinaison de :", type:'multi', opts:[
+    {t:"L'évolution globale du marché",c:true},
+    {t:"L'évolution de sa part de marché",c:true},
+    {t:"Le nombre de concurrents",c:false},
+    {t:"Le budget marketing de l'entreprise",c:false}
+  ], diff:'med', piege:false, expl:"Le potentiel de croissance d'une entreprise = évolution globale du marché + évolution de sa part de marché. Ce sont les deux seules composantes mentionnées dans le cours.", ref:"Chapitre 1 › Section C › Page 9"},
+
+  {q:"Les prescripteurs sont :", type:'multi', opts:[
+    {t:"Des associations ou organisations qui recommandent ou non l'achat d'un produit",c:true},
+    {t:"Des acteurs pouvant influencer indirectement les ventes",c:true},
+    {t:"Des institutions qui réglementent le marché",c:false},
+    {t:"Des associations militant contre la commercialisation d'un produit",c:false}
+  ], diff:'med', piege:true, expl:"Les prescripteurs sont des associations ou organisations professionnelles ou non gouvernementales qui RECOMMANDENT OU NON l'achat ou la consommation d'un produit. Pas des régulateurs ni des militants.", ref:"Sujet d'examen UE7 › Q30"},
+
+  {q:"La phase n°3 pour réaliser une étude de marché (analyse de l'offre) implique de :", type:'multi', opts:[
+    {t:"Connaître tous les produits déjà présents sur le marché",c:true},
+    {t:"Identifier les produits qui dominent le secteur",c:true},
+    {t:"Connaître les prix, stratégies et résultats financiers des concurrents",c:true},
+    {t:"Quantifier la taille du marché et le nombre de clients",c:false}
+  ], diff:'med', piege:true, expl:"Phase 3 = analyse de l'offre : connaître tous les produits présents, identifier ceux qui dominent, et faire une connaissance fine des concurrents (prix, stratégie, part de marché, résultats financiers). La quantification du marché et des clients relève de la Phase 2.", ref:"Chapitre 2 › Phase n°3 › Page 13-14"},
+
+  {q:"Le marketing opérationnel correspond à :", type:'multi', opts:[
+    {t:"L'action sur le terrain via les 4P",c:true},
+    {t:"L'étude de marché",c:false},
+    {t:"La mise en œuvre des décisions stratégiques",c:true},
+    {t:"La planification stratégique à long terme",c:false}
+  ], diff:'hard', piege:true, expl:"Le marketing opérationnel correspond à l'action concrète (4P : Produit, Prix, Place, Promotion). L'étude de marché = marketing d'ÉTUDE. La planification stratégique long terme = marketing STRATÉGIQUE.", ref:"Sujet d'examen UE7 › Q22"},
+
+  {q:"Lors de la phase n°2 (analyse de la demande), les 3 éléments sur lesquels se concentrer sont :", type:'multi', opts:[
+    {t:"Évaluer précisément la demande et son évolution",c:true},
+    {t:"Faire une fine connaissance des futurs clients et leurs habitudes",c:true},
+    {t:"Analyser les résultats financiers des concurrents",c:false},
+    {t:"Segmenter la demande pour identifier la cible prioritaire",c:true}
+  ], diff:'med', piege:true, expl:"Phase 2 = analyse de la demande en 3 éléments : évaluer la demande (quantifier, évolution), connaître les clients (comportements d'achat), et segmenter la demande (identifier la cible prioritaire). L'analyse des concurrents relève de la Phase 3.", ref:"Chapitre 2 › Phase n°2 › Page 13"},
+
+  {q:"Les outils pour réaliser une étude de marché comprennent :", type:'multi', opts:[
+    {t:"Enquêtes de terrain",c:true},
+    {t:"Questionnaires",c:true},
+    {t:"Recherches internet et presse spécialisée",c:true},
+    {t:"Analyses et conclusions à partir des éléments récoltés",c:true}
+  ], diff:'easy', piege:false, expl:"Les outils selon le cours : enquêtes de terrain, questionnaires, recherches (internet, sites officiels, presse spécialisée, réseaux sociaux, blogs), et analyses/conclusions. Toutes les réponses sont correctes.", ref:"Chapitre 2 › Section V › Page 15"},
+
+  {q:"Si l'étude de marché donne un résultat négatif, il faut :", type:'multi', opts:[
+    {t:"Ajuster et/ou repenser le projet",c:true},
+    {t:"Abandonner immédiatement le projet",c:false},
+    {t:"Chercher à comprendre pourquoi avant de décider",c:true},
+    {t:"Passer à la réalisation du business plan quand même",c:false}
+  ], diff:'easy', piege:true, expl:"Un résultat négatif ne signifie PAS l'abandon. Il faut ajuster et/ou repenser le projet. Le business plan vient uniquement si le résultat est CONCLUANT.", ref:"Chapitre 2 › Section VI › Page 15"},
+
+  {q:"Les non-clients absolus sont :", type:'multi', opts:[
+    {t:"Des individus ne consommant pas le produit au moment de l'étude",c:true},
+    {t:"Des clients qui ont abandonné la consommation d'un produit donné",c:false},
+    {t:"Des clients qui refusent catégoriquement la consommation d'un produit",c:false},
+    {t:"Des personnes identifiées dans le cadre de l'étude de marché",c:true}
+  ], diff:'hard', piege:true, expl:"Les non-clients absolus = individus identifiés comme ne consommant PAS le produit ou service au MOMENT de l'étude. Pas ceux qui ont abandonné (anciens clients) ni ceux qui refusent catégoriquement.", ref:"Sujet d'examen UE7 › Q23"},
+
+  {q:"La segmentation du marché suppose une procédure en 3 phases :", type:'multi', opts:[
+    {t:"Phase enquête",c:true},
+    {t:"Phase d'analyse",c:true},
+    {t:"Phase d'identification",c:true},
+    {t:"Phase de ciblage",c:false}
+  ], diff:'hard', piege:true, expl:"La procédure de segmentation = 3 phases : enquête → analyse → identification. Le ciblage est une étape de la démarche SCP globale, pas une phase de la procédure de segmentation elle-même.", ref:"Chapitre 1 › Section A › Page 7"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : QCM CAS PRATIQUES
+const serie2 = [
+  {q:"Fatoumata veut lancer une épicerie bio à Ouagadougou. Elle décide de ne viser que les expatriés et cadres aisés du quartier Ouaga 2000. Ce choix correspond à :", type:'multi', opts:[
+    {t:"Une stratégie de niche",c:true},
+    {t:"Un segment étroit aux besoins spécifiques",c:true},
+    {t:"Une stratégie de mass-market",c:false},
+    {t:"Un positionnement géographique local",c:true}
+  ], diff:'easy', piege:false, expl:"Fatoumata cible un segment très spécifique (petite taille, besoins particuliers) → niche. Elle se positionne sur un périmètre géographique local (quartier Ouaga 2000).", ref:"Chapitre 1 › Sections A & B › Page 7-8"},
+
+  {q:"Ali veut ouvrir une station-service et souhaite connaître la part de marché actuelle de son concurrent principal. La station TotalEnergies voisine réalise 50 millions FCFA/mois de CA sur un marché total estimé à 200 millions FCFA/mois. La part de marché de TotalEnergies est de :", type:'multi', opts:[
+    {t:"25%",c:true},
+    {t:"50%",c:false},
+    {t:"0,25",c:true},
+    {t:"150 millions FCFA",c:false}
+  ], diff:'med', piege:true, expl:"PDM = 50M / 200M = 0,25 = 25%. La réponse peut s'exprimer en % ou en ratio décimal. 150M est le reste du marché (autres acteurs), pas la PDM.", ref:"Chapitre 1 › Section C › Page 9"},
+
+  {q:"Selon Aminata, responsable marketing, son étude de marché doit couvrir 4 sujets pour être efficace. Lesquels sont TOUS corrects ?", type:'multi', opts:[
+    {t:"Le marché, l'offre, la demande, l'environnement",c:true},
+    {t:"Les clients, la communication, le prix, la distribution",c:false},
+    {t:"La réglementation, les concurrents, les fournisseurs, les banques",c:false},
+    {t:"Ces 4 sujets permettent une démarche ordonnée et structurée",c:true}
+  ], diff:'easy', piege:false, expl:"Les 4 sujets majeurs d'une étude de marché efficace : marché, offre, demande, environnement du projet.", ref:"Chapitre 3 › Intro › Page 16"},
+
+  {q:"Kofi lance une app de livraison de repas à Abidjan. Il veut d'abord comprendre POURQUOI les clients commandent en ligne. Il choisit des entretiens en profondeur avec 12 consommateurs. Quel type d'analyse fait-il ?", type:'multi', opts:[
+    {t:"Une analyse qualitative",c:true},
+    {t:"Des entretiens face à face (type qualitatif)",c:true},
+    {t:"Une analyse quantitative",c:false},
+    {t:"Une étude basée sur des critères comportementaux",c:true}
+  ], diff:'med', piege:true, expl:"Kofi veut comprendre (processus de décision) → analyse qualitative. Les entretiens face à face en profondeur sont un type d'étude qualitative. Ce n'est pas du quantitatif (qui vise à mesurer sur grands échantillons).", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Mariam dirige une boulangerie artisanale. Pour se différencier du supermarché concurrent, elle offre la livraison à domicile gratuite, un service de commande par WhatsApp et une garantie fraîcheur. Quels types de différenciation utilise-t-elle ?", type:'multi', opts:[
+    {t:"Différenciation par le service",c:true},
+    {t:"Différenciation par le produit",c:false},
+    {t:"Différenciation par le personnel",c:false},
+    {t:"Avantage concurrentiel par le service",c:true}
+  ], diff:'med', piege:true, expl:"Livraison gratuite, commande WhatsApp, garantie fraîcheur → différenciation par le SERVICE (facilité de commande, livraison, service additionnel). Ce n'est pas de la différenciation par le produit (qui concerne la forme, design, etc.).", ref:"Chapitre 1 › Différenciation › Page 9"},
+
+  {q:"Jean-Baptiste prépare son business plan pour un cabinet de conseil en BTP. Il a réalisé son étude de marché et les conclusions sont positives. Quelle est la prochaine étape logique ?", type:'multi', opts:[
+    {t:"Réaliser le business plan",c:true},
+    {t:"Lancer immédiatement l'activité",c:false},
+    {t:"La suite logique de l'étude de marché est le business plan",c:true},
+    {t:"Refaire une deuxième étude de marché pour confirmer",c:false}
+  ], diff:'easy', piege:false, expl:"Si le résultat de l'étude de marché est concluant, la suite logique est la réalisation du business plan. On ne lance pas immédiatement sans business plan.", ref:"Chapitre 2 › Section VI › Page 15"},
+
+  {q:"Adjoua veut vendre des pagnes traditionnels burkinabés via internet. Elle cible des acheteurs en France, en Belgique et au Canada. Son positionnement est :", type:'multi', opts:[
+    {t:"International",c:true},
+    {t:"Géographique multi-pays",c:true},
+    {t:"Local",c:false},
+    {t:"Possible grâce au développement d'internet",c:true}
+  ], diff:'easy', piege:false, expl:"Adjoua cible plusieurs pays étrangers → positionnement géographique international. Internet a permis aux PME d'élargir grandement leur marché, y compris à l'international.", ref:"Chapitre 1 › Section B › Page 8"},
+
+  {q:"Un groupe de 8 étudiants en entrepreneuriat teste un nouveau concept d'application de gestion budgétaire auprès d'un groupe de 15 consommateurs potentiels pour recueillir leurs perceptions. C'est :", type:'multi', opts:[
+    {t:"Un entretien de groupe de consommateurs",c:true},
+    {t:"Une étude qualitative",c:true},
+    {t:"Une analyse quantitative",c:false},
+    {t:"Un test de concept via le qualitatif",c:true}
+  ], diff:'med', piege:true, expl:"L'objectif est de 'tester un concept et recueillir les perceptions' → entretien de groupe de consommateurs, qui est un type d'étude qualitative. Avec 15 personnes, ce n'est pas représentatif pour une analyse quantitative.", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Ibrahima souhaite lancer une marque de téléphones bas de gamme à prix réduit. Sa stratégie commerciale accepte des marges faibles mais cherche le volume. Quel type de positionnement adopte-t-il ?", type:'multi', opts:[
+    {t:"Positionnement discounter / image de marque basse gamme",c:true},
+    {t:"Positionnement prix bas",c:true},
+    {t:"Positionnement image qualitative élevée",c:false},
+    {t:"Stratégie de niche",c:false}
+  ], diff:'med', piege:true, expl:"Ibrahima opte pour une image de discounter (prix faibles, moins de garantie sur la qualité) + positionnement prix bas pour attirer par le volume. Ce n'est pas une niche (marché restreint) ni une image qualitative.", ref:"Chapitre 1 › Section B › Page 8"},
+
+  {q:"La Maison de l'Eau, entreprise spécialisée dans le forage, veut connaître combien d'entreprises similaires il y a au Burkina Faso, leurs prix, leur zone d'intervention et leur clientèle. Quelle phase de l'étude de marché réalise-t-elle ?", type:'multi', opts:[
+    {t:"Phase 3 : analyse précise de l'offre",c:true},
+    {t:"Étude de la concurrence directe",c:true},
+    {t:"Phase 2 : analyse de la demande",c:false},
+    {t:"Phase 1 : définition globale du marché",c:false}
+  ], diff:'med', piege:true, expl:"Connaître les concurrents (nombre, prix, zone, clientèle) = Phase 3 : analyse précise de l'offre. La Phase 2 concerne les clients/demandeurs. La Phase 1 est la vue globale initiale.", ref:"Chapitre 2 › Phase n°3 › Page 13-14"},
+
+  {q:"Un entrepreneur constate que son concurrent direct vend un service similaire à 50 000 FCFA et décide de vendre à 55 000 FCFA mais en incluant une garantie 2 ans et un service après-vente. C'est :", type:'multi', opts:[
+    {t:"Un positionnement prix avec services supplémentaires",c:true},
+    {t:"Un avantage concurrentiel",c:true},
+    {t:"Une stratégie de pénétration par les bas prix",c:false},
+    {t:"Une différenciation par le service",c:true}
+  ], diff:'med', piege:true, expl:"Vendre plus cher avec des services supplémentaires pour justifier la différence de prix = avantage concurrentiel. La garantie et le SAV = différenciation par le service. Ce n'est pas une stratégie de bas prix (c'est plus cher).", ref:"Chapitre 1 › Sections B & Différenciation › Page 8-9"},
+
+  {q:"Aminata collecte des données sur les ventes passées de son entreprise, les factures, les retours de marchandise et le budget communication. Ces données sont :", type:'multi', opts:[
+    {t:"Des données secondaires internes",c:true},
+    {t:"Des données primaires",c:false},
+    {t:"Des informations déjà existantes dans l'entreprise",c:true},
+    {t:"Des données secondaires externes",c:false}
+  ], diff:'easy', piege:true, expl:"Ventes passées, factures, retours, budget communication = données secondaires INTERNES (déjà dans l'entreprise). Les données primaires sont collectées spécifiquement pour l'étude. Les externes viennent de sources extérieures.", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"Un cabinet de conseil en étude de marché propose à son client de mener des entretiens individuels en profondeur de 90 minutes avec une dizaine d'utilisateurs pour explorer leurs motivations profondes d'achat. C'est :", type:'multi', opts:[
+    {t:"Des entretiens face à face",c:true},
+    {t:"Une analyse qualitative",c:true},
+    {t:"Une méthode pour comprendre le comportement d'achat",c:true},
+    {t:"Une analyse quantitative avec échantillon représentatif",c:false}
+  ], diff:'easy', piege:false, expl:"Entretiens individuels approfondis (1h-2h, dizaine de personnes) = entretiens face à face = analyse qualitative. L'objectif est de comprendre les motivations → critères comportementaux. Pas du quantitatif (qui nécessite un grand échantillon représentatif).", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Sylvie veut lancer des pizzas artisanales. Ses principales sources d'information secondaires externes seront :", type:'multi', opts:[
+    {t:"Les rapports des fédérations de restaurateurs",c:true},
+    {t:"La presse spécialisée en restauration",c:true},
+    {t:"Les données de vente internes de ses propres commandes",c:false},
+    {t:"Les études publiées par l'INSEE ou l'INS",c:true}
+  ], diff:'easy', piege:true, expl:"Sources externes : fédérations, presse spécialisée, INSEE/INS. Les données de ventes internes = sources secondaires INTERNES (Sylvie n'a pas encore lancé, donc elle n'en a pas).", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"Dans le cadre d'une étude de marché pour une PME de plomberie, l'entrepreneur veut mesurer le taux de notoriété de sa marque auprès de 500 entreprises du BTP. Il utilisera :", type:'multi', opts:[
+    {t:"Une analyse quantitative",c:true},
+    {t:"Un questionnaire ou sondage",c:true},
+    {t:"Un entretien de groupe de créativité",c:false},
+    {t:"Un échantillon représentatif de la population cible",c:true}
+  ], diff:'med', piege:false, expl:"Mesurer le taux de notoriété sur un grand panel (500 entreprises) = analyse quantitative via questionnaire/sondage avec un échantillon représentatif. Le groupe de créativité sert à faire émerger de nouvelles idées (qualitatif).", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Le marché des boites de conserves de tomates peut être subdivisé en concentré de tomates, tomates pelées et tomates cerises. Cette subdivision représente :", type:'multi', opts:[
+    {t:"Un segment de produits",c:true},
+    {t:"Une segmentation du marché par sous-groupes de produits",c:true},
+    {t:"Un segment de consommateurs",c:false},
+    {t:"Des niches de marché distinctes",c:false}
+  ], diff:'med', piege:true, expl:"Subdiviser les ventes d'un produit générique (conserves de tomates) en sous-groupes (concentré, pelées, cerises) = segment par PRODUITS. Le segment consommateurs regroupe les acheteurs par critères démographiques, géographiques, etc.", ref:"Chapitre 1 › Section A › Page 7"},
+
+  {q:"Une association de médecins au Burkina Faso recommande officiellement l'utilisation de moustiquaires imprégnées de marque X à ses membres. Cette association joue le rôle de :", type:'multi', opts:[
+    {t:"Prescripteur",c:true},
+    {t:"Organisation recommandant l'achat d'un produit",c:true},
+    {t:"Concurrent direct de la marque X",c:false},
+    {t:"Leader d'opinion influençant les ventes",c:true}
+  ], diff:'med', piege:false, expl:"Une association qui recommande l'achat d'un produit = prescripteur. Elle joue aussi le rôle de leader d'opinion (acteur influençant les ventes). Elle n'est pas un concurrent.", ref:"Sujet d'examen UE7 › Q30 & Chapitre 1 › Page 5"},
+
+  {q:"Sébastien décide de définir le problème de son étude comme suit : 'Comment améliorer globalement la qualité de vie des habitants de Ouagadougou ?'. Son mentor lui dit que cette définition est problématique. Pourquoi ?", type:'multi', opts:[
+    {t:"La définition est trop large, les informations collectées pourraient être sans rapport avec son projet",c:true},
+    {t:"Elle ne lui permettra pas de prendre des décisions en connaissance de cause",c:true},
+    {t:"Elle est trop étroite et risque de faire oublier des éléments importants",c:false},
+    {t:"Elle augmentera les coûts de l'étude inutilement",c:true}
+  ], diff:'med', piege:true, expl:"Une définition trop large = collecte d'infos intéressantes mais possiblement sans rapport avec le problème concret → impossibilité de décider correctement + coûts inutiles. Ce n'est pas une définition trop étroite (qui est l'autre extrême).", ref:"Chapitre 3 › Section 1 › Page 16-17"},
+
+  {q:"Un entrepreneur agroalimentaire au Sahel veut savoir si son yaourt à base de moringa se vendra bien dans les zones rurales. Il consulte des fournisseurs de lait, des distributeurs et des partenaires pour avoir leur avis. Cette approche correspond à :", type:'multi', opts:[
+    {t:"Demander aux fournisseurs et partenaires (phase d'initiation à l'étude de marché)",c:true},
+    {t:"Une démarche du Chapitre 4 : cas pratique",c:true},
+    {t:"Une analyse des données secondaires externes",c:false},
+    {t:"Une phase de collecte d'information primaire",c:true}
+  ], diff:'hard', piege:true, expl:"Consulter fournisseurs et partenaires = démarche du cas pratique Chapitre 4. Cette collecte directe de nouvelles informations = données primaires. Ce ne sont pas des données secondaires externes (qui proviennent de publications existantes).", ref:"Chapitre 4 › Cas pratique › Page 21"},
+
+  {q:"Une start-up technologique organise une session avec 10 utilisateurs potentiels pour générer de nouvelles idées de fonctionnalités pour son application. Cette session est :", type:'multi', opts:[
+    {t:"Un entretien de groupe de créativité",c:true},
+    {t:"Un type d'étude qualitative",c:true},
+    {t:"Un entretien de groupe de consommateurs",c:false},
+    {t:"Une méthode pour faire émerger de nouvelles idées ou tendances",c:true}
+  ], diff:'med', piege:true, expl:"Faire émerger de nouvelles idées = entretien de groupe de CRÉATIVITÉ (qualitatif). Ce n'est pas un groupe de consommateurs (dont le but est de tester un produit/concept existant ou de recueillir perceptions d'un service).", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Moussa analyse les tableaux croisés de son enquête, calcule les coefficients de corrélation et utilise l'analyse factorielle des correspondances. Il est à :", type:'multi', opts:[
+    {t:"L'étape 4 : Analyse des résultats",c:true},
+    {t:"L'étape où il dégage la signification des résultats obtenus",c:true},
+    {t:"L'étape 5 : Présentation des résultats",c:false},
+    {t:"L'étape d'utilisation de techniques multivariées",c:true}
+  ], diff:'med', piege:true, expl:"Tableaux croisés, coefficients de corrélation, techniques multivariées (analyse discriminante, analyse factorielle) → étape 4 = analyse des résultats. L'étape 5 c'est la rédaction du rapport/présentation.", ref:"Chapitre 3 › Section 4 › Page 19"},
+
+  {q:"Awa veut ouvrir un salon de coiffure et décide d'utiliser un questionnaire en ligne pour interroger 300 femmes de Bobo-Dioulasso sur leurs habitudes et préférences de coiffure. Elle veut des données chiffrées pour valider ses hypothèses. C'est :", type:'multi', opts:[
+    {t:"Une analyse quantitative",c:true},
+    {t:"Une collecte de données primaires",c:true},
+    {t:"Un sondage sur un échantillon représentatif",c:true},
+    {t:"Une analyse qualitative pour comprendre les motivations",c:false}
+  ], diff:'easy', piege:true, expl:"Questionnaire sur 300 femmes pour obtenir des données chiffrées → analyse quantitative. Elle collecte des données nouvelles (primaires). Ce n'est pas du qualitatif (qui cherche à comprendre en profondeur sur petit échantillon).", ref:"Chapitre 3 › Données primaires › Page 18"},
+
+  {q:"Un rapport d'étude de marché se termine par la phrase : 'Au vu de ces résultats, nous recommandons de réorienter le produit vers le segment des 25-35 ans urbains, et d'augmenter le budget digital.' Cette phrase illustre :", type:'multi', opts:[
+    {t:"La présentation des résultats et recommandations",c:true},
+    {t:"L'étape 5 de l'étude de marché",c:true},
+    {t:"Une conclusion exprimée dans l'optique de l'utilisateur",c:true},
+    {t:"L'étape d'analyse des données",c:false}
+  ], diff:'easy', piege:false, expl:"Une recommandation concrète orientée décision = présentation des résultats (étape 5), exprimée dans l'optique de l'utilisateur. L'analyse des données (étape 4) est le travail statistique qui précède.", ref:"Chapitre 3 › Section 5 › Page 19-20"},
+
+  {q:"Paul dirige une PME de construction et veut lancer un nouveau service de maintenance. Il dispose déjà de données sur son CA, ses clients habituels et ses anciens devis. Ces données représentent :", type:'multi', opts:[
+    {t:"Des données secondaires internes",c:true},
+    {t:"Un point de départ avant de collecter des données primaires",c:true},
+    {t:"Des données primaires collectées pour cette étude",c:false},
+    {t:"Des données suffisantes pour une étude de marché complète",c:false}
+  ], diff:'med', piege:true, expl:"CA, fichiers clients, anciens devis = données secondaires INTERNES (existantes dans l'entreprise). Elles sont un point de départ mais ne suffisent pas à elles seules pour une étude complète (il faut aussi des données primaires et sources externes).", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"La stratégie marketing des 4P pour une entreprise de livraison de repas inclut :", type:'multi', opts:[
+    {t:"Produit : type de repas proposé",c:true},
+    {t:"Prix : tarification des livraisons",c:true},
+    {t:"Place : zone de livraison et canaux de commande",c:true},
+    {t:"Promotion : publicité sur réseaux sociaux",c:true}
+  ], diff:'easy', piege:false, expl:"Les 4P : Produit (type de repas), Prix (tarification), Place (distribution/zone), Promotion (communication). Toutes ces réponses sont correctes pour cet exemple concret.", ref:"Chapitre 4 › Stratégie marketing › Page 23"},
+
+  {q:"Fatou, opératrice de téléphonie mobile, réalise que ses clients du quartier populaire ont des habitudes d'achat très différentes de ses clients des quartiers résidentiels. Elle décide de créer deux offres différentes. Sa démarche est :", type:'multi', opts:[
+    {t:"Une segmentation du marché",c:true},
+    {t:"Un ciblage différencié selon les segments",c:true},
+    {t:"Un positionnement prix différent pour des segments différents",c:true},
+    {t:"Une stratégie de concentration sur un seul couple produit/marché",c:false}
+  ], diff:'hard', piege:true, expl:"Fatou segmente (2 groupes distincts), cible chaque segment différemment, et adapte son prix par segment. La concentration sur un seul couple produit/marché = choisir UN seul segment, ce qui est l'inverse de ce que fait Fatou.", ref:"Chapitre 1 › Sections A & B › Page 6-8"},
+
+  {q:"Un entrepreneur du secteur hôtelier à Ouagadougou analyse le contexte politique instable, les tendances économiques, les habitudes touristiques et la réglementation hôtelière. Il est en train de réaliser :", type:'multi', opts:[
+    {t:"La phase 4 de l'étude de marché",c:true},
+    {t:"L'analyse de l'environnement du marché et du projet",c:true},
+    {t:"L'identification des facteurs externes pouvant influencer son activité",c:true},
+    {t:"La phase 2 de l'étude de marché",c:false}
+  ], diff:'med', piege:false, expl:"Analyser le contexte politique, économique, social, technologique, écologique, légal = Phase 4 = analyse de l'environnement du marché et du projet. La Phase 2 porte sur la demande (les clients).", ref:"Chapitre 2 › Phase n°4 › Page 14"},
+
+  {q:"Olivier, nouveau directeur commercial, souhaite savoir si son entreprise est plutôt bien ou mal positionnée face à ses concurrents sur des critères de technologie, coût, qualité et service. Cette démarche s'appelle :", type:'multi', opts:[
+    {t:"Le benchmarking",c:true},
+    {t:"Déterminer l'avantage concurrentiel de l'entreprise",c:true},
+    {t:"La veille concurrentielle permanente",c:false},
+    {t:"L'analyse comparative par rapport aux normes du marché",c:true}
+  ], diff:'med', piege:true, expl:"Se situer par rapport aux concurrents sur des critères standards = benchmarking. Cela permet de dégager l'avantage concurrentiel. La veille concurrentielle est le suivi continu de l'évolution de l'offre (différent du benchmarking ponctuel).", ref:"Chapitre 1 › Section C › Page 9"},
+
+  {q:"Dans son étude de marché, Kone identifie que les ménages qui n'utilisent PAS encore l'eau potable représentent un segment à convertir. Ces ménages sont des :", type:'multi', opts:[
+    {t:"Non-clients absolus (au moment de l'étude)",c:true},
+    {t:"Clients potentiels à conquérir",c:true},
+    {t:"Anciens clients ayant abandonné le produit",c:false},
+    {t:"Un marché à développer",c:true}
+  ], diff:'med', piege:true, expl:"Les ménages qui n'utilisent PAS le produit au moment de l'étude = non-clients absolus. Ils sont des clients potentiels à conquérir et représentent un marché à développer. Les 'abandonneurs' sont des anciens clients, une catégorie différente.", ref:"Sujet d'examen UE7 › Q23"},
+
+  {q:"Une entreprise de textiles au Burkina propose des pagnes tisséset du wax imprimé. Elle décide de se spécialiser dans le wax pour plusieurs marchés différents (marché burkinabé, ivoirien, français). Cette stratégie de couverture est :", type:'multi', opts:[
+    {t:"Une spécialisation par produit",c:true},
+    {t:"Un produit unique pour plusieurs segments",c:true},
+    {t:"Une spécialisation par marché",c:false},
+    {t:"Une concentration sur un seul couple produit/marché",c:false}
+  ], diff:'hard', piege:true, expl:"Se concentrer sur un PRODUIT (wax) pour PLUSIEURS segments (marchés différents) = spécialisation par PRODUIT. La spécialisation par marché = plusieurs produits pour un seul segment. La concentration = un seul produit pour un seul marché.", ref:"Chapitre 1 › Section A (Le ciblage) › Page 7"},
+
+  {q:"Le Ministère de la Santé du Burkina Faso publie une liste de médicaments génériques recommandés. Les pharmacies font partie du marché :", type:'multi', opts:[
+    {t:"Complémentaire au marché des médicaments de marque",c:true},
+    {t:"Principal du médicament",c:true},
+    {t:"De substitution si les génériques remplacent les princeps",c:true},
+    {t:"Générique au sens large du besoin de santé",c:true}
+  ], diff:'hard', piege:true, expl:"Question complexe : les génériques peuvent être complémentaires (pris en même temps que d'autres), du marché principal (médicaments de même type), de substitution (remplacent les princeps), ou du marché générique (besoin santé global). Selon le cours, le marché complémentaire = produits complémentaires à un autre type de produit.", ref:"Sujet d'examen UE7 › Q21, Q29"},
+
+  {q:"Lors de son étude de marché, Adama souhaite savoir si ses clients potentiels achèteront plus en saison sèche ou en saison des pluies. Il analyse :", type:'multi', opts:[
+    {t:"La saisonnalité du marché",c:true},
+    {t:"Un élément de l'étude sur le secteur et la réglementation",c:true},
+    {t:"La demande en volume selon les périodes",c:true},
+    {t:"Un élément de la phase n°2 uniquement",c:false}
+  ], diff:'med', piege:true, expl:"La saisonnalité fait partie des questions sur le secteur et sa réglementation (Chapitre 2, section I). Elle est aussi liée à l'analyse de la demande en Phase 2, mais elle est d'abord mentionnée comme question sur le marché lui-même.", ref:"Chapitre 2 › Section I › Page 11"},
+
+  {q:"Moussa lance une boutique de pièces détachées pour véhicules d'occasion. Avant de se lancer, il souhaite évaluer si son projet est viable. Sa première démarche devrait être :", type:'multi', opts:[
+    {t:"Réaliser une étude de marché",c:true},
+    {t:"Collecter des informations sur clients, concurrents et environnement",c:true},
+    {t:"Lancer directement et ajuster au fil de l'eau",c:false},
+    {t:"Rédiger d'abord le business plan",c:false}
+  ], diff:'easy', piege:true, expl:"Avant de lancer une activité = étude de marché OBLIGATOIRE pour évaluer la viabilité et la rentabilité. Le business plan vient APRÈS une étude concluante. On ne lance pas directement sans étude.", ref:"Chapitre 1 › Importance › Page 4"},
+
+  {q:"Dans le cadre de son étude de marché sur les équipements solaires, Bintou analyse les informations suivantes : 'Le marché du solaire en Afrique de l'Ouest a progressé de 35% en 5 ans, avec des prévisions de croissance de 20%/an.' Ces informations sont :", type:'multi', opts:[
+    {t:"Des données secondaires externes",c:true},
+    {t:"Des informations sur l'évolution du marché",c:true},
+    {t:"Des données primaires collectées sur le terrain",c:false},
+    {t:"Des informations pouvant provenir de la presse spécialisée ou d'instituts",c:true}
+  ], diff:'med', piege:false, expl:"Des statistiques de marché publiées = données secondaires EXTERNES (presse spécialisée, rapports d'instituts). Ce ne sont pas des données primaires (qui nécessitent une collecte directe par Bintou elle-même).", ref:"Chapitre 3 › Données secondaires › Page 17"},
+
+  {q:"L'entreprise SolarBF remarque que ses panneaux solaires se vendent mieux dans les zones rurales sans électricité, et décide de concentrer ses efforts sur ce segment. La cible est :", type:'multi', opts:[
+    {t:"Le segment qui représente le meilleur potentiel pour SolarBF",c:true},
+    {t:"Une niche si ce segment est très restreint et spécifique",c:true},
+    {t:"L'ensemble du marché burkinabé",c:false},
+    {t:"Le groupe de consommateurs réagissant de la même façon à l'offre",c:true}
+  ], diff:'med', piege:false, expl:"L'entreprise choisit le segment au meilleur potentiel = sa cible. Si ce segment est très restreint (ex : villages sans réseau) = niche. Le groupe ciblé réagit de la même façon à l'offre. Ce n'est pas 'tout le marché'.", ref:"Chapitre 1 › Section A › Page 7"},
+
+  {q:"Un rapport d'étude de marché contient 50 pages de statistiques détaillées et des dizaines de tableaux. Le mentor de l'entrepreneur lui conseille de :", type:'multi', opts:[
+    {t:"Réduire les données chiffrées et insister sur les conclusions",c:true},
+    {t:"Expliquer en quoi les résultats influencent la décision à prendre",c:true},
+    {t:"Conserver toutes les statistiques pour être crédible",c:false},
+    {t:"Exprimer les résultats dans l'optique de l'utilisateur",c:true}
+  ], diff:'easy', piege:false, expl:"Un bon rapport d'étude = moins de chiffres bruts, plus de conclusions actionnables, exprimé dans l'optique de l'utilisateur, en expliquant comment les résultats influencent la décision.", ref:"Chapitre 3 › Section 5 › Page 19-20"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL
+const serie3 = [
+  {q:"Il existe quatre types de marché qui sont :", type:'multi', opts:[
+    {t:"Le marché générique",c:true},
+    {t:"Le marché de substitution",c:true},
+    {t:"Le marché principal",c:true},
+    {t:"Le marché des biens et services",c:false},
+    {t:"Le marché complémentaire",c:true}
+  ], diff:'hard', piege:true, expl:"Les 4 types de marché : générique, principal, de substitution, complémentaire. 'Le marché des biens et services' est une expression économique générale, pas un type de marché au sens de l'étude de marché. Piège classique car 5 options pour 4 réponses.", ref:"Sujet d'examen UE7 › Q21"},
+
+  {q:"L'étude de marché est en réalité :", type:'multi', opts:[
+    {t:"Le marketing opérationnel",c:false},
+    {t:"Le marketing d'étude",c:true},
+    {t:"Le marketing stratégique",c:false}
+  ], diff:'med', piege:true, expl:"L'étude de marché = marketing d'ÉTUDE. Le marketing opérationnel = action concrète (4P). Le marketing stratégique = planification stratégique à long terme. Ne pas confondre ces trois branches du marketing.", ref:"Sujet d'examen UE7 › Q22"},
+
+  {q:"Les non-clients absolus sont :", type:'multi', opts:[
+    {t:"Des individus identifiés comme ne consommant pas le produit ou le service au moment de l'étude",c:true},
+    {t:"Des clients qui ont abandonné la consommation d'un produit donné",c:false},
+    {t:"Des clients qui refusent la consommation d'un produit",c:false}
+  ], diff:'hard', piege:true, expl:"Non-clients absolus = ne consomment PAS au moment de l'étude. À ne pas confondre avec les 'abandonneurs' (anciens clients) ni les 'réfractaires' (refus catégorique). C'est une définition précise du cours basée sur le moment de l'étude.", ref:"Sujet d'examen UE7 › Q23"},
+
+  {q:"Une étude de marché permet à une entreprise de :", type:'multi', opts:[
+    {t:"Réduire les risques lors des décisions opérationnelles concernant le démarrage, l'innovation et la croissance. Et permet d'éviter des surprises désagréables",c:true},
+    {t:"Mieux comprendre ses clients et leurs préférences, notamment au niveau des 4P : produit, prix, distribution (place) et promotion",c:true},
+    {t:"Tracer le profil de sa clientèle (lieu, âge, sexe, revenu, et ainsi de suite)",c:true}
+  ], diff:'med', piege:false, expl:"Une étude de marché permet : de réduire les risques, de mieux comprendre les clients (4P), et de tracer le profil de la clientèle. Toutes les réponses sont correctes — question à réponses multiples.", ref:"Sujet d'examen UE7 › Q24"},
+
+  {q:"L'intérêt d'une étude de marché pour l'entreprise est de :", type:'multi', opts:[
+    {t:"Connaître tous les produits et services d'un marché donné",c:false},
+    {t:"Fournir des informations stratégiques utiles à la prise de décisions",c:true},
+    {t:"Connaître toutes les entreprises concurrentes",c:false}
+  ], diff:'med', piege:true, expl:"L'intérêt principal = fournir des informations stratégiques utiles à la prise de décisions. Connaître tous les produits ou toutes les entreprises concurrentes sont des MOYENS, pas la finalité en soi.", ref:"Sujet d'examen UE7 › Q25"},
+
+  {q:"Les études de marché permettent :", type:'multi', opts:[
+    {t:"De connaître les produits vendus sur un marché donné",c:true},
+    {t:"D'attirer et de fidéliser les clients",c:true},
+    {t:"De connaître le marché",c:true}
+  ], diff:'easy', piege:false, expl:"Les études de marché permettent toutes ces choses : connaître les produits du marché, connaître le marché globalement, et in fine attirer et fidéliser les clients grâce aux informations obtenues.", ref:"Sujet d'examen UE7 › Q26"},
+
+  {q:"Le marketing est :", type:'multi', opts:[
+    {t:"Un processus global ou une démarche pour fournir le produit/service au marché et de satisfaire ainsi un besoin du client",c:true},
+    {t:"Une technique de vente",c:false},
+    {t:"Un ensemble de moyens dont dispose une entreprise pour vendre ses produits à ses clients d'une manière rentable",c:true}
+  ], diff:'med', piege:true, expl:"Le marketing = processus global pour satisfaire un besoin ET ensemble de moyens pour vendre de façon rentable. 'Technique de vente' est trop réducteur — c'est un piège classique.", ref:"Sujet d'examen UE7 › Q27"},
+
+  {q:"À quel stade de la vie d'une entreprise est-il nécessaire de réaliser une étude de marché ?", type:'multi', opts:[
+    {t:"Au stade d'idée et tout au long de son existence",c:true},
+    {t:"Au stade d'idée d'entreprendre",c:false},
+    {t:"Au stade de création",c:false}
+  ], diff:'med', piege:true, expl:"L'étude de marché est nécessaire AU STADE D'IDÉE ET TOUT AU LONG DE L'EXISTENCE de l'entreprise. Pas seulement au stade d'idée ou de création — mais tout au long de la vie de l'entreprise.", ref:"Sujet d'examen UE7 › Q28"},
+
+  {q:"Le marché complémentaire est :", type:'multi', opts:[
+    {t:"Uniquement composé de produits de grande consommation",c:false},
+    {t:"L'ensemble des marques ou des entreprises qui offrent des produits complémentaires à un autre type de produit donné, sur un marché précis.",c:true},
+    {t:"Composé de produits de substitution et des produits de grande consommation",c:false}
+  ], diff:'med', piege:true, expl:"Le marché complémentaire = ensemble des marques/entreprises qui offrent des produits complémentaires à un autre type de produit, sur un marché précis. Ni exclusivement grande consommation, ni mélange avec produits de substitution.", ref:"Sujet d'examen UE7 › Q29"},
+
+  {q:"Les prescripteurs sont :", type:'multi', opts:[
+    {t:"Des associations qui militent contre la production et la commercialisation d'un produit donné",c:false},
+    {t:"Des institutions qui réglementent le marché d'un produit donné",c:false},
+    {t:"Des associations ou organisations professionnelles ou non gouvernementales qui recommandent ou non l'achat ou la consommation d'un produit.",c:true}
+  ], diff:'med', piege:true, expl:"Les prescripteurs recommandent (ou non) l'achat ou la consommation. Ils ne militent pas contre, ni ne réglementent. Ce sont des associations ou organisations professionnelles ou non gouvernementales.", ref:"Sujet d'examen UE7 › Q30"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M18';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+  <div style="margin-bottom:20px">
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px">🔬 Méthode & Pièges — M18 Étude de Marché</div>
+    <div style="font-size:12px;color:var(--text3)">Mots-pièges · Schémas décisionnels · Chiffres-clés · Confusions fréquentes</div>
+  </div>
+
+  <div class="methode-grid">
+    <div class="methode-card">
+      <div class="methode-card-title">⚠ Mots-pièges à repérer dans les QCM</div>
+      <span class="piege-word">uniquement</span>
+      <span class="piege-word">garantit</span>
+      <span class="piege-word">abandonneurs</span>
+      <span class="piege-word">réfractaires</span>
+      <span class="piege-word">technique de vente</span>
+      <span class="piege-word">création seulement</span>
+      <span class="piege-word">militants</span>
+      <span class="piege-word">réglementent</span>
+      <span class="piege-word">toujours avant</span>
+      <span class="piege-word">copier</span>
+      <span class="piege-word">grande consommation</span>
+      <span class="piege-word">définition large = meilleure</span>
+    </div>
+    <div class="methode-card">
+      <div class="methode-card-title">🔢 Chiffres et nombres clés</div>
+      <table class="chiffres-table">
+        <tr><th>Concept</th><th>Nombre/Valeur</th></tr>
+        <tr><td>Types de marché</td><td>4 (générique, principal, substitution, complémentaire)</td></tr>
+        <tr><td>Composantes du marché</td><td>4 (offre, demande, environnement, distribution)</td></tr>
+        <tr><td>Phases étude de marché</td><td>4 phases clés (Ch.2)</td></tr>
+        <tr><td>Étapes méthodologie</td><td>5 (Kotler, Keller, Manceau 2015)</td></tr>
+        <tr><td>Types d'études qualitatives</td><td>3 (face à face, groupes conso, créativité)</td></tr>
+        <tr><td>Démarche SCP</td><td>3 temps (Segmentation, Ciblage, Positionnement)</td></tr>
+        <tr><td>Types différenciation</td><td>5 (produit, service, personnel, point de vente, image)</td></tr>
+        <tr><td>Entretiens face à face</td><td>~10 entretiens d'1-2h</td></tr>
+        <tr><td>Les 4P marketing</td><td>Produit, Prix, Place, Promotion</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="methode-card" style="margin-bottom:12px">
+    <div class="methode-card-title">🔄 Schéma : Les 5 étapes de l'étude de marché (Kotler 2015)</div>
+    <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Définition du problème à résoudre</strong> → Ni trop large (infos inutiles) ni trop étroit (oublis)</div></div>
+    <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Plan d'étude</strong> → Données secondaires (existantes) + Données primaires (à collecter)</div></div>
+    <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Collecte de données</strong> → Phase la plus coûteuse · Quali ou Quanti · CAPI</div></div>
+    <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Analyse de données</strong> → Moyennes, dispersions, tableaux croisés, techniques multivariées</div></div>
+    <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Présentation des résultats</strong> → Rapport centré sur conclusions + recommandations · Peu de chiffres bruts</div></div>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text3)">↓</div>
+    <div class="schema-step"><div class="schema-num" style="background:var(--accent4);color:#000">→</div><div class="schema-text"><strong>Prise de décision</strong> : Concluant → Business plan · Négatif → Ajuster, pas abandonner</div></div>
+  </div>
+
+  <div class="methode-grid">
+    <div class="methode-card">
+      <div class="methode-card-title">⚡ Confusions fréquentes</div>
+      <table class="chiffres-table">
+        <tr><th>À NE PAS CONFONDRE</th><th>DIFFÉRENCE CLÉ</th></tr>
+        <tr><td>Marketing d'étude vs opérationnel</td><td>Étude = connaître le marché · Opérationnel = agir (4P)</td></tr>
+        <tr><td>Non-clients absolus vs abandonneurs</td><td>Absolus = ne consomment PAS maintenant · Abandonneurs = ont arrêté</td></tr>
+        <tr><td>Prescripteurs vs réglementeurs</td><td>Prescripteurs = recommandent · Réglementeurs = fixent les règles</td></tr>
+        <tr><td>Segment consommateurs vs produits</td><td>Conso = par profil client · Produits = sous-groupes d'un produit générique</td></tr>
+        <tr><td>Qualitatif vs quantitatif</td><td>Quali = comprendre (petit nbre) · Quanti = mesurer (grand échantillon)</td></tr>
+        <tr><td>Données primaires vs secondaires</td><td>Primaires = collectées pour l'étude · Secondaires = déjà existantes</td></tr>
+        <tr><td>Spécialisation par produit vs marché</td><td>Par produit = 1 produit, N marchés · Par marché = N produits, 1 marché</td></tr>
+        <tr><td>Procédure segmentation vs démarche SCP</td><td>Segmentation : enquête/analyse/identification · SCP : segmentation/ciblage/positionnement</td></tr>
+      </table>
+    </div>
+    <div class="methode-card">
+      <div class="methode-card-title">🎯 Schéma décisionnel : Résultat étude → Suite</div>
+      <div class="schema-step"><div class="schema-num" style="background:var(--accent2)">?</div><div class="schema-text"><strong>Résultat de l'étude de marché</strong></div></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <div style="flex:1;background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.3);border-radius:6px;padding:10px;">
+          <div style="color:var(--green);font-family:'Space Mono',monospace;font-size:10px;margin-bottom:6px">✅ CONCLUANT</div>
+          <div style="font-size:11px;color:var(--text2)">→ Réaliser le <strong>Business Plan</strong><br>(suite logique)</div>
+        </div>
+        <div style="flex:1;background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.3);border-radius:6px;padding:10px;">
+          <div style="color:var(--red);font-family:'Space Mono',monospace;font-size:10px;margin-bottom:6px">❌ NÉGATIF</div>
+          <div style="font-size:11px;color:var(--text2)">→ <strong>Ajuster</strong> et/ou repenser<br>≠ Abandonner !</div>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="methode-card-title" style="margin-bottom:8px">📅 Quand réaliser une étude ?</div>
+        <div class="schema-step"><div class="schema-num">✓</div><div class="schema-text">Au stade d'idée (avant de se lancer)</div></div>
+        <div class="schema-step"><div class="schema-num">✓</div><div class="schema-text">Avant de lancer un nouveau produit</div></div>
+        <div class="schema-step"><div class="schema-num">✓</div><div class="schema-text">Tout au long de l'existence de l'entreprise</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="methode-card" style="margin-bottom:12px">
+    <div class="methode-card-title">🗂️ Schéma : Données de l'étude de marché</div>
+    <div class="methode-grid" style="margin-top:0">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;">
+        <div style="color:var(--accent4);font-family:'Space Mono',monospace;font-size:10px;margin-bottom:8px">DONNÉES SECONDAIRES (existantes)</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px"><strong style="color:var(--accent)">Internes :</strong> CA, commandes, factures, retours, volumes ventes, budget communication, résultats promotions</div>
+        <div style="font-size:11px;color:var(--text2)"><strong style="color:var(--accent)">Externes :</strong> Presse pro, fédérations/syndicats, INSEE/INS, sociétés d'études (Eurostaf)</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;">
+        <div style="color:var(--accent4);font-family:'Space Mono',monospace;font-size:10px;margin-bottom:8px">DONNÉES PRIMAIRES (à collecter)</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px"><strong style="color:var(--accent)">Qualitatives :</strong> Entretiens face à face · Groupes consommateurs · Groupes créativité → comprendre, observer</div>
+        <div style="font-size:11px;color:var(--text2)"><strong style="color:var(--accent)">Quantitatives :</strong> Questionnaires · Sondages · CAPI → mesurer, chiffrer, comparer</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">🏆 Récapitulatif des 4 types de marché (examen)</div>
+    <table class="chiffres-table">
+      <tr><th>Type</th><th>Définition</th><th>Exemple</th></tr>
+      <tr><td>Générique</td><td>Besoin large, tous produits satisfaisant ce besoin</td><td>Marché de l'alimentation</td></tr>
+      <tr><td>Principal</td><td>Produits semblables et directement concurrents</td><td>Marché du yaourt</td></tr>
+      <tr><td>Substitution</td><td>Produits différents satisfaisant le même besoin</td><td>Beurre vs margarine</td></tr>
+      <tr><td>Complémentaire</td><td>Marques/entreprises offrant des produits complémentaires à un autre type sur un marché précis</td><td>Marché des imprimantes → marché des cartouches</td></tr>
+    </table>
+    <div class="piege-box" style="margin-top:10px">
+      <div class="piege-title">⚠ PIÈGE EXAMEN Q21</div>
+      <div class="piege-text">L'option "marché des biens et services" est un leurre. Les 4 vrais types sont : générique, principal, substitution, complémentaire. Mémorisez : <strong>G-P-S-C</strong></div>
+    </div>
+  </div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

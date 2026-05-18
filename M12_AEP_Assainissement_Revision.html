@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M12 — Suivi & Contrôle AEP/Assainissement · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px 16px; margin-top: 12px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-size: 10px; color: var(--text3); font-family: 'Space Mono', monospace; background: var(--bg4); padding: 2px 8px; border-radius: 4px; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { background: #00ebb8; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.4); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 64px; color: var(--accent); line-height: 1; }
+.score-label { font-size: 14px; color: var(--text2); margin: 10px 0 24px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 20px; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); }
+.score-stat.red { border-color: rgba(255,77,106,0.4); }
+.score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; }
+.score-stat.green .score-stat-val { color: var(--green); }
+.score-stat.red .score-stat-val { color: var(--red); }
+.score-stat.orange .score-stat-val { color: var(--orange); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M12</div>
+  <div class="header-title">Suivi & Contrôle AEP / Assainissement — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '👥',
+    title: 'Acteurs du projet AEP/Assainissement',
+    subtitle: 'Maître d\'ouvrage, Maître d\'œuvre, Entrepreneur — Chapitre 1',
+    content: `
+      <div class="memo-section-title">🏗 Définitions des acteurs</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Maître d'ouvrage (MOA)</div><div class="def-text">Personne physique ou morale (propriétaire) pour qui l'ouvrage est réalisé. Rôle administratif. Lance le projet et en définit les besoins.</div></div>
+        <div class="def-item"><div class="def-term">Maître d'œuvre (MOE)</div><div class="def-text">Responsable de l'exécution des travaux sur le chantier. Détient autorité réelle. Unique dans un projet (ingénieur conseil / bureau d'études).</div></div>
+        <div class="def-item"><div class="def-term">Entrepreneur</div><div class="def-text">Prend en charge la réalisation des travaux. Peut faire appel à des sous-traitants spécialisés sous sa responsabilité.</div></div>
+        <div class="def-item"><div class="def-term">Ingénieur surveillant</div><div class="def-text">Assure la conformité des travaux aux plans/devis. Visites régulières + inopinées. Produit les certificats de conformité.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges fréquents</div><div class="piege-text">Ne pas confondre <strong>Maître d'ouvrage</strong> (propriétaire/client) et <strong>Maître d'œuvre</strong> (responsable technique d'exécution). La MDP est calculée par le <strong>maître d'œuvre</strong>, pas le fabricant ni le chargé de contrôle.</div></div>
+      <div class="key-box"><div class="key-title">⚡ Points clés</div><div class="key-text"><ul><li>Le MOA recrute les entreprises et passe les contrats.</li><li>La MOE = bureau d'études recruté pour suivi-contrôle technique ET financier.</li><li>En domaine privé : droit d'occupation temporaire entre MOA et propriétaire, indemnités à la charge du MOA.</li><li>Autorisation d'accès chantier en domaine public : responsabilité du MOA.</li></ul></div></div>
+    `
+  },
+  {
+    icon: '💧',
+    title: 'Pressions des canalisations — Terminologie',
+    subtitle: 'DP, MDP, STP, PFA, PMA, PEA — Chapitre 1',
+    content: `
+      <div class="memo-section-title">📊 Tableau des opérateurs de pression</div>
+      <table class="chiffres-table">
+        <tr><th>Abréviation</th><th>Désignation complète</th><th>Opérateur</th></tr>
+        <tr><td>DP</td><td>Pression de calcul en régime permanent</td><td>Concepteur/Fabricant/Utilisateur</td></tr>
+        <tr><td>MDP</td><td>Pression maximale de calcul (figure au CCTP)</td><td>Maître d'œuvre</td></tr>
+        <tr><td>STP</td><td>Pression d'épreuve du réseau (System Test Pressure)</td><td>Concepteur</td></tr>
+        <tr><td>PFA</td><td>Pression de fonctionnement admissible</td><td>Fabricant</td></tr>
+        <tr><td>PMA</td><td>Pression maximale admissible</td><td>Fabricant</td></tr>
+        <tr><td>PEA</td><td>Pression d'épreuve admissible</td><td>Fabricant</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">⚡ Règles de choix (inégalités à respecter)</div><div class="key-text"><ul><li><strong>DP ≤ PFA</strong></li><li><strong>MDP ≤ PMA</strong> (PMA ≈ 1,2 × PFA pour les plastiques)</li><li><strong>STP ≤ PEA</strong></li><li>MDP = niveau statique en gravitaire ou niveau dynamique en refoulement, <strong>majoré des effets du régime transitoire</strong>.</li></ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège classique</div><div class="piege-text">La pression d'épreuve STP = MDP (elle est égale à MDP, ni supérieure à la PFA, ni égale à PEA). La MDP est calculée par le <strong>maître d'œuvre</strong> et doit figurer au CCTP.</div></div>
+    `
+  },
+  {
+    icon: '🔧',
+    title: 'Contrôle & Surveillance des travaux',
+    subtitle: 'Mission de contrôle, fréquences, documents — Chapitres 2 & 3',
+    content: `
+      <div class="memo-section-title">📋 Définitions</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Contrôle de travaux</div><div class="def-text">Directives données aux entrepreneurs. En général = 1 passage/semaine. Le chargé peut procéder à des <strong>contrôles inopinés</strong> en dehors des fréquences arrêtées.</div></div>
+        <div class="def-item"><div class="def-term">Surveillance des travaux</div><div class="def-text">Présence quotidienne sur chantier. Implique quasi-subordination entrepreneur/MOE. Coûteux → peu utilisé.</div></div>
+      </div>
+      <div class="memo-section-title">📄 Documents de contrôle produits</div>
+      <div class="key-box"><div class="key-title">⚡ Documents clés</div><div class="key-text"><ul><li>Notes de service / Ordres de service</li><li>Procès-verbaux de réunion de chantier</li><li>Bons de commande</li><li>Cahier de chantier (journal de chantier) — tenu par l'Entrepreneur, approuvé par le MOE</li><li>DOE — Dossier des Ouvrages Exécutés (fourni avant réception provisoire)</li></ul></div></div>
+      <div class="memo-section-title">🏁 Réceptions</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Réception provisoire</div><div class="def-text">Conformité travaux + livraison complète + performances équipements + docs fournis. PV signé contradictoirement MOE/Entreprise/MOA.</div></div>
+        <div class="def-item"><div class="def-term">Réception définitive</div><div class="def-text">À l'issue de la période de garantie. Levée de la caution de bonne exécution.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Garantie de parfait achèvement</div><div class="piege-text">Durée = <strong>1 an</strong> après réception. Couvre les désordres signalés au PV de réception ou notifiés par écrit pendant le délai. Dommages visibles : réserves au PV ou dans les 8 jours.</div></div>
+    `
+  },
+  {
+    icon: '🚜',
+    title: 'Exécution des fouilles & Pose des canalisations',
+    subtitle: 'Largeurs, pentes, techniques de pose — Chapitre 5',
+    content: `
+      <div class="memo-section-title">📐 Dimensions des tranchées (Fascicule 71)</div>
+      <table class="chiffres-table">
+        <tr><th>Diamètre extérieur</th><th>Largeur au fond</th></tr>
+        <tr><td>≤ 600 mm</td><td>D + 0,30 m de part et d'autre du tuyau</td></tr>
+        <tr><td>> 600 mm</td><td>D + 0,40 m de part et d'autre du tuyau</td></tr>
+        <tr><td>Plusieurs conduites</td><td>Somme des Ø ext + 0,60 à 0,80 m + 0,50 m par conduite supplémentaire</td></tr>
+      </table>
+      <div class="memo-section-title">📏 Pentes minimales (profil en long)</div>
+      <div class="key-box"><div class="key-title">⚡ Pentes à retenir</div><div class="key-text"><ul><li>Pente minimale souhaitable : <strong>2 à 3 mm/m</strong> dans les parties montantes</li><li>Pentes descendantes : <strong>4 à 6 mm/m</strong></li><li>Fond de fouille : pente longitudinale ≥ <strong>4 ‰</strong> (4 pour mille)</li></ul></div></div>
+      <div class="memo-section-title">🛣 Emprise du chantier</div>
+      <div class="key-box"><div class="key-title">⚡ Chiffres à retenir</div><div class="key-text"><ul><li>Emprise recommandée : bande de <strong>12 m de largeur</strong></li><li>Largeur des voies d'accès : <strong>≥ 4 m</strong></li><li>L'emprise peut être augmentée selon diamètre, profondeur, tenue du terrain</li></ul></div></div>
+      <div class="memo-section-title">🏗 Techniques de pose</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Tranchée ouverte</div><div class="def-text">Technique standard en zone rurale ou voirie non bitumée.</div></div>
+        <div class="def-item"><div class="def-term">Forage dirigé</div><div class="def-text">Recommandé en centre-ville (habitat dense, chaussée encombrée, voies bitumées).</div></div>
+        <div class="def-item"><div class="def-term">Pose en fourreau</div><div class="def-text">Alternative possible pour traversées.</div></div>
+        <div class="def-item"><div class="def-term">Remblayage (3 phases)</div><div class="def-text">1. Lit de pose / 2. Enrobage / 3. Remblai supérieur de protection</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège : traversée voies bitumées en ville</div><div class="piege-text">La réponse correcte est <strong>forage dirigé</strong>, pas "pose en fourreau" ni "tranchée ouverte" pour les centres-villes encombrés.</div></div>
+    `
+  },
+  {
+    icon: '🌬',
+    title: 'Ventouses — Types et fonctions',
+    subtitle: 'Simple effet, Triple fonctions, Dimensionnement — Chapitre 5',
+    content: `
+      <div class="memo-section-title">🔵 Ventouse simple effet automatique</div>
+      <div class="key-box"><div class="key-title">⚡ Fonction essentielle</div><div class="key-text">Dégazage permanent de l'air présent dans les conduites sous pression en service. Peut aussi : évacuation d'air à grand débit à la mise en eau + rentrée d'air à grand débit à la vidange.</div></div>
+      <div class="memo-section-title">🔵 Ventouse triple fonctions</div>
+      <div class="key-box"><div class="key-title">⚡ Trois fonctions</div><div class="key-text"><ul><li><strong>Dégazage automatique</strong> en pression normale (réseau en charge)</li><li><strong>Admission d'air en grand volume</strong> lors de la vidange du système</li><li><strong>Décharge d'air en grand volume</strong> lors du remplissage de la conduite</li></ul>Posées sur conduites de refoulement.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège classique</div><div class="piege-text">La ventouse <strong>simple effet</strong> = dégazage PERMANENT (en service). La ventouse <strong>triple fonctions</strong> = les 3 fonctions (dégazage + vidange + remplissage). Ne pas inverter !</div></div>
+      <div class="memo-section-title">📐 Dimensionnement ventouses</div>
+      <table class="chiffres-table">
+        <tr><th>DN conduite (mm)</th><th>DN ventouse (mm)</th></tr>
+        <tr><td>&lt; 200</td><td>50</td></tr>
+        <tr><td>200 – 250</td><td>80</td></tr>
+        <tr><td>300 – 500</td><td>100</td></tr>
+        <tr><td>600 – 900</td><td>150</td></tr>
+        <tr><td>1000 – 1200</td><td>200</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Piège tableau ventouses</div><div class="piege-text">DN 200-250 → ventouse 80 (pas 50). DN 300-500 → ventouse 100 (pas 80). Ces valeurs changent par palier, attention aux intervalles !</div></div>
+    `
+  },
+  {
+    icon: '🔩',
+    title: 'Épreuves hydrauliques des conduites',
+    subtitle: 'Conditions, longueur, pressions, critères — Chapitre 7',
+    content: `
+      <div class="memo-section-title">📏 Conditions générales</div>
+      <div class="key-box"><div class="key-title">⚡ Règles à retenir</div><div class="key-text"><ul><li>Longueur maximale à tester : <strong>2 000 m</strong> (ne pas dépasser)</li><li>Épreuves réalisées <strong>avant remblayage définitif</strong>, avec des cavaliers mis en place sur les tuyaux</li><li>Pression d'épreuve STP = <strong>MDP</strong> (pression maximale de calcul)</li><li>La pression d'épreuve est fixée au CCTP et calculée par le <strong>maître d'œuvre</strong></li></ul></div></div>
+      <div class="memo-section-title">📊 Critères de conformité (Fascicule 71)</div>
+      <table class="chiffres-table">
+        <tr><th>Matériau</th><th>Critère</th></tr>
+        <tr><td>Fonte (et autres sauf PE)</td><td>Pression ne doit pas diminuer de plus de <strong>0,2 bar</strong> maintenue <strong>30 min</strong></td></tr>
+        <tr><td>Polyéthylène (PE)</td><td>Procédure spéciale : STP = MDP (min 600 kPa), maintenu 30 min, puis ramener à 300 kPa, lectures successives croissantes</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges fréquents</div><div class="piege-text">— La longueur max est <strong>2 000 m</strong> (pas 3 000 m ni 4 000 m).<br>— Les modalités d'épreuve sont <strong>différentes</strong> pour la fonte et le polyéthylène.<br>— STP = MDP (pas supérieure à PFA, pas égale à PEA).</div></div>
+      <div class="memo-section-title">💧 Masse des massifs butés</div>
+      <div class="key-box"><div class="key-title">⚡ Paramètres dont dépend la masse</div><div class="key-text"><ul><li>La <strong>section extérieure S</strong> de la canalisation</li><li>La <strong>pression d'épreuve STP</strong></li><li>Le type de singularité (coude, té, cône…)</li></ul>F = k × 10⁵ × PSTP × S (PSTP en bar, S en m²)</div></div>
+    `
+  },
+  {
+    icon: '🧪',
+    title: 'Nettoyage, Désinfection & Raccordement au réseau',
+    subtitle: 'Lavage, rinçage, chloration, contrôle qualité — Chapitre 8',
+    content: `
+      <div class="memo-section-title">🔄 Chaîne d'opérations après épreuves hydrauliques</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Nettoyage / Lavage</strong> — Laver intérieurement les conduites neuves (chasse d'eau ou procédé adéquat). Répéter si turbidité > max admissible.</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Désinfection</strong> — Au chlore (teneur de 5 mg/l) ou au permanganate de potassium (coloration violacée aux extrémités). Respecter le temps de contact minimum.</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Rinçage</strong> — Rincer la canalisation après désinfection.</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Contrôle interne</strong> — Prélèvement d'eau pour contrôle interne conformément aux instructions.</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Contrôle externe (laboratoire agréé)</strong> — Prélèvements par un <strong>laboratoire agréé</strong> : élément PRÉPONDÉRANT pour déclarer le réseau apte.</div></div>
+      <div class="memo-section-title">⏱ Doses désinfectants / temps de contact</div>
+      <table class="chiffres-table">
+        <tr><th>Désinfectant</th><th>Temps contact (h)</th><th>Dose (mg/l)</th></tr>
+        <tr><td>Chlore / Hypochlorite</td><td>24</td><td>10</td></tr>
+        <tr><td>Chlore / Hypochlorite</td><td>1,2</td><td>50</td></tr>
+        <tr><td>Chlore / Hypochlorite</td><td>0,5</td><td>150</td></tr>
+        <tr><td>Permanganate de potassium</td><td>24</td><td>50</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges classiques</div><div class="piege-text">— La chaîne correcte = <strong>lavage → désinfection → rinçage</strong> (pas "lavage + nettoyage + rinçage").<br>— Pour déclarer le réseau apte = contrôle par <strong>laboratoire agréé</strong> (pas un simple contrôle interne).<br>— Chlore libre de 5 mg/l = dose pendant désinfection (pas le critère de déclaration d'aptitude).</div></div>
+    `
+  },
+  {
+    icon: '📦',
+    title: 'Stockage des canalisations — Gerbage PVC',
+    subtitle: 'Hauteurs de gerbage, conditions de stockage — Chapitre 5',
+    content: `
+      <div class="memo-section-title">📦 Hauteurs de gerbage PVC</div>
+      <table class="chiffres-table">
+        <tr><th>DN (mm)</th><th>Hauteur de gerbage (fardeaux)</th></tr>
+        <tr><td>75</td><td>6</td></tr>
+        <tr><td>90</td><td>6</td></tr>
+        <tr><td>110</td><td>6</td></tr>
+        <tr><td>125</td><td>5</td></tr>
+        <tr><td>140</td><td>5</td></tr>
+        <tr><td>160</td><td>5</td></tr>
+      </table>
+      <div class="key-box"><div class="key-title">⚡ Règles de stockage</div><div class="key-text"><ul><li>Hauteur de gerbage = <strong>fonction des DN</strong> (pas indépendante, pas forfaitaire 5 pour tous)</li><li>Empilage sur base <strong>plane</strong></li><li>PVC = protéger du rayonnement solaire (matériau opaque + bonne circulation d'air)</li><li>Conditions de stockage données par le <strong>fabricant</strong> (pas le MOA, pas l'entreprise)</li></ul></div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges</div><div class="piege-text">— DN 75 → 6 fardeaux (pas 5). La hauteur est <strong>fonction des DN</strong>, elle n'est PAS indépendante des DN.<br>— Les conditions de stockage sont données par le <strong>fabricant</strong>.</div></div>
+    `
+  },
+  {
+    icon: '📁',
+    title: 'Documents techniques du chantier (DOE, Plans)',
+    subtitle: 'Cahier de chantier, DOE, plans de récolement — Chapitres 4 & 10',
+    content: `
+      <div class="memo-section-title">📋 DOE — Dossier des Ouvrages Exécutés</div>
+      <div class="key-box"><div class="key-title">⚡ Pièces du DOE</div><div class="key-text">
+        <strong>Administratives :</strong> Soumission, CCAP, Avenants, Ordres de service, Journaux de chantier, CR réunions, PV réceptions.<br><br>
+        <strong>Comptables/Financières :</strong> Bordereau des prix, Sous-détails, Métrés définitifs, Devis, Décomptes.<br><br>
+        <strong>Techniques :</strong> CCTP, Notes de calcul, Plans d'exécution, Plans des ouvrages exécutés, Fiches techniques, Résultats essais, Minutes essais labo.
+      </div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Condition de réception provisoire</div><div class="piege-text">La réception provisoire NE PEUT PAS être prononcée tant que le DOE et les <strong>plans de récolement</strong> n'ont pas été fournis. Le DOE est fourni en <strong>3 exemplaires</strong> par l'Entrepreneur au MOE.</div></div>
+      <div class="memo-section-title">📌 Maîtrise d'ouvrage déléguée</div>
+      <div class="key-box"><div class="key-title">⚡ Quand le MOA ne peut/sait pas faire</div><div class="key-text">Le MOA met en place la <strong>maîtrise d'œuvre</strong> (bureau d'études) pour assurer les tâches qui lui incombent. Ce n'est pas "l'entreprise de réalisation" ni "la maîtrise d'ouvrage" (qui reste le MOA).</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Qui est le maître d'ouvrage dans un projet ?",type:'multi',opts:[{t:"La personne physique ou morale (propriétaire) pour qui l'ouvrage est réalisé",c:true},{t:"Le chargé d'étude",c:false},{t:"Le ou les usagers",c:false}],diff:'easy',piege:false,expl:"Le maître d'ouvrage est le propriétaire / donneur d'ouvrage pour qui l'ouvrage est réalisé. Il a un rôle administratif.",ref:"Chapitre 1 › Section II › Page 7"},
+  {q:"La MDP (pression maximale de calcul) doit figurer au CCTP. Elle est calculée par :",type:'multi',opts:[{t:"Le fabricant de tuyaux",c:false},{t:"Le maître d'œuvre",c:true},{t:"Le chargé de contrôle des travaux",c:false}],diff:'med',piege:true,expl:"La MDP est calculée par le maître d'œuvre. C'est lui qui connaît les conditions hydrauliques du réseau (statique/dynamique + régime transitoire).",ref:"Chapitre 1 › Section III › Page 9"},
+  {q:"Que correspond la MDP (pression maximale de calcul) ?",type:'multi',opts:[{t:"Au niveau statique en gravitaire uniquement",c:false},{t:"Au niveau dynamique en refoulement uniquement",c:false},{t:"Au niveau statique en gravitaire ou au niveau dynamique en refoulement, majoré des effets du régime transitoire",c:true}],diff:'hard',piege:true,expl:"La MDP prend en compte le pire scénario : gravitaire ou refoulement, PLUS les effets du régime transitoire (coups de bélier).",ref:"Chapitre 7 › Section V › Page 33"},
+  {q:"Quelle est la longueur maximale recommandée pour un tronçon à éprouver lors des épreuves hydrauliques ?",type:'multi',opts:[{t:"3 000 m",c:false},{t:"2 000 m",c:true},{t:"4 000 m",c:false}],diff:'med',piege:true,expl:"Le fascicule 71 recommande de ne pas dépasser 2 000 m par tronçon d'épreuve.",ref:"Chapitre 7 › Section I › Page 31"},
+  {q:"La ventouse simple effet automatique a pour fonction essentielle :",type:'multi',opts:[{t:"L'admission d'air en grand volume lors de la vidange du système",c:false},{t:"La décharge d'air en grand volume lors du remplissage de la conduite",c:false},{t:"Le dégazage permanent de l'air présent dans les conduites sous pression en service",c:true}],diff:'med',piege:true,expl:"La ventouse simple effet = dégazage PERMANENT en service. Ne pas confondre avec la ventouse triple fonctions qui gère aussi la vidange et le remplissage.",ref:"Chapitre 5 › Ventouses › Page 27"},
+  {q:"Les ventouses triple fonctions assurent :",type:'multi',opts:[{t:"Le dégazage automatique en pression normale",c:true},{t:"L'admission d'air en grand volume lors de la vidange du système",c:true},{t:"La décharge d'air en grand volume lors du remplissage de la conduite",c:true}],diff:'hard',piege:false,expl:"Les ventouses triple fonctions gèrent les 3 fonctions : dégazage permanent + admission à la vidange + décharge au remplissage. Posées sur conduites de refoulement.",ref:"Chapitre 5 › Ventouses › Page 26-27"},
+  {q:"Après la pose et les épreuves hydrauliques, avant la mise en eau de consommation, la chaîne d'opérations nécessaire est :",type:'multi',opts:[{t:"Le lavage, nettoyage et le rinçage",c:false},{t:"Le lavage et le rinçage",c:false},{t:"Le lavage, la désinfection et le rinçage",c:true}],diff:'med',piege:true,expl:"La bonne séquence est : LAVAGE (nettoyage) → DÉSINFECTION → RINÇAGE. 'Lavage + nettoyage + rinçage' est un piège car il omet la désinfection.",ref:"Chapitre 8 › Page 35"},
+  {q:"Après les opérations de nettoyage et désinfection, quel est l'élément prépondérant pour déclarer le réseau apte au transport de l'eau de consommation ?",type:'multi',opts:[{t:"Un contrôle interne de conformité aux normes réalisé sur des échantillons",c:false},{t:"Un chlore libre de 5 mg/litre",c:false},{t:"Un chlore libre de 10 mg/litre",c:false},{t:"Un contrôle de conformité aux normes réalisé par un laboratoire agréé sur des échantillons",c:true}],diff:'hard',piege:true,expl:"Le contrôle par LABORATOIRE AGRÉÉ est l'élément prépondérant (pas un simple contrôle interne). Le chlore de 5 mg/l est la dose de désinfection, pas le critère d'aptitude.",ref:"Chapitre 8 › Page 35"},
+  {q:"Selon le fascicule 71, pour les conduites en fonte, lors des épreuves hydrauliques, la pression ne doit pas diminuer de :",type:'multi',opts:[{t:"Plus de 2 mce maintenue 15 min",c:false},{t:"Plus de 2 mce maintenue 30 min",c:false},{t:"Plus de 0,2 bar maintenue 30 min",c:true}],diff:'hard',piege:true,expl:"Critère Fascicule 71 pour la fonte : ΔP ≤ 0,2 bar sur 30 min. Attention à la distinction mce/bar et à la durée (30 min, pas 15 min).",ref:"Chapitre 7 › Section V › Page 33-34"},
+  {q:"Les fouilles et poses des tuyaux sont réalisées pour un profil en long avec des pentes minimales de :",type:'multi',opts:[{t:"Nulles sur tout le profil",c:false},{t:"4 à 6 mm/m dans les pentes montantes",c:false},{t:"2 à 3 mm/m dans les pentes montantes",c:true}],diff:'med',piege:true,expl:"Pente minimale souhaitable dans les parties montantes = 2 à 3 mm/m. Les 4 à 6 mm/m concernent les pentes descendantes.",ref:"Chapitre 5 › Exécution des fouilles › Page 23"},
+  {q:"L'emprise recommandée pour un chantier AEP est constituée d'une bande de :",type:'multi',opts:[{t:"20 m de largeur",c:false},{t:"40 m de largeur",c:false},{t:"12 m de largeur",c:true}],diff:'easy',piege:false,expl:"Le cours recommande une bande de 12 m de largeur pour l'emprise du chantier.",ref:"Chapitre 5 › Accès installations › Page 19"},
+  {q:"La largeur des voies d'accès au chantier ne devrait pas être inférieure à :",type:'multi',opts:[{t:"20,0 m",c:false},{t:"2,0 m",c:false},{t:"4,0 m",c:true}],diff:'easy',piege:false,expl:"La largeur minimale des voies d'accès est de 4 mètres.",ref:"Chapitre 5 › Accès installations › Page 19"},
+  {q:"Quel que soit l'importance des travaux, la largeur d'emprise :",type:'multi',opts:[{t:"Reste invariable",c:false},{t:"Peut être augmentée suivant le diamètre des canalisations et la profondeur",c:true},{t:"Peut être augmentée suivant la tenue du terrain et les conditions d'exécution des fouilles",c:true}],diff:'med',piege:false,expl:"L'emprise peut être augmentée selon le diamètre/profondeur ET selon la tenue du terrain/conditions d'exécution. Les deux réponses b et c sont correctes.",ref:"Chapitre 5 › Accès installations › Page 19"},
+  {q:"Les conditions de stockage des canalisations (contre les modifications géométriques, efforts excessifs, rayonnement solaire) sont données par :",type:'multi',opts:[{t:"L'entreprise",c:false},{t:"Le maître d'ouvrage",c:false},{t:"Le fabricant",c:true}],diff:'easy',piege:true,expl:"Les conditions de stockage sont toujours données par le FABRICANT (fiches techniques du fabricant).",ref:"Chapitre 5 › Stockage › Page 21"},
+  {q:"En centre-ville (habitat dense, chaussée encombrée), la traversée des voies bitumées est recommandée par :",type:'multi',opts:[{t:"Tranchée ouverte",c:false},{t:"Pose en fourreau",c:false},{t:"Forage dirigé",c:true}],diff:'med',piege:true,expl:"En milieu urbain dense avec chaussée encombrée, le forage dirigé est recommandé pour éviter la perturbation du trafic et les risques.",ref:"Chapitre 5 › Techniques de pose › Page 25"},
+  {q:"En général, le contrôle de chantier se limite à un passage par semaine. En dehors des fréquences arrêtées, le chargé de contrôle :",type:'multi',opts:[{t:"Peut procéder à des contrôles inopinés",c:true},{t:"Ne peut pas opérer un contrôle",c:false},{t:"Peut opérer un contrôle mais après avoir prévenu l'entreprise",c:false}],diff:'easy',piege:false,expl:"Le chargé de contrôle peut toujours procéder à des contrôles inopinés en dehors des fréquences arrêtées en commun accord.",ref:"Chapitre 3 › Section I › Page 12"},
+  {q:"Le fascicule 71 recommande pour les diamètres extérieurs ≤ 600 mm, la largeur au fond de tranchée égale à :",type:'multi',opts:[{t:"D + 0,30 m de part et d'autre du tuyau",c:true},{t:"D + 0,40 m de part et d'autre du tuyau",c:false},{t:"D + 0,50 m de part et d'autre du tuyau",c:false}],diff:'med',piege:true,expl:"Pour Ø ext ≤ 600 mm : largeur fond = D + 0,30 m. Pour Ø ext > 600 mm : largeur fond = D + 0,40 m. Valeurs à ne pas inverser.",ref:"Chapitre 5 › Ouverture des tranchées › Page 24"},
+  {q:"La hauteur de gerbage (en nombre de fardeaux) pour le stockage en gerbage de tuyaux PVC DN 75 est de :",type:'multi',opts:[{t:"5 fardeaux",c:false},{t:"6 fardeaux",c:true},{t:"4 fardeaux",c:false}],diff:'med',piege:true,expl:"DN 75, 90, 110 → 6 fardeaux. DN 125, 140, 160 → 5 fardeaux. La hauteur est fonction des DN.",ref:"Chapitre 5 › Stockage PVC › Page 22"},
+  {q:"La hauteur de gerbage pour les tuyaux PVC est :",type:'multi',opts:[{t:"De 5 fardeaux pour les DN 75",c:false},{t:"Indépendante des DN des tuyaux",c:false},{t:"Fonction des DN des tuyaux",c:true}],diff:'easy',piege:true,expl:"La hauteur de gerbage est bien une fonction des DN (6 fardeaux pour les petits DN, 5 pour les plus grands). Elle n'est pas uniforme.",ref:"Chapitre 5 › Stockage PVC › Page 22"},
+  {q:"Quand le maître d'ouvrage n'a pas les compétences pour réaliser certaines tâches, il met en place :",type:'multi',opts:[{t:"La maîtrise d'ouvrage",c:false},{t:"Une entreprise de réalisation",c:false},{t:"La maîtrise d'œuvre",c:true}],diff:'easy',piege:true,expl:"La MOE (maîtrise d'œuvre = bureau d'études ingénieur conseil) est mise en place quand le MOA ne peut ou ne sait pas gérer les tâches techniques.",ref:"Chapitre 1 › Section II › Page 7"},
+  {q:"Les épreuves hydrauliques sont normalement réalisées :",type:'multi',opts:[{t:"Après remblayage définitif des tranchées",c:false},{t:"Avant remblayage définitif, avec des cavaliers mis en place sur les tuyaux",c:true},{t:"Avant remblayage des tranchées",c:false}],diff:'med',piege:true,expl:"Les épreuves se font AVANT remblayage définitif. Des cavaliers sont mis en place sur les tuyaux pour maintenir les assemblages. La réponse b est correcte.",ref:"Chapitre 7 › Section III › Page 32"},
+  {q:"La masse du massif buté en béton dépend de :",type:'multi',opts:[{t:"De la pression d'épreuve STP",c:true},{t:"De la section intérieure S de la canalisation",c:false},{t:"De la section extérieure de la canalisation",c:true}],diff:'hard',piege:true,expl:"F = k × 10⁵ × PSTP × S (S = section extérieure). La masse dépend donc de la section EXTÉRIEURE et de STP. Pas de la section intérieure.",ref:"Chapitre 6 › Section I › Page 28"},
+  {q:"Après la pose et les épreuves hydrauliques, il est procédé :",type:'multi',opts:[{t:"Seulement à la désinfection",c:false},{t:"Seulement au nettoyage et au rinçage",c:false},{t:"Au nettoyage, au rinçage puis à la désinfection",c:true}],diff:'med',piege:true,expl:"L'ordre correct est : nettoyage/lavage → désinfection → rinçage. Attention, la question demande les opérations après épreuve, la réponse c décrit correctement la séquence.",ref:"Chapitre 8 › Page 35"},
+  {q:"Pour les travaux en propriété privée, le droit d'occupation temporaire et les indemnités sont à la charge de :",type:'multi',opts:[{t:"Du chargé de suivi contrôle",c:false},{t:"Du maître de l'ouvrage",c:true},{t:"De l'entreprise",c:false}],diff:'med',piege:false,expl:"En propriété privée, c'est le maître de l'ouvrage qui est responsable des autorisations et indemnités pour occupation temporaire.",ref:"Chapitre 5 › Travaux en propriété privée › Page 20"},
+  {q:"Le suivi et contrôle de chantier comprend :",type:'multi',opts:[{t:"La gestion des délais en rapport avec la planification",c:true},{t:"La gestion financière",c:true},{t:"La réalisation des travaux",c:false}],diff:'med',piege:true,expl:"Le contrôle comprend : planification, réunions de chantier, approvisionnements, gestion délais, contrôle qualité, gestion financière. Pas la réalisation des travaux (qui est du ressort de l'entrepreneur).",ref:"Chapitre 2 › Section II › Page 10"},
+  {q:"Les modalités des épreuves hydrauliques sont :",type:'multi',opts:[{t:"Les mêmes aussi bien pour la fonte que pour le polyéthylène",c:false},{t:"Différentes selon qu'il s'agisse de la fonte ou du polyéthylène",c:true},{t:"Les mêmes pour les conduites autres que la fonte",c:false}],diff:'hard',piege:true,expl:"Les modalités sont DIFFÉRENTES pour fonte et polyéthylène. La fonte : ΔP ≤ 0,2 bar / 30 min. Le PE : procédure spéciale avec lectures successives croissantes.",ref:"Chapitre 7 › Section V › Page 33-34"},
+  {q:"Pour un DN conduite de 300 à 500 mm, le DN de la ventouse recommandé est :",type:'multi',opts:[{t:"80 mm",c:false},{t:"100 mm",c:true},{t:"150 mm",c:false}],diff:'med',piege:true,expl:"DN conduite 300-500 mm → DN ventouse = 100 mm. Tableau de dimensionnement : <200→50, 200-250→80, 300-500→100, 600-900→150, 1000-1200→200.",ref:"Chapitre 5 › Ventouses › Page 27"},
+  {q:"Le fond de fouille est réglé avec une pente longitudinale minimale de :",type:'multi',opts:[{t:"2 pour mille",c:false},{t:"4 pour mille",c:true},{t:"10 pour mille",c:false}],diff:'med',piege:false,expl:"Le fond de fouille doit avoir une pente longitudinale d'au moins 4 pour mille (4‰), permettant la montée de l'air à chaque point haut.",ref:"Chapitre 5 › Fond de fouille › Page 24"},
+  {q:"La garantie de parfait achèvement dure :",type:'multi',opts:[{t:"6 mois après réception",c:false},{t:"1 an après réception",c:true},{t:"2 ans après réception",c:false}],diff:'easy',piege:false,expl:"La garantie de parfait achèvement dure 1 an à compter de la réception provisoire.",ref:"Chapitre 3 › Section IV › Page 14"},
+  {q:"Pour la reprise des poussées hydrauliques, les efforts de poussée F dépendent de :",type:'multi',opts:[{t:"De la section extérieure de la canalisation",c:true},{t:"Du type de singularité (coude, té, cône…)",c:true},{t:"De la pression d'épreuve STP",c:true}],diff:'hard',piege:false,expl:"F = k × 10⁵ × PSTP × S. Trois facteurs : section extérieure S, coefficient k (lié au type de singularité), pression d'épreuve PSTP.",ref:"Chapitre 6 › Section I › Page 28"},
+  {q:"Le contrôle des opérations de réalisation s'exerce à deux niveaux :",type:'multi',opts:[{t:"Interne (chargé de réalisation) et externe (MOA ou représentant)",c:true},{t:"Interne (laboratoire) et externe (entreprise)",c:false},{t:"Technique (ingénieur) et financier (comptable)",c:false}],diff:'easy',piege:false,expl:"Deux niveaux de contrôle : (1) interne = équipe de surveillance du chargé de réalisation ; (2) externe = maître d'ouvrage ou son représentant.",ref:"Chapitre 1 › Introduction › Page 1"},
+  {q:"Lors de l'assemblage des tuyaux par emboîtement, le lubrifiant doit être appliqué :",type:'multi',opts:[{t:"Sur le bout lisse sur 50 à 75 mm uniquement",c:false},{t:"Sur le bout lisse et sur toute la circonférence intérieure de l'emboîture sur la moitié de sa profondeur",c:true},{t:"Uniquement à l'intérieur de l'emboîture",c:false}],diff:'hard',piege:false,expl:"Application de lubrifiant : bout lisse sur 50-75 mm + toute la circonférence intérieure de l'emboîture sur la moitié de sa profondeur + légère couche sur la partie du joint en contact.",ref:"Chapitre 5 › Assemblage › Page 26"},
+  {q:"Quelle(s) tâche(s) relève(ent) du chargé de contrôle ?",type:'multi',opts:[{t:"La réalisation des travaux",c:false},{t:"La gestion financière",c:true},{t:"La gestion des délais en rapport avec la planification",c:true}],diff:'med',piege:true,expl:"Le chargé de contrôle gère : délais, finances, qualité. La réalisation des travaux est du ressort de l'entrepreneur.",ref:"Chapitre 2 › Section II › Page 10"},
+  {q:"Pour les tuyaux en PVC, l'empilage doit se faire sur :",type:'multi',opts:[{t:"Une base inclinée",c:false},{t:"Une base plane",c:true},{t:"Des rouleaux de bois",c:false}],diff:'easy',piege:false,expl:"L'empilage doit toujours se faire sur une base PLANE pour éviter les déformations.",ref:"Chapitre 5 › Stockage PVC › Page 22"},
+  {q:"La technique de verrouillage des canalisations (auto-buttage) est particulièrement avantageuse :",type:'multi',opts:[{t:"En zone rurale sur terrain stable",c:false},{t:"En zone urbaine et sur terrains instables",c:true},{t:"Pour les conduites gravitaires uniquement",c:false}],diff:'med',piege:false,expl:"Le verrouillage est avantageux quand il y a des contraintes d'encombrement (zone urbaine) et sur terrains instables. Il permet aussi de tester les conduites immédiatement après pose.",ref:"Chapitre 6 › Section II › Page 30"},
+  {q:"La réception provisoire ne peut pas être prononcée tant que :",type:'multi',opts:[{t:"Les épreuves hydrauliques ne sont pas terminées",c:false},{t:"Le DOE et les plans de récolement n'ont pas été fournis",c:true},{t:"Le chantier n'est pas entièrement remblayé",c:false}],diff:'med',piege:false,expl:"La réception provisoire nécessite le DOE (Dossier des Ouvrages Exécutés) et les plans de récolement fournis par l'Entrepreneur.",ref:"Chapitre 4 › Section V › Page 18"},
+  {q:"Un plan de récolement représente :",type:'multi',opts:[{t:"Les plans de conception initiaux",c:false},{t:"Ce qui a été effectivement réalisé, conformément au chantier",c:true},{t:"Les études géotechniques préalables",c:false}],diff:'easy',piege:false,expl:"Le dossier de récolement = ensemble des plans reproduisant ce qui a été effectivement réalisé. C'est une copie conforme du chantier.",ref:"Chapitre 10 › Section II › Page 37"},
+  {q:"Pour les conduites PE (polyéthylène), la pression d'épreuve doit être égale à :",type:'multi',opts:[{t:"MDP et au moins 600 kPa",c:true},{t:"1,5 × MDP",c:false},{t:"PEA du fabricant",c:false}],diff:'hard',piege:false,expl:"Pour le PE : STP = MDP, et au moins égale à 600 kPa. La procédure est ensuite de ramener à 300 kPa et de suivre l'évolution des pressions.",ref:"Chapitre 7 › Section V › Page 34"},
+  {q:"La teneur de chlore libre à obtenir aux extrémités lors de la désinfection des conduites est de :",type:'multi',opts:[{t:"10 mg/l",c:false},{t:"5 mg/l",c:true},{t:"50 mg/l",c:false}],diff:'med',piege:true,expl:"Pour la désinfection au chlore, on doit obtenir 5 mg/l de chlore libre. Pour 5 mg/l le temps de contact est de 24h. 10 mg/l correspond à un temps de contact de 24h aussi (dose plus concentrée).",ref:"Chapitre 8 › Page 35"},
+  {q:"Le dossier des ouvrages exécutés (DOE) est fourni en combien d'exemplaires ?",type:'multi',opts:[{t:"1 exemplaire",c:false},{t:"2 exemplaires",c:false},{t:"3 exemplaires",c:true}],diff:'med',piege:false,expl:"Le DOE est fourni par l'Entrepreneur au Maître d'œuvre en 3 exemplaires, avant la dernière réception provisoire.",ref:"Chapitre 4 › Section V › Page 17"},
+  {q:"Pour la désinfection des conduites au permanganate de potassium, le signe de bonne désinfection aux extrémités est :",type:'multi',opts:[{t:"Une eau claire",c:false},{t:"Une coloration violacée",c:true},{t:"Un pH neutre",c:false}],diff:'med',piege:false,expl:"Permanganate de potassium = coloration violacée aux extrémités. Pour le chlore = teneur de 5 mg/l.",ref:"Chapitre 8 › Page 35"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"Un chargé de contrôle vérifie l'installation d'une ventouse sur une conduite DN 450 mm. Le DN de la ventouse posée est de 80 mm. La pose est-elle conforme ?",type:'multi',opts:[{t:"Oui, 80 mm est correct pour DN 450",c:false},{t:"Non, il faut une ventouse DN 100 pour une conduite DN 300-500",c:true},{t:"Oui, 80 mm suffit pour les petits débits",c:false}],diff:'med',piege:true,expl:"DN conduite 300-500 → ventouse DN 100. DN 80 correspond à la gamme 200-250. Pose non conforme.",ref:"Chapitre 5 › Dimensionnement ventouses › Page 27"},
+  {q:"Sur un chantier, l'entrepreneur propose de tester un tronçon de 2 500 m d'un seul coup. Le chargé de contrôle doit :",type:'multi',opts:[{t:"Accepter si la pression est suffisante",c:false},{t:"Refuser et imposer deux tronçons distincts ≤ 2 000 m",c:true},{t:"Accepter pour économiser du temps",c:false}],diff:'easy',piege:false,expl:"La longueur maximale recommandée est 2 000 m. Un tronçon de 2 500 m dépasse cette limite.",ref:"Chapitre 7 › Section I › Page 31"},
+  {q:"Un lot de tuyaux PVC DN 140 arrive sur chantier. L'entrepreneur les stocke en 6 couches. Le chargé de contrôle doit :",type:'multi',opts:[{t:"Valider le stockage",c:false},{t:"Demander de réduire à 5 couches maximum pour DN 140",c:true},{t:"Demander de réduire à 4 couches",c:false}],diff:'med',piege:true,expl:"DN 140 → hauteur de gerbage = 5 fardeaux (pas 6). 6 fardeaux est réservé à DN 75, 90, 110.",ref:"Chapitre 5 › Stockage PVC › Page 22"},
+  {q:"Lors d'une épreuve hydraulique, la pression est maintenue 30 min. Le manomètre enregistre une chute de 0,15 bar. L'épreuve est-elle concluante ?",type:'multi',opts:[{t:"Oui, car 0,15 < 0,2 bar (critère Fascicule 71)",c:true},{t:"Non, la pression ne doit pas baisser du tout",c:false},{t:"Non, la chute tolérée est 0,1 bar seulement",c:false}],diff:'hard',piege:false,expl:"Le critère Fascicule 71 pour la fonte est : ΔP ≤ 0,2 bar sur 30 min. 0,15 bar < 0,2 bar → épreuve concluante.",ref:"Chapitre 7 › Section V › Page 33"},
+  {q:"Un réseau est posé en terrain plat. Le chargé de contrôle constate que le profil en long est horizontal sur 200 m. Il doit :",type:'multi',opts:[{t:"Accepter car le terrain est plat",c:false},{t:"Demander de créer des points hauts et bas artificiels avec pente ≥ 2 à 3 mm/m en montée",c:true},{t:"Demander un remblayage immédiat",c:false}],diff:'med',piege:false,expl:"Quand le profil est horizontal, il faut créer des points hauts et bas artificiels pour obtenir une pente minimale de 2-3 mm/m en montée et 4-6 mm/m en descente.",ref:"Chapitre 5 › Profil en long › Page 23"},
+  {q:"Le MOA demande à son bureau d'études (MOE) de calculer la MDP pour un tronçon gravitaire. La cote piézométrique statique est à 35 m. Le coup de bélier estimé ajoute 8 m. La MDP est :",type:'multi',opts:[{t:"35 m de colonne d'eau",c:false},{t:"43 m de colonne d'eau (35 + 8)",c:true},{t:"27 m de colonne d'eau",c:false}],diff:'hard',piege:false,expl:"MDP = niveau statique majoré des effets du régime transitoire. Ici : 35 + 8 = 43 m. C'est la pression maximale de calcul.",ref:"Chapitre 7 › Section V › Page 33"},
+  {q:"Un réseau est désinfecté au chlore. Après 24h de contact, un prélèvement aux extrémités ne montre plus que 2 mg/l de chlore libre. L'opération est :",type:'multi',opts:[{t:"Concluante car du chlore est encore présent",c:false},{t:"Non concluante, il faut obtenir 5 mg/l de chlore libre aux extrémités",c:true},{t:"Concluante car 24h de contact est suffisant",c:false}],diff:'med',piege:true,expl:"Pour déclarer la désinfection au chlore réussie, on doit obtenir 5 mg/l de chlore libre aux extrémités. 2 mg/l est insuffisant.",ref:"Chapitre 8 › Page 35"},
+  {q:"Pour une conduite DN 300 fonte, la largeur de tranchée au fond doit être de :",type:'multi',opts:[{t:"0,30 m de plus que le diamètre intérieur",c:false},{t:"DN + 0,30 m de part et d'autre (soit D_ext + 0,60 m total)",c:true},{t:"D + 0,40 m de part et d'autre",c:false}],diff:'hard',piege:true,expl:"Ø ext ≤ 600 mm → largeur fond = D + 0,30 m DE PART ET D'AUTRE, soit Dext + 0,60 m au total. Le 0,40 est pour les Ø > 600 mm.",ref:"Chapitre 5 › Largeur tranchées › Page 24"},
+  {q:"L'entrepreneur veut traverser une avenue bitumée en centre-ville pour poser une conduite AEP. Il propose une tranchée ouverte. Le chargé de contrôle doit :",type:'multi',opts:[{t:"Accepter si la durée est courte",c:false},{t:"Accepter si le balisage est en place",c:false},{t:"Recommander le forage dirigé pour centre-ville encombré",c:true}],diff:'med',piege:false,expl:"En centre-ville (habitat dense, chaussée encombrée), la traversée des voies bitumées doit se faire par forage dirigé.",ref:"Chapitre 5 › Techniques de pose › Page 25"},
+  {q:"Un marché prévoit des tuyaux PVC stockés par l'entrepreneur sur le chantier. L'entrepreneur les expose au soleil sans protection. Le chargé de contrôle doit :",type:'multi',opts:[{t:"Ignorer, le PVC résiste au soleil",c:false},{t:"Exiger une couverture opaque avec bonne circulation d'air",c:true},{t:"Accepter si le stockage ne dure pas plus de 7 jours",c:false}],diff:'easy',piege:false,expl:"Les tuyaux PVC doivent être protégés du rayonnement solaire, recouverts d'un matériau opaque en veillant à une bonne circulation d'air.",ref:"Chapitre 5 › Stockage PVC › Page 22"},
+  {q:"Le MOA d'un projet reçoit les résultats de l'analyse de l'eau par son équipe interne : eau conforme aux normes. Peut-il ouvrir le réseau à la consommation ?",type:'multi',opts:[{t:"Oui, si le taux de chlore est bon",c:false},{t:"Non, il faut un contrôle par laboratoire agréé",c:true},{t:"Oui, le contrôle interne suffit pour déclarer l'aptitude",c:false}],diff:'med',piege:true,expl:"Le contrôle par laboratoire agréé est l'élément PRÉPONDÉRANT pour déclarer le réseau apte. Le contrôle interne seul ne suffit pas.",ref:"Chapitre 8 › Page 35"},
+  {q:"Un chantier démarre. L'entrepreneur constate des rochers à 0,30 m de profondeur lors de l'excavation. Il doit :",type:'multi',opts:[{t:"Continuer sans changer le fond de fouille",c:false},{t:"Approfondir d'au moins 0,10 m et remplacer par matériau de granulométrie appropriée",c:true},{t:"Remblayer avec du béton",c:false}],diff:'med',piege:false,expl:"Lorsque des bancs rocheux sont rencontrés, le fond de fouille est approfondi d'au moins 0,10 m, la hauteur décapée remplacée par un matériau de granulométrie appropriée.",ref:"Chapitre 5 › Fond de fouille › Page 25"},
+  {q:"Pour une conduite PE, après avoir maintenu la pression à MDP pendant 30 min, on ramène à 300 kPa. Les lectures successives montrent des pressions décroissantes. L'épreuve est :",type:'multi',opts:[{t:"Concluante, la pression baisse normalement",c:false},{t:"Non concluante, les valeurs doivent être croissantes puis stables",c:true},{t:"Concluante si la baisse est inférieure à 0,2 bar",c:false}],diff:'hard',piege:true,expl:"Pour le PE, les valeurs successives doivent être CROISSANTES puis stables (réponse viscoélastique du PE). Des valeurs décroissantes indiquent une fuite.",ref:"Chapitre 7 › Section V › Page 34"},
+  {q:"Un procès-verbal d'épreuve hydraulique est dressé. Il doit comporter :",type:'multi',opts:[{t:"N° et date, désignation du tronçon, durée et pression d'épreuve, résultats, décisions",c:true},{t:"Seulement la pression et la durée",c:false},{t:"Le coût des réparations éventuelles",c:false}],diff:'med',piege:false,expl:"Le PV d'épreuve doit comporter : N° d'ordre et date, désignation exacte du tronçon, repérage des extrémités, durée et pression, résultats, décisions relatives aux réfections.",ref:"Chapitre 7 › Section V › Page 34"},
+  {q:"L'entrepreneur termine la pose d'une conduite fonte DN 500. Pour réaliser l'épreuve immédiatement sans massifs en béton, il peut utiliser :",type:'multi',opts:[{t:"Des joints verrouillés (auto-buttage)",c:true},{t:"Du ruban adhésif industriel",c:false},{t:"Des cavaliers de terre uniquement",c:false}],diff:'med',piege:false,expl:"Le verrouillage (joints verrouillés) permet de tester les conduites immédiatement après pose sans massifs en béton, notamment utile en zone urbaine.",ref:"Chapitre 6 › Section II › Page 30"},
+  {q:"Pour un réseau gravitaire, la PN à choisir pour les canalisations doit vérifier :",type:'multi',opts:[{t:"PN ≥ MDP calculée par le maître d'œuvre",c:true},{t:"PN ≥ STP seulement",c:false},{t:"PN ≥ DP × 2 pour sécurité",c:false}],diff:'hard',piege:false,expl:"On doit respecter : DP ≤ PFA ≈ PN et MDP ≤ PMA ≈ 1,2×PN. En simplifiant, la PN doit couvrir la MDP. Le concepteur s'assure que DP ≤ PFA.",ref:"Chapitre 1 › Section III › Page 9"},
+  {q:"Un DOE est remis par l'entrepreneur avec seulement les pièces financières (décomptes, métrés). La réception provisoire peut-elle être prononcée ?",type:'multi',opts:[{t:"Oui, si les travaux sont acceptables techniquement",c:false},{t:"Non, le DOE doit comporter les pièces administratives, comptables ET techniques",c:true},{t:"Oui, les plans de récolement peuvent venir plus tard",c:false}],diff:'med',piege:false,expl:"Le DOE complet comprend 3 catégories : pièces administratives + pièces comptables/financières + pièces techniques. Un DOE incomplet bloque la réception provisoire.",ref:"Chapitre 4 › Section V › Page 17-18"},
+  {q:"Sur un chantier en zone rurale, après pose des conduites, le remblai supérieur est réalisé. Il devrait être compacté :",type:'multi',opts:[{t:"Sans compactage particulier",c:false},{t:"Par couches successives légèrement damées, couche supérieure en terre végétale",c:true},{t:"En un seul passage de compacteur lourd",c:false}],diff:'easy',piege:false,expl:"En zone rurale : remblayage par couches successives légèrement damées, couche supérieure = terre végétale mise en dépôt, légère sur-hauteur pour tassements.",ref:"Chapitre 5 › Remblai supérieur zone rurale › Page 28"},
+  {q:"Une réception partielle peut intervenir :",type:'multi',opts:[{t:"Seulement pour les ouvrages hydrauliques spéciaux",c:false},{t:"Quand une partie des réalisations peut être exploitée indépendamment de l'ensemble",c:true},{t:"Jamais avant la réception définitive",c:false}],diff:'med',piege:false,expl:"La réception partielle intervient quand une ou des parties des réalisations peut être exploitée indépendamment de l'ensemble.",ref:"Chapitre 3 › Section III › Page 14"},
+  {q:"Un dommage non visible lors de la réception est découvert 8 mois après. L'entrepreneur est-il tenu de le réparer au titre de la garantie de parfait achèvement ?",type:'multi',opts:[{t:"Non, la garantie est de 6 mois",c:false},{t:"Oui, à condition que ce soit notifié par écrit avant 1 an après réception",c:true},{t:"Oui, sans condition",c:false}],diff:'med',piege:false,expl:"La garantie dure 1 an. Les dommages non apparents à la réception doivent être notifiés par voie écrite dans le délai d'un an.",ref:"Chapitre 3 › Section IV › Page 14-15"},
+  {q:"Un entrepreneur débute la pose de conduites mais n'a pas effectué de DICT (déclaration d'intention de commencement des travaux). Le chargé de contrôle doit :",type:'multi',opts:[{t:"Laisser l'entrepreneur continuer s'il est prudent",c:false},{t:"Arrêter les travaux jusqu'à reconnaissance des réseaux enterrés existants",c:true},{t:"Faire lui-même la reconnaissance",c:false}],diff:'med',piege:false,expl:"Avant tout travail, la reconnaissance des réseaux enterrés (DICT) est obligatoire pour éviter dommages aux réseaux existants et risques pour le personnel.",ref:"Chapitre 5 › Reconnaissance chantier › Page 20"},
+  {q:"Pour la reprise des poussées sur un coude 90° (1/4), le coefficient k est de :",type:'multi',opts:[{t:"0,765",c:false},{t:"1,414",c:true},{t:"1",c:false}],diff:'hard',piege:false,expl:"Coude 1/4 (90°) → k = 1,414 (racine de 2). Extrémité = 1, Té = 1, Coude 1/4 = 1,414, Coude 1/8 = 0,765.",ref:"Chapitre 6 › Section I › Page 28"},
+  {q:"Un chantier est en domaine public. L'entrepreneur commence les travaux sans autorisation préalable. La responsabilité incombe à :",type:'multi',opts:[{t:"L'entrepreneur uniquement",c:false},{t:"Le maître de l'ouvrage qui doit fournir toutes les prescriptions et autorisations avant commencement",c:true},{t:"Le chargé de contrôle",c:false}],diff:'med',piege:false,expl:"En domaine public, c'est le maître de l'ouvrage ou son représentant qui précise avant le commencement des travaux toutes les prescriptions et autorisations.",ref:"Chapitre 5 › Travaux en domaine public › Page 19"},
+  {q:"Pour une conduite DN 800 fonte (Ø ext > 600 mm), la largeur au fond de tranchée doit être de :",type:'multi',opts:[{t:"D + 0,30 m de part et d'autre",c:false},{t:"D + 0,40 m de part et d'autre",c:true},{t:"D + 0,50 m de part et d'autre",c:false}],diff:'hard',piege:true,expl:"Ø ext > 600 mm → largeur fond = D + 0,40 m de part et d'autre. Le 0,30 est pour Ø ≤ 600 mm.",ref:"Chapitre 5 › Ouverture des tranchées › Page 24"},
+  {q:"Un PV de réunion de chantier est rédigé par le maître d'œuvre. Il doit être :",type:'multi',opts:[{t:"Signé uniquement par le MOE",c:false},{t:"Approuvé et signé conjointement par l'Entrepreneur, le MOE et le MOA délégué",c:true},{t:"Distribué sans signature pour information",c:false}],diff:'easy',piege:false,expl:"Le PV de réunion de chantier est rédigé par le MOE, puis approuvé et signé conjointement par l'Entrepreneur, le MOE et le MOA délégué.",ref:"Chapitre 4 › Section I › Page 16"},
+  {q:"Lors d'une épreuve hydraulique, il y a un obstacle (robinet vanne fermé) sur le tronçon. On le détecte par :",type:'multi',opts:[{t:"Une mise en pression préalable de 5 min à la pression d'épreuve, suivie de l'ouverture de la purge à l'autre extrémité",c:true},{t:"Un essai de débit à pleine charge",c:false},{t:"Un test visuel des joints",c:false}],diff:'hard',piege:false,expl:"La procédure prévoit une mise en pression préalable de 5 min, puis ouverture de la purge à l'autre extrémité pour s'assurer qu'il n'y a pas d'obstacle (robinet vanne fermé).",ref:"Chapitre 7 › Section V › Page 33"},
+  {q:"La masse d'un massif buté dépend de la section EXTÉRIEURE. Pour une canalisation DN 150 fonte, Dext = 170 mm, S extérieure ≈ :",type:'multi',opts:[{t:"0,0227 m²",c:true},{t:"0,0177 m²",c:false},{t:"0,0163 m²",c:false}],diff:'hard',piege:false,expl:"S = π × (0,170)² / 4 = π × 0,0289 / 4 ≈ 0,0227 m². Le tableau du cours donne Sext(DN150) = 0,0227 m².",ref:"Chapitre 6 › Section I › Page 28"},
+  {q:"Pour une conduite servant à alimenter en eau potable, quel test est prioritaire avant l'ouverture au public ?",type:'multi',opts:[{t:"Test de débit à pleine charge",c:false},{t:"Analyse bactériologique par laboratoire agréé sur prélèvements",c:true},{t:"Mesure de pression seule",c:false}],diff:'med',piege:false,expl:"L'analyse par laboratoire agréé est l'élément prépondérant pour déclarer le réseau apte au transport d'eau de consommation.",ref:"Chapitre 8 › Page 35"},
+  {q:"Pour une tranchée accueillant 2 conduites DN 200 (Dext = 222 mm), la largeur minimale au fond est d'environ :",type:'multi',opts:[{t:"0,60 m",c:false},{t:"0,444 + 0,60 + 0,50 = 1,544 m minimum",c:true},{t:"0,80 m",c:false}],diff:'hard',piege:false,expl:"Pour plusieurs conduites : somme Ø ext + 0,60 à 0,80 m + 0,50 m par conduite supplémentaire. Ici : 0,222 + 0,222 + 0,60 + 0,50 = 1,544 m minimum.",ref:"Chapitre 5 › Ouverture des tranchées › Page 24"},
+  {q:"Lors du remplissage d'une conduite pour l'épreuve hydraulique, on doit :",type:'multi',opts:[{t:"Remplir rapidement par le haut",c:false},{t:"Remplir progressivement par le bas et purger l'air aux points hauts",c:true},{t:"Ouvrir toutes les vannes en même temps",c:false}],diff:'med',piege:false,expl:"La procédure correcte : remplir progressivement par le BAS, purger l'air aux POINTS HAUTS du tronçon, utiliser les robinets de vidange pour vérifier l'arrivée de l'eau.",ref:"Chapitre 7 › Section II › Page 32"},
+  {q:"Pour sécuriser l'assemblage par emboîtement, le bout mâle doit être enfoncé :",type:'multi',opts:[{t:"Jusqu'à ce que le joint soit visible",c:false},{t:"Jusqu'à ce que le repère d'assemblage coïncide avec le bord de l'emboîture",c:true},{t:"Au maximum sans repère précis",c:false}],diff:'med',piege:false,expl:"Le bout mâle doit être enfoncé jusqu'à ce que le repère d'assemblage prévu sur le fût du tuyau coïncide avec le bord de l'emboîture.",ref:"Chapitre 5 › Assemblage › Page 26"},
+  {q:"La surveillance des travaux (présence quotidienne) est-elle préférable au contrôle de chantier (passage hebdomadaire) ?",type:'multi',opts:[{t:"Oui, toujours, pour plus de sécurité",c:false},{t:"Non, la surveillance permanente est peu constructive et trop coûteuse",c:true},{t:"Oui pour les grands projets uniquement",c:false}],diff:'med',piege:false,expl:"La surveillance permanente serait peu constructive sur chantier (lien quasi-subordination) et excessivement coûteuse pour le MOA. Le contrôle avec passages programmés est préférable.",ref:"Chapitre 3 › Section I › Page 12"},
+  {q:"Pour une conduite fonte PN16, la PMA est approximativement de :",type:'multi',opts:[{t:"16 bars",c:false},{t:"19,2 bars",c:true},{t:"12,8 bars",c:false}],diff:'hard',piege:false,expl:"PMA ≈ 1,2 × PFA ≈ 1,2 × PN = 1,2 × 16 = 19,2 bars (pour les conduites en plastique ; pour la fonte le coefficient est similaire en termes de conception).",ref:"Chapitre 1 › Section III › Page 9"},
+  {q:"Une fuite est découverte lors d'une épreuve. L'origine est un tuyau fourni par le MOA. Qui supporte le coût de réparation ?",type:'multi',opts:[{t:"L'entrepreneur dans tous les cas",c:false},{t:"Le maître d'ouvrage, selon CCAG/CCAP car la pièce n'était pas fournie par l'entrepreneur",c:true},{t:"Personne, c'est couvert par l'assurance",c:false}],diff:'hard',piege:false,expl:"Si le désordre provient de pièces non fournies par l'entrepreneur, les modalités financières sont définies au CCAG et CCAP. L'entrepreneur n'est pas responsable de ce qu'il n'a pas fourni.",ref:"Chapitre 7 › Mise en conformité › Page 34"},
+  {q:"Un devis de travaux présente le prix global forfaitaire sans détail. Quel est le problème ?",type:'multi',opts:[{t:"Aucun, un forfait est plus simple",c:false},{t:"Un marché forfaitaire ne permet pas de vérifier la qualité et la quantité des matériaux en détail",c:true},{t:"Un forfait est interdit en marchés publics",c:false}],diff:'med',piege:false,expl:"Le devis détaillé (vs forfait) permet de vérifier qualité/quantité des matériaux, main d'œuvre, prix. Le forfait peut être avantageux mais manque de transparence.",ref:"Chapitre 4 › Section III › Page 17"},
+  {q:"L'entrepreneur présente son planning hebdomadaire d'activités chaque fin de semaine. Sous quel délai le MOE doit-il répondre ?",type:'multi',opts:[{t:"48 heures",c:false},{t:"24 heures",c:true},{t:"1 semaine",c:false}],diff:'med',piege:false,expl:"Le MOE doit apporter ses observations ou approbation au planning hebdomadaire sous 24 heures.",ref:"Chapitre 4 › Section IV › Page 17"},
+  {q:"Un terrain de portance insuffisante (par rapport au CCTP) est découvert. L'entrepreneur doit :",type:'multi',opts:[{t:"Ignorer et poser directement les tuyaux",c:false},{t:"Approfondir la tranchée d'au moins 0,20 m et remblayer comme spécifié au CCTP",c:true},{t:"Appeler le géologue immédiatement",c:false}],diff:'med',piege:false,expl:"Si le fond de fouille n'a pas la portance requise, la tranchée est approfondie d'au moins 0,20 m et la sur-profondeur est remblayée comme spécifié au CCTP.",ref:"Chapitre 5 › Fond de fouille › Page 25"},
+  {q:"La désinfection est réalisée par l'entrepreneur. Qui réalise le prélèvement pour le contrôle de qualité préliminaire ?",type:'multi',opts:[{t:"Le laboratoire agréé directement",c:false},{t:"L'entrepreneur pour le contrôle interne, puis un laboratoire agréé pour le contrôle officiel",c:true},{t:"Le chargé de contrôle",c:false}],diff:'med',piege:false,expl:"Séquence : (1) Contrôle interne par l'entrepreneur (prélèvement interne) → (2) Rinçage → (3) Laboratoire agréé pour le contrôle officiel de qualité de l'eau.",ref:"Chapitre 8 › Page 35"},
+  {q:"Pour un robinet en bouche à clef, il est recommandé de réaliser :",type:'multi',opts:[{t:"Un regard en béton 50 cm × 50 cm",c:false},{t:"Un massif en béton de 30 cm × 30 cm avec flèche d'ouverture de vanne",c:true},{t:"Rien de spécial, la tête métallique suffit",c:false}],diff:'easy',piege:false,expl:"Pour les têtes de bouche à clef : massif en béton 30×30 cm tout autour + flèche donnant le sens d'ouverture de la vanne.",ref:"Chapitre 5 › Équipements hydrauliques › Page 28"},
+  {q:"La mise en pression d'une conduite se fait en deux étapes. La première est :",type:'multi',opts:[{t:"Monter directement à la pression d'épreuve et maintenir 30 min",c:false},{t:"Mise en pression préalable de 5 min à la pression d'épreuve, puis ouvrir la purge à l'autre extrémité",c:true},{t:"Monter à 50% de la pression d'épreuve, puis 100%",c:false}],diff:'hard',piege:false,expl:"D'abord une mise en pression préalable de 5 min → ouverture de la purge à l'autre extrémité pour vérifier absence d'obstacle → puis pression rétablie à la pression d'épreuve pour la durée prescrite.",ref:"Chapitre 7 › Section V › Page 33"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (questions des sujets PDF dans l'ordre)
+const serie3 = [
+  {q:"Après la pose et les épreuves hydrauliques, avant la mise en eau de consommation pour la distribution, la chaîne d'opérations nécessaire pour déclarer les conduites aptes au transport de l'eau de consommation est :",type:'multi',opts:[{t:"Le lavage, nettoyage et le rinçage",c:false},{t:"Le lavage et le rinçage",c:false},{t:"Le lavage, la désinfection et le rinçage",c:true}],diff:'med',piege:true,expl:"La bonne chaîne est : LAVAGE → DÉSINFECTION → RINÇAGE. 'Lavage + nettoyage + rinçage' sans désinfection est incomplet et incorrect.",ref:"Sujet d'examen UE5 · Q41 / Chapitre 8 › Page 35"},
+  {q:"En termes de projet, le maître d'ouvrage désigne :",type:'multi',opts:[{t:"La personne physique ou morale (propriétaire) pour qui est réalisé l'ouvrage",c:true},{t:"Le chargé d'étude",c:false},{t:"Le ou les usagers",c:false}],diff:'easy',piege:false,expl:"Le maître d'ouvrage = propriétaire / donneur d'ouvrage. Ce n'est ni le chargé d'étude ni les usagers.",ref:"Sujet d'examen UE5 · Q42 / Chapitre 1 › Page 7"},
+  {q:"En général le contrôle se limite à un passage du chargé du contrôle à une fréquence fixée. En dehors de cette fréquence arrêtée en commun accord, le chargé de contrôle :",type:'multi',opts:[{t:"Peut procéder à des contrôles inopinés",c:true},{t:"Ne peut pas opérer un contrôle",c:false},{t:"Peut opérer un contrôle mais après avoir prévenu l'entreprise",c:false}],diff:'easy',piege:false,expl:"Le chargé de contrôle peut toujours procéder à des contrôles inopinés en dehors des fréquences fixées.",ref:"Sujet d'examen UE5 · Q43 / Chapitre 3 › Page 12"},
+  {q:"Après la pose et les épreuves hydrauliques, il est procédé :",type:'multi',opts:[{t:"Seulement à la désinfection",c:false},{t:"Seulement nettoyage et au rinçage",c:false},{t:"Au nettoyage, au rinçage puis à la désinfection",c:true}],diff:'med',piege:true,expl:"La séquence complète inclut nettoyage + rinçage + désinfection. Pas seulement désinfection ni seulement nettoyage/rinçage.",ref:"Sujet d'examen UE5 · Q44 / Chapitre 8 › Page 35"},
+  {q:"La ventouse simple effet automatique a pour fonction essentielle :",type:'multi',opts:[{t:"L'admission d'air en grand volume lors de la vidange du système",c:false},{t:"La décharge d'air en grand volume lors du remplissage de la conduite",c:false},{t:"Le dégazage permanent de l'air présent dans les conduites sous pression en service",c:true}],diff:'med',piege:true,expl:"Ventouse simple effet = dégazage PERMANENT en service (conduites sous pression). Ne pas confondre avec les 2 autres fonctions qui appartiennent à la ventouse triple fonctions.",ref:"Sujet d'examen UE5 · Q45 / Chapitre 5 › Page 27"},
+  {q:"Après les opérations de nettoyage et désinfection, lequel des éléments ci-dessous est prépondérant pour déclarer le réseau apte au transport de l'eau de consommation ?",type:'multi',opts:[{t:"Un contrôle interne de conformité aux normes de qualité de l'eau réalisé sur des échantillons",c:false},{t:"Un chlore libre de 5 mg/litre",c:false},{t:"Un chlore libre de 10 mg/litre",c:false},{t:"Un contrôle de conformité aux normes de qualité réalisé par un laboratoire agréé sur des échantillons",c:true}],diff:'hard',piege:true,expl:"L'élément PRÉPONDÉRANT est le contrôle par LABORATOIRE AGRÉÉ. Le chlore de 5 mg/l est une dose de désinfection, pas un critère d'aptitude. Le contrôle interne seul ne suffit pas.",ref:"Sujet d'examen UE5 · Q46 / Chapitre 8 › Page 35"},
+  {q:"La MDP, pression maximale de calcul (doit figurer au C.C.T.P.) est calculée par :",type:'multi',opts:[{t:"Le fabricant de tuyaux",c:false},{t:"Le maître d'œuvre",c:true},{t:"Le chargé de contrôle des travaux",c:false}],diff:'med',piege:true,expl:"La MDP est calculée par le maître d'œuvre et doit figurer au CCTP. C'est lui qui effectue les calculs hydrauliques.",ref:"Sujet d'examen UE5 · Q47 / Chapitre 1 › Page 9"},
+  {q:"Les fouilles et les poses des tuyaux sont réalisées pour un profil en long avec des pentes minimales de :",type:'multi',opts:[{t:"Nulles sur tout le profil",c:false},{t:"4 à 6 mm/m dans les pentes montantes",c:false},{t:"2 à 3 mm/m dans les pentes montantes",c:true}],diff:'med',piege:true,expl:"Pente minimale = 2 à 3 mm/m dans les parties MONTANTES. Les 4 à 6 mm/m concernent les parties DESCENDANTES. Ne pas inverser.",ref:"Sujet d'examen UE5 · Q48 / Chapitre 5 › Page 23"},
+  {q:"Dans une conduite sous pression, la masse du massif en béton (buté) dépend entre autres de :",type:'multi',opts:[{t:"De la pression d'épreuve STP",c:true},{t:"De la section intérieure S de la canalisation",c:false},{t:"De la section extérieure de la canalisation",c:true}],diff:'hard',piege:true,expl:"F = k × 10⁵ × PSTP × S où S = section EXTÉRIEURE. La masse dépend de STP et de la section EXTÉRIEURE, pas intérieure.",ref:"Sujet d'examen UE5 · Q49 / Chapitre 6 › Page 28"},
+  {q:"Lors de la pose des canalisations, les épreuves hydrauliques doivent être réalisées sur des tronçons de longueur n'excédant pas :",type:'multi',opts:[{t:"3 000 m",c:false},{t:"2 000 m",c:true},{t:"4 000 m",c:false}],diff:'med',piege:true,expl:"Longueur maximale recommandée : 2 000 m. Ni 3 000 m ni 4 000 m.",ref:"Sujet d'examen UE5 · Q50 / Chapitre 7 › Page 31"},
+  {q:"La ou les quelle(s) des tâches ci-dessous relève(ent) du chargé de contrôle :",type:'multi',opts:[{t:"La réalisation des travaux",c:false},{t:"La gestion financière",c:true},{t:"La gestion des délais en rapport avec la planification",c:true}],diff:'med',piege:true,expl:"Le chargé de contrôle gère : délais, finances, qualité. La RÉALISATION des travaux est du ressort de l'entrepreneur, pas du chargé de contrôle.",ref:"Sujet d'examen UE5 · Q51 / Chapitre 2 › Page 10"},
+  {q:"Quel que soit l'importance des travaux la largeur d'emprise :",type:'multi',opts:[{t:"Reste invariable",c:false},{t:"Peut être augmentée suivant le diamètre des canalisations et la profondeur",c:true},{t:"Peut être augmentée suivant la tenue du terrain et les conditions d'exécution des fouilles",c:true}],diff:'med',piege:false,expl:"L'emprise peut être augmentée selon DEUX critères : (1) diamètre/profondeur et (2) tenue du terrain/conditions d'exécution. Les deux réponses b et c sont correctes.",ref:"Sujet d'examen UE5 · Q52 / Chapitre 5 › Page 19"},
+  {q:"La largeur des voies ne devrait pas être inférieure à :",type:'multi',opts:[{t:"20,0 m",c:false},{t:"2,0 m",c:false},{t:"4,0 m",c:true}],diff:'easy',piege:false,expl:"La largeur minimale des voies d'accès est de 4 mètres.",ref:"Sujet d'examen UE5 · Q53 / Chapitre 5 › Page 19"},
+  {q:"Accès, les installations et emprises du chantier : il est recommandé que l'emprise soit constituée d'une bande de :",type:'multi',opts:[{t:"20 m de largeur",c:false},{t:"40 m de largeur",c:false},{t:"12 m de largeur",c:true}],diff:'easy',piege:false,expl:"L'emprise recommandée est de 12 m de largeur.",ref:"Sujet d'examen UE5 · Q54 / Chapitre 5 › Page 19"},
+  {q:"Les conditions de stockage visent à se prémunir contre les modifications géométriques, les efforts excessifs et l'action du rayonnement solaire. Elles sont données par :",type:'multi',opts:[{t:"L'entreprise",c:false},{t:"Le maître d'ouvrage",c:false},{t:"Le fabricant",c:true}],diff:'easy',piege:true,expl:"Les conditions de stockage sont données par le FABRICANT (fiches techniques).",ref:"Sujet d'examen UE5 · Q55 / Chapitre 5 › Page 21"},
+  {q:"En matière de pose des canalisations, en centre-ville (habitat dense et chaussée encombrée), il est recommandé que la traversée des voies bitumées se fasse par :",type:'multi',opts:[{t:"Tranchée ouverte",c:false},{t:"Pose en fourreau",c:false},{t:"Par forage dirigé",c:true}],diff:'med',piege:true,expl:"En centre-ville encombré, le forage dirigé est recommandé pour la traversée des voies bitumées.",ref:"Sujet d'examen UE5 · Q56 / Chapitre 5 › Page 25"},
+  {q:"Les épreuves hydrauliques sont normalement réalisées :",type:'multi',opts:[{t:"Après remblayage définitif des tranchées",c:false},{t:"Avant remblayage définitif, avec des cavaliers mis en place sur les tuyaux",c:true},{t:"Avant remblayage des tranchées",c:false}],diff:'med',piege:true,expl:"Avant remblayage DÉFINITIF avec cavaliers sur les tuyaux. La réponse b est la correcte. 'Avant remblayage' (réponse c) est incomplet.",ref:"Sujet d'examen UE5 · Q57 / Chapitre 7 › Page 32"},
+  {q:"Quand le maître d'ouvrage n'a pas les compétences pour faire réaliser certaines tâches relevant de lui, il met en place une organisation qui s'en charge. Cette organisation s'appelle :",type:'multi',opts:[{t:"La maîtrise d'ouvrage",c:false},{t:"L'entreprise de réalisation",c:false},{t:"La maîtrise d'œuvre",c:true}],diff:'easy',piege:true,expl:"La MOE (maîtrise d'œuvre). La maîtrise d'ouvrage c'est le MOA lui-même. L'entreprise de réalisation réalise les travaux.",ref:"Sujet d'examen UE5 · Q58 / Chapitre 1 › Page 7"},
+  {q:"En termes d'étude de réseau hydraulique, la pression maximale de calcul MDP correspond :",type:'multi',opts:[{t:"Au niveau statique en gravitaire",c:false},{t:"Au niveau dynamique en refoulement",c:false},{t:"Au niveau statique en gravitaire ou au niveau dynamique en refoulement, majoré des effets du régime transitoire",c:true}],diff:'hard',piege:true,expl:"MDP = le pire cas : statique gravitaire OU dynamique refoulement + régime transitoire (coups de bélier). Les réponses a et b seules sont incomplètes.",ref:"Sujet d'examen UE5 · Q59 / Chapitre 7 › Page 33"},
+  {q:"Après les opérations de pose des canalisations, des épreuves hydrauliques sont réalisées. La pression d'épreuve devrait être :",type:'multi',opts:[{t:"Supérieure à la PFA",c:false},{t:"Égale à MDP",c:true},{t:"Égale à PEA",c:false}],diff:'hard',piege:true,expl:"STP = MDP. La pression d'épreuve est fixée égale à la pression maximale de calcul (MDP), calculée par le maître d'œuvre.",ref:"Sujet d'examen UE5 · Q60 / Chapitre 7 › Page 33"},
+  {q:"Les travaux sont réalisés en domaine public ou en propriété privée. Les autorisations obligatoires, le droit d'occupation temporaire, les indemnités éventuelles sont de la responsabilité de :",type:'multi',opts:[{t:"Du chargé de suivi contrôle",c:false},{t:"Du maître de l'ouvrage",c:true},{t:"De l'entreprise",c:false}],diff:'med',piege:false,expl:"Toutes les autorisations et indemnités pour l'accès au chantier (domaine public ou privé) sont à la charge du maître de l'ouvrage.",ref:"Sujet d'examen UE5 · Q42(b) / Chapitre 5 › Page 19-20"},
+  {q:"Les modalités des épreuves hydrauliques sont :",type:'multi',opts:[{t:"Les mêmes aussi bien pour la fonte que pour le polyéthylène",c:false},{t:"Différentes selon qu'il s'agisse de la fonte ou du polyéthylène",c:true},{t:"Les mêmes pour les conduites autres que la fonte",c:false}],diff:'hard',piege:true,expl:"Les modalités sont DIFFÉRENTES. Fonte : ΔP ≤ 0,2 bar / 30 min. Polyéthylène : procédure spéciale avec lectures successives croissantes.",ref:"Sujet d'examen UE5 · Q45(b) / Chapitre 7 › Page 33-34"},
+  {q:"Pour la largeur des tranchées, le fascicule 71 recommande (cochez les bonnes réponses) :",type:'multi',opts:[{t:"Pour les diamètres extérieurs ≤ 600 mm, largeur au fond = D + 0,30 m de part et d'autre du tuyau",c:true},{t:"Pour les diamètres extérieurs > 600 mm, largeur au fond = D + 0,40 m de part et d'autre du tuyau",c:true},{t:"Si la tranchée est prévue pour plusieurs conduites, la largeur au fond est au moins égal à la somme des diamètres extérieurs (sans ajout)",c:false}],diff:'hard',piege:true,expl:"Pour plusieurs conduites, il faut la somme des Ø ext PLUS une marge (0,60 à 0,80 m) plus 0,50 m par conduite supplémentaire. Pas simplement la somme des Ø.",ref:"Sujet d'examen UE5 · Q47(b) / Chapitre 5 › Page 24"},
+  {q:"La hauteur de gerbage pour les tuyaux PVC est :",type:'multi',opts:[{t:"De 5 fardeaux pour les DN 75",c:false},{t:"Indépendante des DN des tuyaux",c:false},{t:"Fonction des DN des tuyaux",c:true}],diff:'easy',piege:true,expl:"La hauteur de gerbage est fonction des DN : DN 75-110 → 6 fardeaux, DN 125-160 → 5 fardeaux. Elle n'est pas uniforme ni indépendante.",ref:"Sujet d'examen UE5 · Q50(b) / Chapitre 5 › Page 22"},
+  {q:"Selon le fascicule 71, pour les conduites en fonte lors des épreuves hydrauliques :",type:'multi',opts:[{t:"La pression ne devrait pas diminuer de plus de 2 mce lorsqu'elle est maintenue 15 min",c:false},{t:"La pression ne devrait pas diminuer de plus de 2 mce lorsqu'elle est maintenue 30 min",c:false},{t:"La pression ne devrait pas diminuer de plus de 0,2 bar lorsqu'elle est maintenue 2h",c:false}],diff:'hard',piege:true,expl:"ATTENTION : aucune des 3 options du sujet n'est totalement exacte telle que formulée. Le cours indique : ΔP ≤ 0,2 bar / 30 min (pas 2 mce, pas 2h). En examen, choisissez la plus proche des données du cours.",ref:"Sujet d'examen UE5 · Q51(b) / Chapitre 7 › Page 33"},
+  {q:"À l'exécution des fouilles :",type:'multi',opts:[{t:"Des pentes minimales sont requises",c:true},{t:"Le profil des fouilles doit être horizontal",c:false},{t:"Le profil des fouilles est toujours égal à celui du terrain naturel",c:false}],diff:'med',piege:false,expl:"Des pentes minimales sont requises (2-3 mm/m en montée, 4 pour mille au fond de fouille). Le profil n'est pas forcément horizontal ni égal au terrain naturel.",ref:"Sujet d'examen UE5 · Q53(b) / Chapitre 5 › Page 23-24"},
+  {q:"Règle de dimensionnement des ventouses : pour une conduite DN 1 000 à 1 200 mm, le DN de la ventouse est :",type:'multi',opts:[{t:"100 mm",c:false},{t:"150 mm",c:false},{t:"200 mm",c:true}],diff:'med',piege:false,expl:"DN 1000-1200 → ventouse DN 200 mm. Tableau : <200→50, 200-250→80, 300-500→100, 600-900→150, 1000-1200→200.",ref:"Sujet d'examen UE5 · Q46(b) / Chapitre 5 › Page 27"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M12';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div class="methode-card" style="margin-bottom:14px">
+  <div class="methode-card-title">⚠ MOTS-PIÈGES — M12 AEP/Assainissement</div>
+  <div style="margin-bottom:8px;font-size:12px;color:var(--text3)">Ces mots/expressions génèrent des erreurs fréquentes en QCM :</div>
+  <span class="piege-word">Maître d'ouvrage</span>
+  <span class="piege-word">Maître d'œuvre</span>
+  <span class="piege-word">STP = MDP (pas PEA)</span>
+  <span class="piege-word">2 000 m max</span>
+  <span class="piege-word">Simple effet ≠ Triple fonctions</span>
+  <span class="piege-word">Labo agréé (pas contrôle interne)</span>
+  <span class="piege-word">0,2 bar / 30 min (fonte)</span>
+  <span class="piege-word">DN 200-250 → ventouse 80</span>
+  <span class="piege-word">DN 300-500 → ventouse 100</span>
+  <span class="piege-word">Fabricant (conditions stockage)</span>
+  <span class="piege-word">Forage dirigé (ville encombrée)</span>
+  <span class="piege-word">Hauteur gerbage = f(DN)</span>
+  <span class="piege-word">Section EXTÉRIEURE (butée)</span>
+  <span class="piege-word">Montée 2-3 mm/m ≠ Descente 4-6 mm/m</span>
+  <span class="piege-word">MOE = bureau d'études (pas MOA)</span>
+  <span class="piege-word">DOE requis avant réception provisoire</span>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">📊 CHIFFRES CLÉS À RETENIR</div>
+    <table class="chiffres-table">
+      <tr><th>Valeur</th><th>Signification</th></tr>
+      <tr><td>2 000 m</td><td>Longueur max d'un tronçon d'épreuve</td></tr>
+      <tr><td>12 m</td><td>Largeur d'emprise recommandée</td></tr>
+      <tr><td>4 m</td><td>Largeur min des voies d'accès</td></tr>
+      <tr><td>0,2 bar</td><td>Chute de pression max (fonte, 30 min)</td></tr>
+      <tr><td>30 min</td><td>Durée épreuve fonte (Fascicule 71)</td></tr>
+      <tr><td>5 mg/l</td><td>Chlore libre à obtenir aux extrémités (désinfection)</td></tr>
+      <tr><td>1 an</td><td>Durée garantie parfait achèvement</td></tr>
+      <tr><td>3 exemplaires</td><td>DOE remis au maître d'œuvre</td></tr>
+      <tr><td>D + 0,30 m</td><td>Largeur fond tranchée (Ø ≤ 600 mm)</td></tr>
+      <tr><td>D + 0,40 m</td><td>Largeur fond tranchée (Ø > 600 mm)</td></tr>
+      <tr><td>2-3 mm/m</td><td>Pente min montante du profil en long</td></tr>
+      <tr><td>4-6 mm/m</td><td>Pente descendante du profil en long</td></tr>
+      <tr><td>4 ‰</td><td>Pente longit. min du fond de fouille</td></tr>
+      <tr><td>600 kPa</td><td>Pression min épreuve PE</td></tr>
+      <tr><td>0,10 m</td><td>Sur-profondeur si bancs rocheux</td></tr>
+      <tr><td>0,20 m</td><td>Sur-profondeur si portance insuffisante</td></tr>
+    </table>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🔵 DIMENSIONNEMENT VENTOUSES</div>
+    <table class="chiffres-table">
+      <tr><th>DN conduite (mm)</th><th>DN ventouse (mm)</th></tr>
+      <tr><td>&lt; 200</td><td>50</td></tr>
+      <tr><td>200 – 250</td><td>80</td></tr>
+      <tr><td>300 – 500</td><td>100</td></tr>
+      <tr><td>600 – 900</td><td>150</td></tr>
+      <tr><td>1 000 – 1 200</td><td>200</td></tr>
+    </table>
+    <div class="methode-card-title" style="margin-top:14px">📦 GERBAGE PVC</div>
+    <table class="chiffres-table">
+      <tr><th>DN (mm)</th><th>Fardeaux max</th></tr>
+      <tr><td>75 / 90 / 110</td><td>6</td></tr>
+      <tr><td>125 / 140 / 160</td><td>5</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-top:14px">
+  <div class="methode-card-title">🔄 SCHÉMA DÉCISIONNEL — Déclarer un réseau apte à l'eau potable</div>
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Pose des canalisations</strong> — Tranchée, assemblage, butées/verrouillage</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Épreuves hydrauliques</strong> — Avant remblayage définitif, cavaliers sur tuyaux, STP = MDP, tronçons ≤ 2 000 m</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Remblayage</strong> — Lit de pose → Enrobage → Remblai supérieur</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Lavage / Nettoyage</strong> — Chasse d'eau, turbidité ≤ max admis</div></div>
+  <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Désinfection</strong> — Chlore (5 mg/l aux extrémités) ou permanganate K (coloration violacée)</div></div>
+  <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Rinçage</strong> — Rincer la canalisation</div></div>
+  <div class="schema-step"><div class="schema-num">7</div><div class="schema-text"><strong>Contrôle interne</strong> — Prélèvement interne d'eau</div></div>
+  <div class="schema-step"><div class="schema-num">8</div><div class="schema-text"><strong>Laboratoire agréé (ÉLÉMENT PRÉPONDÉRANT)</strong> — Prélèvements et analyses de conformité → Réseau déclaré APT</div></div>
+</div>
+
+<div class="methode-card" style="margin-top:14px">
+  <div class="methode-card-title">🏗 CONFUSIONS CLASSIQUES MOA / MOE</div>
+  <div class="def-grid">
+    <div class="def-item">
+      <div class="def-term">Maître d'Ouvrage (MOA)</div>
+      <div class="def-text">= Propriétaire / Client<br>Lance le projet, passe les contrats, prend possession. Rôle ADMINISTRATIF.<br><span style="color:var(--red)">✗ Ne calcule pas la MDP</span><br><span style="color:var(--red)">✗ N'est pas sur le chantier en permanence</span></div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Maître d'Œuvre (MOE)</div>
+      <div class="def-text">= Bureau d'études / Ingénieur conseil<br>Responsable TECHNIQUE d'exécution. Autorité réelle sur le chantier.<br><span style="color:var(--green)">✓ Calcule la MDP</span><br><span style="color:var(--green)">✓ Fixe la pression d'épreuve (CCTP)</span></div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Ventouse simple effet</div>
+      <div class="def-text">= Dégazage PERMANENT en service<br>(conduites sous pression)<br><span style="color:var(--red)">✗ Pas d'admission/décharge à grand débit</span></div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Ventouse triple fonctions</div>
+      <div class="def-text">= 3 fonctions : dégazage + vidange (admission) + remplissage (décharge)<br>Posée sur conduites de REFOULEMENT</div>
+    </div>
+  </div>
+</div>
+
+<div class="methode-card" style="margin-top:14px">
+  <div class="methode-card-title">⚡ PRESSIONS — TABLEAU DE DÉCISION</div>
+  <table class="chiffres-table">
+    <tr><th>Sigle</th><th>Qui calcule ?</th><th>Définition rapide</th><th>Relation clé</th></tr>
+    <tr><td>DP</td><td>Concepteur</td><td>Pression de calcul régime permanent</td><td>DP ≤ PFA</td></tr>
+    <tr><td>MDP</td><td>Maître d'œuvre</td><td>Pression max de calcul (au CCTP)</td><td>MDP ≤ PMA ≈ 1,2×PFA</td></tr>
+    <tr><td>STP</td><td>Concepteur</td><td>Pression d'épreuve réseau = MDP</td><td>STP ≤ PEA</td></tr>
+    <tr><td>PFA</td><td>Fabricant</td><td>Pression fonctionnement admissible ≈ PN</td><td>—</td></tr>
+    <tr><td>PMA</td><td>Fabricant</td><td>Pression max admissible ≈ 1,2×PFA</td><td>—</td></tr>
+    <tr><td>PEA</td><td>Fabricant</td><td>Pression d'épreuve admissible</td><td>—</td></tr>
+  </table>
+  <div style="padding:10px;background:var(--bg3);border:1px solid rgba(255,77,106,0.3);border-radius:6px;margin-top:8px;font-size:12px;color:var(--red)">
+    ⚠ <strong>MDP = STP</strong> (pas supérieure à PFA, pas égale à PEA). La pression d'épreuve = MDP = niveau statique ou dynamique + régime transitoire.
+  </div>
+</div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

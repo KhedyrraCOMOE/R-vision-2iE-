@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M11 — Suivi & Contrôle des Installations · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; padding: 2px 8px; background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; border-radius: var(--r2); border: none; background: var(--accent); color: #000; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { background: #00b894; }
+.btn-primary:disabled { opacity: 0.4; cursor: default; }
+.btn-secondary { padding: 10px 16px; border-radius: var(--r2); border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 16px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.1); color: var(--purple); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'Space Mono', monospace; font-size: 56px; font-weight: 700; color: var(--accent); line-height: 1; }
+.score-label { font-size: 14px; color: var(--text2); margin: 8px 0 20px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 12px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 20px; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.3); }
+.score-stat.red { border-color: rgba(255,77,106,0.3); }
+.score-stat.orange { border-color: rgba(255,140,66,0.3); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: var(--text); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M11</div>
+  <div class="header-title">Suivi & Contrôle des Installations Électrique & Froid — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '👥',
+    title: 'Acteurs du projet de construction',
+    subtitle: 'Séquence 1 — Rôles & missions',
+    content: `
+      <div class="memo-section-title">🏗 Acteurs principaux</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">MOA — Maître d'Ouvrage</div><div class="def-text">Client/commanditaire, propriétaire du livrable. Définit les besoins, fixe les objectifs, règle les factures. Non compétent techniquement.</div></div>
+        <div class="def-item"><div class="def-term">MOE — Maître d'Œuvre</div><div class="def-text">Choisi par la MOA. Conçoit et réalise l'ouvrage. Garant de la conformité au cahier des charges (qualité, coûts, délais).</div></div>
+        <div class="def-item"><div class="def-term">AMOA / AMO</div><div class="def-text">Experts spécifiques qui assistent la MOA. Rôle de conseil et proposition. Le décideur final reste la MOA.</div></div>
+        <div class="def-item"><div class="def-term">Chef de projet</div><div class="def-text">Interface entre MOA et équipes d'exécution. Planifie, coordonne, anime. Chef de projet MOA (amont) ≠ Chef de projet MOE (exécution).</div></div>
+        <div class="def-item"><div class="def-term">Bureau de contrôle</div><div class="def-text">Entreprise accréditée de droit privé. Vérifie la conformité aux normes de construction. Mandaté par la MOA.</div></div>
+        <div class="def-item"><div class="def-term">Entreprise d'exécution</div><div class="def-text">Personne morale recrutée par la MOA pour réaliser les travaux ou fournir des équipements.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ Piège fréquent</div><div class="piege-text">La MOA règle les factures MAIS n'est pas techniquement compétente. C'est la MOE qui assure la réalisation technique. L'AMOA conseille la MOA sans être décideur.</div></div>
+    `
+  },
+  {
+    icon: '🔍',
+    title: 'Mission de contrôle technique',
+    subtitle: 'Séquence 2 — Organisation & responsabilités',
+    content: `
+      <div class="memo-section-title">📅 Fréquences de contrôle</div>
+      <table class="chiffres-table">
+        <tr><th>Type d'installation</th><th>Fréquence</th><th>Délai 1er contrôle après installation</th></tr>
+        <tr><td>Systèmes électriques</td><td>Tous les ans (tous les 2 ans si aucune obs.)</td><td>Au plus tard 1 an</td></tr>
+        <tr><td>Systèmes climatisation / thermodynamiques</td><td>Tous les 5 ans (quinquennale)</td><td>Au plus tard 5 ans</td></tr>
+      </table>
+      <div class="memo-section-title">🏢 Ouvrages soumis au contrôle obligatoire</div>
+      <div class="key-box"><div class="key-title">📋 Liste</div><div class="key-text"><ul>
+        <li>ERP — Établissements Recevant du Public</li>
+        <li>ERT — Établissements Recevant des Travailleurs</li>
+        <li>IGH — Immeubles de Grande Hauteur (> 28m au-dessus du terrain naturel)</li>
+        <li>Bâtiments complexes / en zone sismique</li>
+        <li>Éoliennes de grande hauteur</li>
+        <li>Installations temporaires (chantier, stands, événementiels)</li>
+      </ul></div></div>
+      <div class="memo-section-title">📄 Documents du Bureau de Contrôle</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">RICT</div><div class="def-text">Rapport Initial de Contrôle Technique — avis sur la conception</div></div>
+        <div class="def-item"><div class="def-term">FED</div><div class="def-text">Fiche d'Études de Documents — pour chaque document examiné</div></div>
+        <div class="def-item"><div class="def-term">FVCS</div><div class="def-text">Fiche de Visite de Chantier — observations terrain</div></div>
+        <div class="def-item"><div class="def-term">RSO</div><div class="def-text">Rapport de Suivi des Observations — synthèse périodique</div></div>
+        <div class="def-item"><div class="def-term">RDFM</div><div class="def-text">Rapport de Fin de Mission — rapport de synthèse final</div></div>
+        <div class="def-item"><div class="def-term">VIEL</div><div class="def-text">Vérification Initiale des Installations Électriques — mission de base</div></div>
+      </div>
+    `
+  },
+  {
+    icon: '⚡',
+    title: 'Contrôle des installations électriques',
+    subtitle: 'Séquence 5 — Norme NFC 15-100',
+    content: `
+      <div class="memo-section-title">🔒 6 Points de sécurité fondamentaux</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Disjoncteur général accessible</strong> — coupe l'intégralité de l'installation en urgence</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Dispositif de protection par circuit</strong> (disjoncteur ou fusible) — un circuit par pièce (éclairage + prises)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Disjoncteur différentiel</strong> — détecte les fuites de courant vers la terre et coupe automatiquement</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Installation sécurisée pièces d'eau</strong> — respect des distances de sécurité (douche, évier…)</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Matériels électriques en bon état</strong> — prises, connecteurs, interrupteurs, lampes</div></div>
+      <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Protection des fils</strong> — conducteurs sous conduits, plinthes ou matières isolantes</div></div>
+      <div class="memo-section-title">🛁 Zones de sécurité en salle d'eau (NF C 15-100)</div>
+      <table class="chiffres-table">
+        <tr><th>Volume</th><th>Matériel autorisé</th><th>Classe / Protection</th></tr>
+        <tr><td>Volume 0</td><td>Luminaires</td><td>IP 27, Classe III, TBTS</td></tr>
+        <tr><td>Volume 1</td><td>Luminaires, interrupteurs, chauffe-eau</td><td>IP 24, Classe III, TBTS / Classe I + 30mA</td></tr>
+        <tr><td>Volume 2</td><td>Chauffage, luminaires, prise rasoir</td><td>IP 23, Classe II / Transfo séparation</td></tr>
+        <tr><td>Volume 3</td><td>Tous appareils (Classe I)</td><td>Prises 2P+T 30mA</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Confusion fréquente</div><div class="piege-text">Classe I = doit être relié à la terre / Classe II = double isolation, pas de mise à la terre / Classe III = alimenté en TBTS (Très Basse Tension de Sécurité). 35% des incendies sont d'origine électrique.</div></div>
+      <div class="memo-section-title">📐 Sections normalisées en habitation</div>
+      <table class="chiffres-table">
+        <tr><th>Circuit</th><th>Section câble</th></tr>
+        <tr><td>Éclairage (monophasé)</td><td>3 × 1,5 mm²</td></tr>
+        <tr><td>Prises de courant confort</td><td>3 × 2,5 mm²</td></tr>
+        <tr><td>Ceinturage fond de fouille (cuivre nu)</td><td>≥ 25 mm²</td></tr>
+      </table>
+    `
+  },
+  {
+    icon: '❄️',
+    title: 'Contrôle des installations frigorifiques',
+    subtitle: 'Séquence 5 — Climatisation & froid',
+    content: `
+      <div class="memo-section-title">🌡 Cycle frigorifique</div>
+      <div class="key-box"><div class="key-title">Principe fondamental</div><div class="key-text">Produire du froid = <strong>déplacer (transférer) de la chaleur</strong>, pas créer du froid. Le frigorigène circule entre évaporateur (absorbe chaleur) → compresseur → condenseur (rejette chaleur) → détendeur.</div></div>
+      <div class="memo-section-title">🔧 Critères de bon fonctionnement</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Température</div><div class="def-text">Température d'évaporation et de condensation normales. Température atteinte et maintenue.</div></div>
+        <div class="def-item"><div class="def-term">Pression</div><div class="def-text">Pression de refoulement normale. Pressostat HP et BP correctement réglés.</div></div>
+        <div class="def-item"><div class="def-term">Fluide</div><div class="def-text">Surchauffe normale à l'évaporateur. Sous-refroidissement normal au condenseur. Voyant hygroscopique vert ou bleu.</div></div>
+        <div class="def-item"><div class="def-term">Bruit & huile</div><div class="def-text">Aucun bruit suspect ni vibration. Couleur et niveau d'huile normaux.</div></div>
+      </div>
+      <div class="memo-section-title">🧪 Détection de fuites — méthodes</div>
+      <table class="chiffres-table">
+        <tr><th>Fluide</th><th>Méthode de détection</th></tr>
+        <tr><td>CFC / HCFC</td><td>Eau savonneuse, lampe haloïde, détecteur électronique, traceur fluorescent UV</td></tr>
+        <tr><td>Ammoniac (NH3)</td><td>Odorat, eau savonneuse, détecteur électronique (principe GEIGER)</td></tr>
+        <tr><td>R134a (HFC)</td><td>Détecteur électronique spécial ou traceurs fluorescents UNIQUEMENT (pas de chlore)</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ Pièges refrigérants</div><div class="piege-text">CFC = plus dangereux pour la couche d'ozone / HCFC = intermédiaire / HFC = pas de chlore, moins destructeur. R134a est un HFC. La projection d'air comprimé sur les tuyauteries NE permet PAS de détecter une fuite.</div></div>
+      <div class="key-box"><div class="key-title">Composantes split domestique</div><div class="key-text">A = Unité intérieure / B = Liaisons électrique et frigorifique / C = Unité extérieure</div></div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'Fiches synoptiques & documents de chantier',
+    subtitle: 'Séquence 4 — Cahier, PV, devis, planning',
+    content: `
+      <div class="memo-section-title">📓 Cahier de chantier</div>
+      <div class="key-box"><div class="key-title">Contenu obligatoire</div><div class="key-text"><ul>
+        <li>Matériaux livrés, quantité utilisée et retenue</li>
+        <li>Date et conditions météorologiques</li>
+        <li>Nombre de travailleurs par métier</li>
+        <li>Activités d'installation, localisation et quantité</li>
+        <li>Description des travaux avec montant approximatif</li>
+        <li>Plaintes, accidents, incidents</li>
+        <li>Instructions données à l'entrepreneur</li>
+      </ul></div></div>
+      <div class="memo-section-title">📄 Procès-verbal de réception des travaux</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Sans réserve</div><div class="def-text">MOA valide les travaux sans défaut visible. Déclenche les 3 garanties (GPA, biennale, décennale).</div></div>
+        <div class="def-item"><div class="def-term">Avec réserve</div><div class="def-text">Défauts mineurs notés. MOA peut consigner une partie du solde. Entrepreneur doit lever les réserves.</div></div>
+        <div class="def-item"><div class="def-term">Refus de réception</div><div class="def-text">Défauts majeurs. MOA peut saisir le juge des référés pour exiger conformité ou faire appel à une autre entreprise.</div></div>
+        <div class="def-item"><div class="def-term">Réserves tardives</div><div class="def-text">Si MOA sans professionnel : peut ajouter des réserves jusqu'à 8 jours après réception par LRAR.</div></div>
+      </div>
+      <div class="memo-section-title">📅 Planning — Notions clés</div>
+      <div class="key-box"><div class="key-title">Chemin critique</div><div class="key-text">Séquence de tâches déterminant la durée totale du projet. Tout retard sur une tâche critique = retard du projet. Les tâches critiques ont une <strong>marge nulle</strong>. Outils : Diagramme de GANTT, Technique PERT.</div></div>
+    `
+  },
+  {
+    icon: '🛡️',
+    title: 'Garanties & habilitations électriques',
+    subtitle: 'Séquence 3 & 5 — GPA, consignation, EPI',
+    content: `
+      <div class="memo-section-title">🔐 3 Garanties après réception</div>
+      <table class="chiffres-table">
+        <tr><th>Garantie</th><th>Durée</th><th>Objet</th></tr>
+        <tr><td>GPA (Parfait Achèvement)</td><td>1 an</td><td>Tous désordres et malfaçons notés au PV ou apparus dans l'année</td></tr>
+        <tr><td>Garantie biennale (bon fonctionnement)</td><td>2 ans</td><td>Équipements non soumis à la garantie décennale</td></tr>
+        <tr><td>Garantie décennale</td><td>10 ans</td><td>Dommages compromettant la solidité ou rendant l'ouvrage impropre</td></tr>
+      </table>
+      <div class="piege-box"><div class="piege-title">⚠ GPA — Qui est obligé ?</div><div class="piege-text">La GPA est obligatoire pour le MOE (maître d'œuvre) ET l'entrepreneur. Aucune clause contractuelle ne peut les en exonérer. Le délai de réparation est librement fixé entre les parties.</div></div>
+      <div class="memo-section-title">⚡ Habilitations électriques</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">B1T</div><div class="def-text">Habilitation BT (basse tension) — travaux sous tension</div></div>
+        <div class="def-item"><div class="def-term">H1V</div><div class="def-text">Habilitation HT (haute tension) — travaux au voisinage HT</div></div>
+        <div class="def-item"><div class="def-term">HBV</div><div class="def-text">Non standard — pour intervenir au voisinage 15 kV il faut H1V</div></div>
+      </div>
+      <div class="memo-section-title">🔒 Procédure de consignation</div>
+      <div class="key-box"><div class="key-title">Sigles clés</div><div class="key-text">
+        <strong>VAT</strong> = Vérification (ou Vérificateur) de l'Absence de Tension<br>
+        <strong>MALT</strong> = Mise À La Terre<br>
+        <strong>EPI</strong> = Équipement de Protection Individuel<br>
+        <strong>Tabouret isolant</strong> = Isoler l'exécutant électricien de la terre
+      </div></div>
+      <div class="memo-section-title">📋 Ordre chronologique consignation</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Accès à l'armoire électrique</strong> (action 3)</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Séparation de la source</strong> (action 7)</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Condamnation</strong> (action 6)</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>VAT — Vérification absence tension</strong> (action 8)</div></div>
+      <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>MALT + court-circuit</strong> puis identification (réponse : 3-10-8-7-2-5 → vérifier selon sujet)</div></div>
+    `
+  },
+  {
+    icon: '📐',
+    title: 'Calculs électriques — Formules essentielles',
+    subtitle: 'Séquence 5 — Chute de tension, puissance, courant',
+    content: `
+      <div class="memo-section-title">⚡ Formules triphasées</div>
+      <div class="key-box"><div class="key-title">Puissance apparente transformateur</div><div class="key-text">S = √3 × U × I<br>Avec U = tension entre phases (V), I = courant nominal (A)<br>Exemple : 887 A sous 400 V → S = 1,732 × 400 × 887 ≈ 614 kVA</div></div>
+      <div class="key-box"><div class="key-title">Courant d'emploi triphasé</div><div class="key-text">I = P / (√3 × U × cos φ)<br>Exemple : 50 lampes × 40 W = 2000 W total, FP=0,85 → I = 2000 / (1,732 × 400 × 0,85) ≈ 3,4 A</div></div>
+      <div class="memo-section-title">📉 Chute de tension — Méthode tableau</div>
+      <div class="key-box"><div class="key-title">Méthode</div><div class="key-text">
+        1. Chute de tension disponible sur le câble = ΔU_total - ΔU_déjà absorbée<br>
+        2. ΔU_câble = (ΔU_dispo / L_câble) × 100 m<br>
+        3. Chercher dans le tableau la section pour I_emploi et ΔU_câble recalculée<br>
+        <em>Exemple examen : 5% - 2% = 3% disponible sur 352 m → ramené à 100 m : 3 × 100/352 ≈ 0,85%/100m pour 70 A → section 95 mm²</em>
+      </div></div>
+      <div class="piege-box"><div class="piege-title">⚠ Règle disjoncteur / câble (NFC 15-100)</div><div class="piege-text">I_circuit &lt; I_réglage_disjoncteur &lt; I_admissible_câble. Le câble supporte UN courant SUPÉRIEUR au maximum autorisé par le disjoncteur, qui lui-même autorise un courant SUPÉRIEUR au courant normal du circuit.</div></div>
+    `
+  },
+  {
+    icon: '🔄',
+    title: 'KPI & Suivi de projet',
+    subtitle: 'Séquence 3 — Contrôle & suivi des opérations',
+    content: `
+      <div class="memo-section-title">📊 Définitions suivi vs contrôle</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Suivi</div><div class="def-text">Processus continu. Collecte et analyse de données au fil du temps pour mesurer le progrès par rapport aux résultats attendus.</div></div>
+        <div class="def-item"><div class="def-term">Contrôle</div><div class="def-text">Démarche d'appréciation analytique. Juge les moyens utilisés et les résultats obtenus en regard des objectifs poursuivis.</div></div>
+      </div>
+      <div class="key-box"><div class="key-title">KPI SMART</div><div class="key-text">
+        <strong>S</strong>pécifique — clair, sans ambiguïté<br>
+        <strong>M</strong>esurable — outils de mesure définis<br>
+        <strong>A</strong>cceptable — ni trop facile, ni trop difficile<br>
+        <strong>R</strong>éaliste — conciliable avec les ressources<br>
+        <strong>T</strong>emporellement défini — date de début et fin
+      </div></div>
+      <div class="memo-section-title">🔄 3 Contraintes du contrôle projet</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Comparaison des performances</strong> — Respect du planning et utilisation des ressources prévues</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Résolution des problèmes</strong> — Surveillance du contenu conformément au plan</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Communication parties prenantes</strong> — KPI et tableaux de bord de suivi</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quel est le rôle principal du Maître d'Ouvrage (MOA) dans un projet de construction ?",type:'multi',opts:[{t:"Définir les besoins et fixer les objectifs du projet",c:true},{t:"Concevoir et réaliser techniquement les travaux",c:false},{t:"Exécuter les travaux sur le chantier",c:false},{t:"Vérifier la conformité des installations aux normes",c:false}],diff:'easy',piege:false,expl:"La MOA est le client/commanditaire. Elle définit les besoins, fixe les objectifs et règle les factures. Elle n'est pas compétente techniquement — c'est le rôle de la MOE.",ref:"Séquence 1 › Page 1"},
+  {q:"Qui choisit la Maîtrise d'Œuvre (MOE) ?",type:'multi',opts:[{t:"Le Maître d'Ouvrage (MOA)",c:true},{t:"Le Bureau de Contrôle",c:false},{t:"L'entreprise d'exécution",c:false},{t:"Les acteurs institutionnels",c:false}],diff:'easy',piege:false,expl:"La MOE est choisie par la MOA. La MOE s'engage ensuite à ce que la solution réalisée soit conforme au cahier des charges signé par la MOA.",ref:"Séquence 1 › Page 1"},
+  {q:"Quelle est la différence entre un Chef de projet MOA et un Chef de projet MOE ?",type:'multi',opts:[{t:"Le chef de projet MOA intervient en amont de la mise en œuvre, le MOE intervient pour le compte de la maîtrise d'œuvre",c:true},{t:"Le chef de projet MOA exécute les travaux, le MOE les supervise",c:false},{t:"Il n'y a pas de différence, les deux termes sont synonymes",c:false},{t:"Le chef de projet MOE est toujours un architecte",c:false}],diff:'med',piege:true,expl:"Chef de projet MOA = missions en amont (conception, cahier des charges). Chef de projet MOE = intervient lors de la réalisation concrète pour le compte de la maîtrise d'œuvre.",ref:"Séquence 1 › Page 2"},
+  {q:"Le Bureau de Contrôle est :",type:'multi',opts:[{t:"Une entreprise accréditée de droit privé",c:true},{t:"Un service public de l'État",c:false},{t:"Un département interne de la MOA",c:false},{t:"Une branche de la MOE",c:false}],diff:'easy',piege:false,expl:"Le bureau de contrôle est une entreprise accréditée de droit PRIVÉ. Il vérifie la conformité aux normes de construction à la demande du maître d'ouvrage.",ref:"Séquence 1 › Page 2-3"},
+  {q:"Quelle est la fréquence de l'inspection périodique des systèmes de climatisation ?",type:'multi',opts:[{t:"Tous les 5 ans",c:true},{t:"Tous les ans",c:false},{t:"Tous les 2 ans",c:false},{t:"Tous les 3 ans",c:false}],diff:'easy',piege:true,expl:"L'inspection des systèmes de climatisation/thermodynamiques est quinquennale = tous les 5 ans. Ne pas confondre avec les systèmes électriques qui sont annuels.",ref:"Séquence 2 › Page 1"},
+  {q:"Quelle est la fréquence normale de l'inspection des systèmes électriques ?",type:'multi',opts:[{t:"Tous les ans",c:true},{t:"Tous les 2 ans",c:false},{t:"Tous les 5 ans",c:false},{t:"Tous les 3 ans",c:false}],diff:'easy',piege:false,expl:"Les installations électriques permanentes doivent être vérifiées tous les ans. La vérification peut être faite tous les 2 ans si le rapport précédent ne présente aucune observation.",ref:"Séquence 2 › Page 4"},
+  {q:"Que signifie VIEL dans le contexte du contrôle technique ?",type:'multi',opts:[{t:"Vérification Initiale des Installations Électriques",c:true},{t:"Visite Initiale des Équipements Locaux",c:false},{t:"Validation Interne des Éléments de Livraison",c:false},{t:"Vérification des Installations Électriques de Lancement",c:false}],diff:'med',piege:false,expl:"VIEL = Vérification Initiale des Installations Électriques. C'est la mission de base du bureau de contrôle, relative à l'accompagnement permettant d'éviter les risques d'accident.",ref:"Séquence 2 › Page 3"},
+  {q:"Le RICT (Rapport Initial de Contrôle Technique) contient :",type:'multi',opts:[{t:"Les avis sur les documents de conception (esquisses, permis de construire, avant-projet)",c:true},{t:"Le rapport de fin de mission",c:false},{t:"Les fiches de visite de chantier",c:false},{t:"Les déclarations d'assurance",c:false}],diff:'med',piege:false,expl:"Le RICT réunit tous les avis sur les documents de conception en phase amont : esquisses, dossier de permis de construire, avant-projet.",ref:"Séquence 2 › Page 3"},
+  {q:"Pour quels ouvrages le contrôle technique est-il OBLIGATOIRE ?",type:'multi',opts:[{t:"ERP, IGH, bâtiments complexes, zones sismiques, éoliennes de grande hauteur",c:true},{t:"Toutes les constructions sans exception",c:false},{t:"Uniquement les bâtiments publics",c:false},{t:"Uniquement les bâtiments de plus de 50 m²",c:false}],diff:'med',piege:false,expl:"Le contrôle est obligatoire pour : ERP (Établissements Recevant du Public), IGH (> 28m), bâtiments complexes, zones sismiques, éoliennes. Les IGH sont définis comme > 28m au-dessus du terrain naturel.",ref:"Séquence 2 › Page 2"},
+  {q:"Qu'est-ce que la Garantie de Parfait Achèvement (GPA) ?",type:'multi',opts:[{t:"Une garantie légale couvrant tous les désordres apparus dans l'année suivant la réception",c:true},{t:"Une garantie de 10 ans sur la solidité de l'ouvrage",c:false},{t:"Une garantie de 2 ans sur les équipements",c:false},{t:"Une assurance optionnelle souscrite par la MOA",c:false}],diff:'easy',piege:true,expl:"La GPA couvre tous les désordres notés au PV de réception OU apparus dans l'année suivante. Elle dure 1 an. Ne pas confondre avec la garantie décennale (10 ans) ou biennale (2 ans).",ref:"Séquence 3 › Page 4"},
+  {q:"Qui est tenu par la Garantie de Parfait Achèvement ?",type:'multi',opts:[{t:"Le maître d'œuvre ET l'entrepreneur",c:true},{t:"Uniquement le maître d'ouvrage",c:false},{t:"Uniquement le bureau de contrôle",c:false},{t:"L'assureur du chantier",c:false}],diff:'med',piege:false,expl:"La GPA est obligatoire pour le MOE (maître d'œuvre) ET l'entrepreneur. Aucune clause contractuelle ne peut les en exonérer.",ref:"Séquence 3 › Page 5"},
+  {q:"Quelle est la durée de la garantie biennale ?",type:'multi',opts:[{t:"2 ans",c:true},{t:"1 an",c:false},{t:"5 ans",c:false},{t:"10 ans",c:false}],diff:'easy',piege:true,expl:"La garantie biennale = 2 ans. Elle couvre les équipements non soumis à la garantie décennale. GPA = 1 an, décennale = 10 ans.",ref:"Séquence 3 › Page 4"},
+  {q:"Le suivi de projet est défini comme :",type:'multi',opts:[{t:"Un processus continu qui collecte et analyse les données pour mesurer le progrès",c:true},{t:"Une démarche ponctuelle à la fin du projet",c:false},{t:"L'audit annuel des performances financières",c:false},{t:"La vérification unique lors de la réception des travaux",c:false}],diff:'easy',piege:false,expl:"Le suivi est un processus CONTINU qui se concentre sur les activités en cours. Il consiste à collecter et analyser les données au fil du temps. À distinguer du contrôle, qui est une démarche d'appréciation analytique.",ref:"Séquence 3 › Page 1"},
+  {q:"Qu'est-ce qu'un KPI SMART ?",type:'multi',opts:[{t:"Un indicateur Spécifique, Mesurable, Acceptable, Réaliste, Temporellement défini",c:true},{t:"Un indicateur Simple, Motivant, Annuel, Régulier, Tactique",c:false},{t:"Un système de suivi automatique des performances",c:false},{t:"Un logiciel de gestion de projet",c:false}],diff:'med',piege:false,expl:"KPI SMART = Spécifique (clair), Mesurable (outils de mesure définis), Acceptable (vrai objectif), Réaliste (compatible avec ressources), Temporellement défini (date début/fin).",ref:"Séquence 3 › Page 2"},
+  {q:"Dans le planning de projet, le chemin critique correspond à :",type:'multi',opts:[{t:"La séquence de tâches qui détermine la durée totale du projet",c:true},{t:"Le chemin le plus court entre deux tâches",c:false},{t:"La liste des tâches les plus coûteuses",c:false},{t:"L'ensemble des tâches réalisées par la MOA",c:false}],diff:'med',piege:false,expl:"Le chemin critique est continu du début à la fin du projet. Toute tâche critique a une marge nulle. Tout retard sur une tâche critique = retard du projet entier.",ref:"Séquence 4 › Page 7"},
+  {q:"Le cahier de chantier est également appelé :",type:'multi',opts:[{t:"Journal de chantier ou carnet de chantier",c:true},{t:"Procès-verbal de réception",c:false},{t:"Rapport de fin de mission",c:false},{t:"Fiche de visite de chantier",c:false}],diff:'easy',piege:false,expl:"Le cahier de chantier = journal de chantier = carnet de chantier. C'est un document de 'premier enregistrement' rempli quotidiennement par le superviseur ou contrôleur.",ref:"Séquence 4 › Page 1"},
+  {q:"Les réserves dans un procès-verbal de réception sont :",type:'multi',opts:[{t:"Des malfaçons ou incohérences entre l'ouvrage livré et le contrat, qui n'empêchent pas d'occuper le bien",c:true},{t:"Des problèmes majeurs empêchant l'occupation du bien",c:false},{t:"Des pénalités financières imposées à l'entrepreneur",c:false},{t:"Des demandes de travaux supplémentaires",c:false}],diff:'med',piege:true,expl:"Les réserves sont des problèmes MINEURS qui n'empêchent pas d'occuper le bien. Si les problèmes sont majeurs (occupation impossible), le MOA peut refuser la réception.",ref:"Séquence 4 › Page 4"},
+  {q:"Combien de jours après la réception un MOA non accompagné peut-il ajouter des réserves ?",type:'multi',opts:[{t:"8 jours",c:true},{t:"15 jours",c:false},{t:"30 jours",c:false},{t:"Il ne peut pas ajouter de réserves après la réception",c:false}],diff:'hard',piege:false,expl:"Si le MOA n'est pas accompagné d'un professionnel, il peut ajouter des réserves jusqu'à 8 jours après la réception par lettre recommandée avec accusé de réception.",ref:"Séquence 4 › Page 4"},
+  {q:"Combien de points de sécurité fondamentaux doit comporter une installation électrique conforme à la norme NF C 15-100 ?",type:'multi',opts:[{t:"6 points",c:true},{t:"4 points",c:false},{t:"8 points",c:false},{t:"10 points",c:false}],diff:'easy',piege:false,expl:"La norme NF C 15-100 impose 6 points de sécurité : disjoncteur général, protection par circuit, disjoncteur différentiel, sécurité pièces d'eau, matériels en bon état, protection des fils.",ref:"Séquence 5 › Page 3"},
+  {q:"Quel est l'objectif de la mission VIEL ?",type:'multi',opts:[{t:"Évaluer la conformité des installations électriques lors de leur mise en service",c:true},{t:"Vérifier uniquement les panneaux électriques",c:false},{t:"Contrôler les installations thermiques",c:false},{t:"Réceptionner les travaux de gros œuvre",c:false}],diff:'easy',piege:false,expl:"La mission VIEL (Vérification Initiale des Installations Électriques) évalue la conformité lors de la mise en service. Elle intervient aussi lors d'un changement structurel du réseau électrique.",ref:"Séquence 2 › Page 3-4"},
+  {q:"Quelle norme réglemente les installations de climatisation thermiques en France ?",type:'multi',opts:[{t:"RT 2012 (Réglementation Thermique 2012)",c:true},{t:"NF C 15-100",c:false},{t:"ISO 14001",c:false},{t:"Fascicule 71",c:false}],diff:'med',piege:false,expl:"La RT 2012 est la réglementation thermique en vigueur pour les bâtiments neufs. Elle sera remplacée par la RT 2020 visant des bâtiments à énergie positive (BEPOS).",ref:"Séquence 2 › Page 5"},
+  {q:"Quels systèmes sont concernés par le contrôle thermique réglementaire ?",type:'multi',opts:[{t:"Systèmes de climatisation, thermodynamiques et chauffage par effet joule > 70 kW",c:true},{t:"Tous les systèmes quelle que soit leur puissance",c:false},{t:"Uniquement les systèmes > 150 kW",c:false},{t:"Uniquement les systèmes industriels",c:false}],diff:'med',piege:true,expl:"Sont concernés les systèmes de climatisation, thermodynamiques et chauffage par effet joule dont la puissance nominale utile est SUPÉRIEURE À 70 kW.",ref:"Séquence 2 › Page 5"},
+  {q:"Dans une salle d'eau, le Volume 0 exige un indice de protection :",type:'multi',opts:[{t:"IP 27",c:true},{t:"IP 24",c:false},{t:"IP 23",c:false},{t:"IP 44",c:false}],diff:'hard',piege:false,expl:"Volume 0 = IP 27, Classe III, TBTS. Volume 1 = IP 24. Volume 2 = IP 23. Ces indices augmentent avec la distance aux points d'eau.",ref:"Séquence 5 › Page 4"},
+  {q:"La Classe II pour les matériels électriques signifie :",type:'multi',opts:[{t:"Matériel à double isolation, dispensé de mise à la terre",c:true},{t:"Matériel devant être relié à la terre",c:false},{t:"Matériel alimenté en TBTS",c:false},{t:"Matériel de haute tension",c:false}],diff:'med',piege:true,expl:"Classe I = doit être relié à la terre. Classe II = double isolation, PAS de mise à la terre. Classe III = alimenté en TBTS (Très Basse Tension de Sécurité).",ref:"Séquence 5 › Page 4"},
+  {q:"Pour quels éléments les vérifications initiales d'isolement sont-elles effectuées ?",type:'multi',opts:[{t:"Appareils portatifs, matériels fixes à mise à la terre défectueuse, circuits avec DDR défectueux",c:true},{t:"Tous les appareils sans exception",c:false},{t:"Uniquement les tableaux électriques principaux",c:false},{t:"Seulement les installations haute tension",c:false}],diff:'hard',piege:false,expl:"Les mesures d'isolement portent sur : appareils portatifs à main et mobiles, matériels fixes à mise à la terre inexistante ou défectueuse, circuits avec DDR défectueux.",ref:"Séquence 5 › Page 5"},
+  {q:"Quelle est la caractéristique principale du fluide frigorigène R134a ?",type:'multi',opts:[{t:"C'est un HFC qui ne contient pas de chlore",c:true},{t:"C'est un CFC très efficace",c:false},{t:"C'est un HCFC intermédiaire",c:false},{t:"C'est un fluide naturel comme l'ammoniac",c:false}],diff:'med',piege:false,expl:"Le R134a est un HFC (Hydrofluorocarbone). Il ne contient PAS de chlore, ce qui le rend moins destructeur pour la couche d'ozone. Sa détection de fuite nécessite un détecteur électronique spécial ou traceurs fluorescents.",ref:"Séquence 5 › Page 12"},
+  {q:"Quel type de réfrigérant est le plus dangereux pour la couche d'ozone ?",type:'multi',opts:[{t:"CFC (Chlorofluorocarbone)",c:true},{t:"HFC (Hydrofluorocarbone)",c:false},{t:"HCFC",c:false},{t:"CO2 (R744)",c:false}],diff:'easy',piege:false,expl:"Les CFC sont les plus dangereux pour la couche d'ozone car ils contiennent du chlore qui détruit l'ozone. HCFC sont intermédiaires. HFC n'ont pas de chlore mais ont un fort GWP (potentiel de réchauffement global).",ref:"Séquence 5 › Page 12"},
+  {q:"La vérification du livret CVC concerne :",type:'multi',opts:[{t:"Chauffage Ventilation Climatisation — l'ensemble des équipements thermiques",c:true},{t:"Câblage Ventilation Contrôle",c:false},{t:"Circuit Ventilateur Condenseur",c:false},{t:"Contrôle de Vibration des Compresseurs",c:false}],diff:'easy',piege:false,expl:"CVC = Chauffage Ventilation Climatisation. Le livret CVC rassemble l'ensemble des équipements thermiques (chaud et froid) et se substitue à l'ancien livret de climatisation.",ref:"Séquence 5 › Page 8"},
+  {q:"Pour quels plans une approbation des autorités est-elle nécessaire ?",type:'multi',opts:[{t:"Installations HT, installations de production d'énergie raccordées au réseau, installations énergétiques industrielles > 70 kW",c:true},{t:"Tous les plans d'installation quelle que soit la puissance",c:false},{t:"Uniquement les installations résidentielles",c:false},{t:"Uniquement les installations de puissance > 1 MW",c:false}],diff:'hard',piege:false,expl:"L'approbation des plans est requise pour : installations HT, installations de production raccordées au réseau, installations à courant faible soumises à l'obligation, installations industrielles > 70 kW.",ref:"Séquence 3 › Page 2"},
+  {q:"Qu'est-ce qu'un procès-verbal de réception de chantier ?",type:'multi',opts:[{t:"Un document essentiel signé par le MOA validant que les travaux sont conformes et sans défaut visible",c:true},{t:"Un rapport du bureau de contrôle",c:false},{t:"La facture finale de l'entrepreneur",c:false},{t:"Le contrat initial entre MOA et MOE",c:false}],diff:'easy',piege:false,expl:"Le PV de réception est signé par le MOA à la fin du chantier. En le signant sans réserve, il reconnaît que les travaux sont conformes et sans défaut visible. C'est le point de départ des garanties.",ref:"Séquence 4 › Page 2-3"},
+  {q:"La phase de contrôle et suivi de projet doit avoir lieu :",type:'multi',opts:[{t:"En parallèle avec la phase d'exécution",c:true},{t:"Uniquement après la fin des travaux",c:false},{t:"Seulement lors de la réception",c:false},{t:"Avant le démarrage des travaux",c:false}],diff:'easy',piege:false,expl:"La phase de contrôle et suivi doit avoir lieu EN PARALLÈLE avec la phase exécution. Elle consiste à veiller à ce que les objectifs soient atteints en contrôlant et mesurant régulièrement les progrès.",ref:"Séquence 3 › Page 1"},
+  {q:"Dans un devis de travaux électriques, que garantit le numéro de référence ?",type:'multi',opts:[{t:"Il permet d'organiser les documents et de retrouver facilement les détails du travail",c:true},{t:"Il fixe la validité du devis",c:false},{t:"Il identifie le client",c:false},{t:"Il est imposé par la norme NF C 15-100",c:false}],diff:'med',piege:false,expl:"Le numéro de référence améliore les performances administratives : organisation des documents, discussion des prix avec les clients, retrouver les détails du travail ultérieurement.",ref:"Séquence 4 › Page 5"},
+  {q:"La tâche critique dans un planning de projet est une tâche dont :",type:'multi',opts:[{t:"La marge est nulle",c:true},{t:"La durée est la plus longue",c:false},{t:"Le coût est le plus élevé",c:false},{t:"La priorité est la plus haute",c:false}],diff:'med',piege:true,expl:"Les tâches du chemin critique ont une MARGE NULLE. Tout retard sur une tâche critique est intégralement répercuté sur la durée totale du projet.",ref:"Séquence 4 › Page 7"},
+  {q:"Quelle est la durée maximale recommandée pour une tâche dans un planning de projet ?",type:'multi',opts:[{t:"Moins de 15 jours",c:true},{t:"Moins de 30 jours",c:false},{t:"Moins d'une semaine",c:false},{t:"Il n'y a pas de limite recommandée",c:false}],diff:'med',piege:false,expl:"Chaque tâche doit être assez courte : MOINS DE 15 JOURS. Cela permet un meilleur suivi et contrôle de l'avancement du projet.",ref:"Séquence 4 › Page 6"},
+  {q:"Quel logiciel de conception électrique est mentionné dans le cours ?",type:'multi',opts:[{t:"CANECO Implantation et XL Pro³ 400 Legrand",c:true},{t:"AutoCAD et Revit",c:false},{t:"MS Project et Primavera",c:false},{t:"SAP et Oracle",c:false}],diff:'hard',piege:false,expl:"Les logiciels CANECO Implantation et XL Pro³ 400 Legrand sont cités pour la production de plans d'exécution électriques (PEO).",ref:"Séquence 4 › Page 7"},
+  {q:"Les 4 types de plans d'exécution électriques sont :",type:'multi',opts:[{t:"Schéma architectural, plan multifilaire, plan unifilaire, plan développé",c:true},{t:"Plan de masse, plan de coupe, plan de détail, plan d'ensemble",c:false},{t:"Plan structurel, plan électrique, plan thermique, plan hydraulique",c:false},{t:"Plan HT, plan BT, plan courant faible, plan éclairage",c:false}],diff:'med',piege:false,expl:"Les 4 types de plans : schéma architectural (vue d'ensemble), plan multifilaire (cheminement câblage), plan unifilaire (conduits), plan développé (symboles simples, emplacement dispositifs).",ref:"Séquence 4 › Page 7-8"},
+  {q:"L'exercice du contrôle des climatisations ne peut être réalisé par :",type:'multi',opts:[{t:"Le propriétaire de l'installation, l'installateur, ou l'entreprise réalisant la maintenance",c:true},{t:"Tout organisme accrédité, y compris l'installateur",c:false},{t:"Uniquement par des organismes publics",c:false},{t:"Seulement par des ingénieurs certifiés COFRAC",c:false}],diff:'med',piege:false,expl:"Pour des raisons d'indépendance et de conflits d'intérêts, le contrôle ne peut être réalisé par le propriétaire, l'installateur, ni l'entreprise de maintenance ou ayant un contrat de performance énergétique.",ref:"Séquence 5 › Page 8"},
+  {q:"Un voyant hygroscopique vert ou bleu dans une installation frigorifique indique :",type:'multi',opts:[{t:"Un bon fonctionnement (absence d'humidité dans le circuit)",c:true},{t:"Une fuite de frigorigène",c:false},{t:"Une surchauffe du compresseur",c:false},{t:"Un niveau d'huile insuffisant",c:false}],diff:'hard',piege:false,expl:"La couleur verte ou bleue du voyant hygroscopique est un critère de bon fonctionnement indiquant l'absence d'humidité dans le circuit frigorifique.",ref:"Séquence 5 › Page 10"},
+  {q:"Quelle est la signification de BAES dans les installations d'éclairage de sécurité ?",type:'multi',opts:[{t:"Blocs Autonomes d'Éclairage de Sécurité",c:true},{t:"Bureau Accrédité d'Électricité et de Sécurité",c:false},{t:"Bilan Annuel d'Éclairage de Surveillance",c:false},{t:"Batterie Autonome d'Électricité Secondaire",c:false}],diff:'med',piege:false,expl:"BAES = Blocs Autonomes d'Éclairage de Sécurité. Le SATI (Système Automatique de Test Intégré, conforme NF C 71-820) peut réaliser automatiquement les tests de vérification des BAES.",ref:"Séquence 2 › Page 4-5"},
+  {q:"La FED dans le processus de contrôle signifie :",type:'multi',opts:[{t:"Fiche d'Études de Documents",c:true},{t:"Fiche d'Évaluation des Défauts",c:false},{t:"Formulaire d'Examen des Diagnostics",c:false},{t:"Fichier d'Exploitation des Données",c:false}],diff:'med',piege:false,expl:"FED = Fiche d'Études de Documents. Pour chaque document étudié (notes de calcul, plans, schémas), le bureau de contrôle émet une FED au maître d'ouvrage.",ref:"Séquence 2 › Page 3"},
+  {q:"Lors de la réception des travaux, qui reçoit les clés même si des réserves sont émises ?",type:'multi',opts:[{t:"Le Maître d'Ouvrage (MOA)",c:true},{t:"L'entrepreneur jusqu'à levée des réserves",c:false},{t:"Le Bureau de Contrôle",c:false},{t:"La Maîtrise d'Œuvre",c:false}],diff:'med',piege:true,expl:"Les réserves n'empêchent pas la remise des clés au MOA. La remise des clés se fait TOUJOURS à la réception, avec ou sans réserve. Les assurances obligatoires sont également activées.",ref:"Séquence 4 › Page 4"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : QCM CAS PRATIQUES
+const serie2 = [
+  {q:"L'entreprise BÂTIR SA doit faire contrôler ses installations électriques qui viennent d'être remplacées. Quel est le délai maximum pour réaliser ce premier contrôle ?",type:'multi',opts:[{t:"Au plus tard 1 an après le remplacement",c:true},{t:"Au plus tard 5 ans après le remplacement",c:false},{t:"Dans les 6 mois suivants",c:false},{t:"Avant la mise en service",c:false}],diff:'easy',piege:true,expl:"Pour les installations électriques : délai maximum de 1 an après remplacement ou nouvelle installation. Pour la climatisation : délai maximum de 5 ans.",ref:"Séquence 2 › Page 1"},
+  {q:"La société FROID EXPRESS vient d'installer une nouvelle unité de climatisation de 90 kW dans un hôtel. Doit-elle être soumise au contrôle réglementaire ?",type:'multi',opts:[{t:"Oui, car la puissance est supérieure à 70 kW",c:true},{t:"Non, car 90 kW est insuffisant",c:false},{t:"Oui, mais seulement pour les établissements publics",c:false},{t:"Non, les hôtels ne sont pas concernés",c:false}],diff:'easy',piege:false,expl:"Le contrôle réglementaire s'applique aux systèmes dont la puissance nominale utile est supérieure à 70 kW. 90 kW > 70 kW, et les hôtels sont explicitement concernés.",ref:"Séquence 2 › Page 5"},
+  {q:"Le contrôleur OUÉDRAOGO réalise une vérification périodique des prises de courant dans un bâtiment de bureaux. Quelle fraction doit-il vérifier au minimum ?",type:'multi',opts:[{t:"La moitié des prises de courant accessibles",c:true},{t:"La totalité des prises",c:false},{t:"Le tiers des prises",c:false},{t:"Un quart des prises",c:false}],diff:'hard',piege:false,expl:"En vérification PÉRIODIQUE (pas initiale) : moitié des prises de courant accessibles dans les locaux de bureaux. En vérification initiale : la totalité. Objectif : vérifier toutes les prises en 2 vérifications.",ref:"Séquence 5 › Page 5"},
+  {q:"L'entrepreneur COULIBALY réalise des travaux de rénovation électrique. Son client KABORÉ signe le PV de réception avec réserves. KABORÉ peut-il consigner une partie du solde ?",type:'multi',opts:[{t:"Oui, c'est une conséquence possible de la réception avec réserves",c:true},{t:"Non, le solde doit toujours être payé intégralement à la réception",c:false},{t:"Non, seul le bureau de contrôle peut bloquer le paiement",c:false},{t:"Oui, mais seulement si les réserves dépassent 10% du montant",c:false}],diff:'med',piege:false,expl:"La réception avec réserves a deux conséquences possibles : la consignation d'une partie du solde par le MOA, et l'obligation pour l'entrepreneur de réaliser des travaux pour lever les réserves.",ref:"Séquence 4 › Page 4"},
+  {q:"Madame SAWADOGO a réceptionné son chantier le 15 janvier 2024 sans professionnel. Le 20 janvier, elle constate un défaut d'enduit. Peut-elle encore émettre des réserves ?",type:'multi',opts:[{t:"Oui, car moins de 8 jours se sont écoulés depuis la réception",c:true},{t:"Non, la signature du PV est définitive",c:false},{t:"Non, les réserves ne peuvent être ajoutées que le jour même de la réception",c:false},{t:"Oui, elle dispose de 30 jours",c:false}],diff:'med',piege:false,expl:"Un MOA sans professionnel peut ajouter des réserves jusqu'à 8 jours après la réception par LRAR. Du 15 au 20 janvier = 5 jours, donc oui c'est encore possible.",ref:"Séquence 4 › Page 4"},
+  {q:"Le chef de projet DAO doit planifier une installation électrique industrielle. Quelle durée maximale doit-il affecter à chaque tâche ?",type:'multi',opts:[{t:"Moins de 15 jours ouvrés",c:true},{t:"Moins d'un mois",c:false},{t:"Moins de 3 semaines",c:false},{t:"Il n'y a pas de limite imposée",c:false}],diff:'med',piege:false,expl:"Chaque tâche doit être assez courte : moins de 15 jours. Cela garantit un meilleur suivi et contrôle de l'avancement.",ref:"Séquence 4 › Page 6"},
+  {q:"L'AMOA TRAORÉ conseille la MOA ÉNERGIE SAHEL sur un projet d'installation solaire. Qui prend les décisions finales ?",type:'multi',opts:[{t:"La MOA ÉNERGIE SAHEL",c:true},{t:"L'AMOA TRAORÉ en tant qu'expert",c:false},{t:"Le bureau de contrôle",c:false},{t:"Le chef de projet désigné",c:false}],diff:'easy',piege:false,expl:"L'AMOA a un rôle de conseil, assistance et proposition. Le décideur final reste TOUJOURS le maître d'ouvrage (la MOA).",ref:"Séquence 1 › Page 1"},
+  {q:"L'électricien DIALLO installe un chauffe-eau à accumulation dans le Volume 1 d'une salle de bains. Quelle protection minimale est requise ?",type:'multi',opts:[{t:"Classe I avec disjoncteur différentiel 30 mA conseillé",c:true},{t:"Classe II + 30 mA obligatoire",c:false},{t:"Classe III, TBTS obligatoire",c:false},{t:"Aucune protection spéciale n'est requise en Volume 1",c:false}],diff:'hard',piege:true,expl:"En Volume 1 : chauffe-eau à accumulation = Classe I (30 mA conseillé, pas obligatoire). Chauffe-eau instantané = Classe I + 30 mA obligatoire. Ne pas confondre.",ref:"Séquence 5 › Page 4"},
+  {q:"Le technicien COMPAORÉ détecte que le voyant hygroscopique d'une installation frigorifique est orange. Que doit-il faire ?",type:'multi',opts:[{t:"Investiguer car c'est anormal — le voyant normal doit être vert ou bleu",c:true},{t:"Ne rien faire, orange est normal",c:false},{t:"Arrêter immédiatement l'installation",c:false},{t:"Changer uniquement le voyant",c:false}],diff:'med',piege:false,expl:"Le critère de bon fonctionnement exige un voyant hygroscopique VERT ou BLEU. Orange indique une présence d'humidité dans le circuit — il faut investiguer et probablement changer le déshydrateur.",ref:"Séquence 5 › Page 10"},
+  {q:"Le bureau de contrôle QUALIBAT doit émettre un avis sur les plans de conception d'un hôpital en cours de conception. Quel document émet-il ?",type:'multi',opts:[{t:"Le RICT (Rapport Initial de Contrôle Technique)",c:true},{t:"La FVCS (Fiche de Visite de Chantier)",c:false},{t:"Le RDFM (Rapport de Fin de Mission)",c:false},{t:"Le RSO (Rapport de Suivi des Observations)",c:false}],diff:'med',piege:false,expl:"Le RICT est émis en phase de conception (amont). La FVCS est pour les visites terrain en phase travaux. Le RSO est la synthèse périodique. Le RDFM est la synthèse finale.",ref:"Séquence 2 › Page 3"},
+  {q:"L'installateur OUÉDRAOGO réalise le contrôle de fuites d'une installation frigorifique au R134a. Quelle méthode est adaptée ?",type:'multi',opts:[{t:"Détecteur électronique spécial ou traceurs fluorescents UV",c:true},{t:"Lampe haloïde",c:false},{t:"Eau savonneuse uniquement",c:false},{t:"Odorat — comme pour l'ammoniac",c:false}],diff:'med',piege:false,expl:"Le R134a ne contient pas de chlore → lampe haloïde inefficace. Seul un détecteur électronique spécial ou les traceurs fluorescents permettent une détection précise du R134a.",ref:"Séquence 5 › Page 12"},
+  {q:"Le projet de construction d'une école à Ouagadougou comprend 20 tâches dont 5 sur le chemin critique. L'une de ces 5 tâches est retardée de 3 jours. Quel est l'impact ?",type:'multi',opts:[{t:"Le projet entier est retardé de 3 jours",c:true},{t:"Aucun impact si les autres tâches avancent",c:false},{t:"Impact limité car il reste 15 tâches non critiques",c:false},{t:"Retard de 3 jours divisé par le nombre de tâches",c:false}],diff:'med',piege:false,expl:"Tout retard affectant une tâche du chemin critique est INTÉGRALEMENT répercuté sur la durée du projet. Le retard de 3 jours = projet retardé de 3 jours.",ref:"Séquence 4 › Page 7"},
+  {q:"La société ÉLECTRO BURKINA installe un réseau électrique industriel de 150 kW. Avant travaux, doit-elle soumettre ses plans au bureau de contrôle ?",type:'multi',opts:[{t:"Oui, car 150 kW > 70 kW (seuil obligatoire pour les installations industrielles)",c:true},{t:"Non, seulement pour les ERP",c:false},{t:"Oui, mais c'est facultatif",c:false},{t:"Non, uniquement pour les installations HT",c:false}],diff:'med',piege:false,expl:"Les entreprises industrielles sont tenues de soumettre leurs plans pour les installations énergétiques industrielles de plus de 70 kW. 150 kW > 70 kW → soumission obligatoire.",ref:"Séquence 3 › Page 2"},
+  {q:"L'entrepreneur SAWADOGO veut émettre un devis pour une installation électrique. Quelle durée de validité minimale est recommandée ?",type:'multi',opts:[{t:"Il n'y a pas de durée imposée, mais elle doit être clairement stipulée dans les termes et conditions",c:true},{t:"6 mois obligatoirement",c:false},{t:"30 jours minimum par la loi",c:false},{t:"La validité est illimitée une fois signé",c:false}],diff:'hard',piege:false,expl:"Il n'y a pas de durée imposée. Il est recommandé d'avoir un ensemble détaillé de termes et conditions expliquant la durée de validité. On peut opter pour un mois, trois mois ou toute durée adaptée.",ref:"Séquence 4 › Page 5"},
+  {q:"Le technicien frigoriste KABORÉ constate que le système fonctionne en court-cycle. Quelle est la cause probable liée au fluide frigorigène ?",type:'multi',opts:[{t:"Manque ou excès de frigorigène",c:true},{t:"Batterie encrassée",c:false},{t:"Palier du moteur défectueux",c:false},{t:"Pressostat HP mal réglé",c:false}],diff:'hard',piege:false,expl:"Un fonctionnement en court-cycle peut être causé (du côté fluide frigorigène) par un manque OU un excès de frigorigène. Autres causes : ventilateur défaillant, thermostat défectueux, liaison électrique défectueuse.",ref:"Séquence 5 › Page 11"},
+  {q:"La MOA INFRA 2iE refuse de signer le PV de réception car les défauts sont trop importants. L'entrepreneur BÂTISSEURS ne répare pas. Que peut faire la MOA ?",type:'multi',opts:[{t:"Saisir le juge des référés pour exiger l'achèvement ou faire exécuter les réparations par une autre entreprise",c:true},{t:"Rien — elle doit attendre que l'entrepreneur agisse",c:false},{t:"Appliquer directement une pénalité financière sans recours",c:false},{t:"Résilier le contrat sans aucune procédure",c:false}],diff:'med',piege:false,expl:"En cas de refus de réception et de non-réparation par l'entrepreneur dans le délai, la MOA peut saisir le juge des référés pour exiger l'achèvement ou l'autorisation de faire réaliser les réparations par une autre entreprise.",ref:"Séquence 4 › Page 4-5"},
+  {q:"Pour un bâtiment de bureaux en vérification périodique, combien de vérifications périodiques sont nécessaires pour couvrir la totalité des prises de courant ?",type:'multi',opts:[{t:"2 vérifications périodiques",c:true},{t:"1 vérification périodique",c:false},{t:"3 vérifications périodiques",c:false},{t:"5 vérifications périodiques",c:false}],diff:'hard',piege:false,expl:"La moitié des prises est vérifiée à chaque vérification périodique, par rotation. Au bout de 2 vérifications, la totalité est couverte. Pour les appareils d'éclairage : 3 vérifications nécessaires.",ref:"Séquence 5 › Page 5"},
+  {q:"Le contrôleur DIALLO visite un chantier et émet ses observations. Quel document fournit-il à la MOA après chaque visite ?",type:'multi',opts:[{t:"La FVCS (Fiche de Visite de Chantier)",c:true},{t:"Le RICT",c:false},{t:"La FED",c:false},{t:"Le RDFM",c:false}],diff:'easy',piege:false,expl:"Pour chaque visite terrain en phase travaux, le maître d'ouvrage reçoit une FVCS (Fiche de Visite de Chantier) avec les observations sur le terrain. Le RSO est une synthèse périodique des FVCS.",ref:"Séquence 2 › Page 3"},
+  {q:"L'installation de climatisation de l'Hôtel SAVANE (120 kW) a été réalisée en mars 2020. En quelle année le PREMIER contrôle doit-il avoir eu lieu au plus tard ?",type:'multi',opts:[{t:"2025 (mars 2020 + 5 ans)",c:true},{t:"2021 (mars 2020 + 1 an)",c:false},{t:"2023 (mars 2020 + 3 ans)",c:false},{t:"2022 (mars 2020 + 2 ans)",c:false}],diff:'med',piege:true,expl:"Pour la climatisation, le premier contrôle doit être réalisé au plus tard dans les 5 ans suivant l'installation. Mars 2020 + 5 ans = mars 2025 au plus tard.",ref:"Séquence 2 › Page 1"},
+  {q:"Un entrepreneur présente 3 devis pour des travaux : 800 000 FCFA, 950 000 FCFA et 1 200 000 FCFA. Le contrôleur doit-il nécessairement choisir le moins cher ?",type:'multi',opts:[{t:"Non, le moins cher n'est pas nécessairement le meilleur — des différences importantes peuvent signifier des problèmes de performance",c:true},{t:"Oui, le devis le moins cher doit toujours être choisi",c:false},{t:"Oui, sauf autorisation spéciale de la MOA",c:false},{t:"Non, il faut toujours choisir le plus cher pour la meilleure qualité",c:false}],diff:'med',piege:false,expl:"Le devis le moins cher n'est pas nécessairement le meilleur. Un devis complet et précis incluant un service de haute qualité peut justifier un prix plus élevé. Des différences importantes peuvent signaler des problèmes de performance.",ref:"Séquence 4 › Page 6"},
+  {q:"Le technicien COMPAORÉ vérifie une installation électrique et trouve un disjoncteur différentiel défaillant. Il ne fonctionne que pour un courant d'essai supérieur au courant différentiel assigné. Est-ce conforme ?",type:'multi',opts:[{t:"Non — il doit déclencher pour un courant entre la moitié et la totalité du courant différentiel assigné",c:true},{t:"Oui, déclencher au-delà du courant assigné est acceptable",c:false},{t:"Oui, seul le déclenchement avant le courant assigné pose problème",c:false},{t:"La valeur n'a pas d'importance, seul le déclenchement compte",c:false}],diff:'hard',piege:false,expl:"Les DDR doivent déclencher pour une valeur de courant d'essai comprise ENTRE le courant différentiel assigné ET la moitié de ce courant. Un déclenchement uniquement au-dessus du courant assigné = non conforme.",ref:"Séquence 5 › Page 5"},
+  {q:"La société ÉNERGIES OUEST-AFRIQUE installe un système de chauffage par effet joule de 65 kW dans un immeuble de bureaux. Ce système est-il soumis au contrôle réglementaire ?",type:'multi',opts:[{t:"Non, car 65 kW < 70 kW (seuil obligatoire)",c:true},{t:"Oui, tous les systèmes de chauffage sont soumis",c:false},{t:"Oui, car l'immeuble de bureaux est un ERT",c:false},{t:"Non, seulement les systèmes industriels sont concernés",c:false}],diff:'med',piege:true,expl:"Le seuil est de 70 kW. Un système de 65 kW est INFÉRIEUR au seuil, donc non soumis au contrôle réglementaire obligatoire.",ref:"Séquence 2 › Page 5"},
+  {q:"Lors d'un chantier à Bobo-Dioulasso, le superviseur KABORÉ doit rayer les lignes vides de son cahier de chantier. Pourquoi ?",type:'multi',opts:[{t:"Pour éviter des altérations ou modifications non officielles après la fin d'une journée",c:true},{t:"Pour gagner de l'espace dans le cahier",c:false},{t:"C'est une exigence de la norme NF C 15-100",c:false},{t:"Pour faciliter la lecture numérique du document",c:false}],diff:'med',piege:false,expl:"Les lignes et espaces non utilisés doivent être barrés pour que les journaux de bord quotidiens soient à l'abri d'éventuelles altérations ou modifications non officielles.",ref:"Séquence 4 › Page 2"},
+  {q:"L'entreprise de maintenance FROITECH réalise l'entretien de l'installation de climatisation de la Banque SAHEL. Peut-elle en faire le contrôle réglementaire ?",type:'multi',opts:[{t:"Non, car elle réalise l'entretien — conflits d'intérêts",c:true},{t:"Oui, si elle a les accréditations requises",c:false},{t:"Oui, avec l'accord de la MOA",c:false},{t:"Non, mais uniquement parce qu'elle n'est pas propriétaire",c:false}],diff:'med',piege:false,expl:"L'entreprise réalisant l'entretien, la maintenance ou l'exploitation ne peut pas faire le contrôle — raisons d'indépendance et de conflits d'intérêts. Cette interdiction s'étend aussi aux entreprises ayant un contrat de performance énergétique.",ref:"Séquence 5 › Page 8"},
+  {q:"Le projet BARRAGE MOUHOUN comprend des tâches A, B, C sur le chemin critique et des tâches D, E, F hors chemin critique (marge de 4 jours chacune). La tâche D est retardée de 3 jours. Quel est l'impact sur le projet ?",type:'multi',opts:[{t:"Aucun impact sur la durée totale du projet car D a une marge de 4 jours",c:true},{t:"Retard de 3 jours sur tout le projet",c:false},{t:"Retard de 3 jours uniquement sur les tâches qui suivent D",c:false},{t:"Retard de 1 jour (3 - marge de 4 = impact négatif de -1, donc 1 jour d'avance)",c:false}],diff:'hard',piege:false,expl:"D hors chemin critique avec marge 4 jours. Retard de 3 jours < 4 jours de marge. Donc aucun impact sur la durée totale du projet. Si le retard avait été > 4 jours, D serait devenu critique.",ref:"Séquence 4 › Page 7"},
+  {q:"Le constructeur BÂTIR SA reçoit une mise en demeure pour des désordres apparus 8 mois après la réception. Quelle garantie s'applique ?",type:'multi',opts:[{t:"La Garantie de Parfait Achèvement (GPA) car les désordres sont apparus dans l'année suivant la réception",c:true},{t:"La garantie décennale",c:false},{t:"La garantie biennale",c:false},{t:"Aucune garantie — le délai de réception est dépassé",c:false}],diff:'med',piege:true,expl:"La GPA couvre les désordres apparus DANS L'ANNÉE suivant la réception. 8 mois < 1 an → GPA applicable. Les désordres doivent être signalés par courrier recommandé.",ref:"Séquence 3 › Page 4"},
+  {q:"Monsieur COMPAORÉ, contrôleur, effectue une vérification des appareils d'éclairage d'un immeuble de 300 appareils. En vérification périodique, combien d'appareils doit-il minimum vérifier ?",type:'multi',opts:[{t:"100 appareils (un tiers)",c:true},{t:"150 appareils (la moitié)",c:false},{t:"300 appareils (la totalité)",c:false},{t:"75 appareils (un quart)",c:false}],diff:'hard',piege:true,expl:"En vérification périodique : le TIERS des appareils d'éclairage fixes. 300 / 3 = 100 appareils. (Pour les prises de courant en bureaux : la moitié). Ne pas confondre les deux fractions.",ref:"Séquence 5 › Page 5"},
+  {q:"La phase d'ordonnancement des tâches d'un projet consiste à se demander :",type:'multi',opts:[{t:"Quelles tâches doivent être faites avant d'autres ET quelles tâches peuvent se chevaucher",c:true},{t:"Uniquement qui réalise chaque tâche",c:false},{t:"Uniquement le coût de chaque tâche",c:false},{t:"La qualité attendue pour chaque tâche",c:false}],diff:'easy',piege:false,expl:"L'ordonnancement répond à deux questions : Quelle tâche doit être faite AVANT quelle(s) autre(s) ? Quelles tâches peuvent être faites EN MÊME TEMPS ou se chevaucher partiellement ?",ref:"Séquence 4 › Page 6"},
+  {q:"Un transformateur triphasé alimente sous 400V et son courant nominal est de 887A. Sa puissance apparente est d'environ :",type:'multi',opts:[{t:"614 kVA (entre 600 et 630 kVA)",c:true},{t:"200 kVA",c:false},{t:"355 kVA",c:false},{t:"1200 kVA",c:false}],diff:'hard',piege:false,expl:"S = √3 × U × I = 1,732 × 400 × 887 ≈ 614 000 VA = 614 kVA. La formule triphasée utilise √3 (≈1,732). Ne pas oublier le facteur √3 pour le triphasé.",ref:"Sujet d'examen › Question 28"},
+  {q:"Un réseau de 50 lampes monophasées (40W, FP=0,85) est alimenté en triphasé 400V. Le courant d'emploi total est environ :",type:'multi',opts:[{t:"Environ 3,4 A",c:true},{t:"Environ 6 A",c:false},{t:"Environ 8,7 A",c:false},{t:"Environ 10 A",c:false}],diff:'hard',piege:true,expl:"Puissance totale = 50 × 40 = 2000 W. I = P / (√3 × U × cos φ) = 2000 / (1,732 × 400 × 0,85) = 2000 / 588,9 ≈ 3,4 A. Attention : alimentation triphasée donc utiliser √3.",ref:"Sujet d'examen › Question 38"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL
+const serie3 = [
+  {q:"Le ceinturage à fonds de fouille se fait avec un conducteur en cuivre nu d'au moins :",type:'multi',opts:[{t:"16 mm²",c:false},{t:"25 mm²",c:true},{t:"10 mm²",c:false},{t:"50 mm²",c:false}],diff:'med',piege:true,expl:"Le ceinturage à fonds de fouille nécessite un conducteur en cuivre nu d'au moins 25 mm². 16 mm² est insuffisant. 10 mm² est la section minimale pour certains conducteurs de protection mais pas pour le ceinturage.",ref:"Sujet d'examen › Question 21"},
+  {q:"Ce transformateur est alimenté au primaire en 15 kV entre phases et délivre 400 V entre phases au secondaire. Pour intervenir au voisinage de l'alimentation 15 kV, il est nécessaire d'avoir une habilitation :",type:'multi',opts:[{t:"B1T",c:false},{t:"H1V",c:true},{t:"HBV",c:false},{t:"Aucune bonne réponse proposée",c:false}],diff:'med',piege:true,expl:"15 kV est de la Haute Tension (HT). Pour intervenir AU VOISINAGE d'une installation HT, il faut une habilitation H1V (Haute tension, travaux au Voisinage). B1T concerne la basse tension.",ref:"Sujet d'examen › Question 22"},
+  {q:"Dans une procédure de consignation, VAT signifie :",type:'multi',opts:[{t:"Variation anormale de tension",c:false},{t:"Vérification (ou vérificateur) de l'absence de tension",c:true},{t:"Valeur autorisée de tension",c:false},{t:"Aucune bonne réponse",c:false}],diff:'easy',piege:false,expl:"VAT = Vérification (ou Vérificateur) de l'Absence de Tension. C'est une étape clé de la procédure de consignation, après la séparation de la source et la condamnation.",ref:"Sujet d'examen › Question 23"},
+  {q:"En intervention électrique, EPI signifie :",type:'multi',opts:[{t:"Équipements pour interventions",c:false},{t:"Éclateur parafoudre intégré",c:false},{t:"Élément prioritaire à isoler",c:false},{t:"Équipement de protection individuel",c:true}],diff:'easy',piege:false,expl:"EPI = Équipement de Protection Individuel. Ce sont les équipements portés par l'exécutant pour se protéger : casque, gants isolants, lunettes, chaussures de sécurité, tabouret isolant, etc.",ref:"Sujet d'examen › Question 24"},
+  {q:"Produire du froid consiste à :",type:'multi',opts:[{t:"Équilibrer des températures",c:false},{t:"Déplacer (ou transférer) de la chaleur",c:true},{t:"Créer de la chaleur",c:false},{t:"Faire circuler un gaz",c:false}],diff:'easy',piege:true,expl:"Produire du froid = DÉPLACER (ou transférer) de la chaleur. On ne crée pas du froid, on retire la chaleur d'un espace. C'est le principe du cycle frigorifique : l'évaporateur absorbe la chaleur, le condenseur la rejette.",ref:"Sujet d'examen › Question 25"},
+  {q:"Quel équipement ne se trouve en général PAS dans un climatiseur domestique (climatiseur pour habitation) ?",type:'multi',opts:[{t:"Compresseur",c:false},{t:"Pressostat",c:true},{t:"Détendeur",c:false},{t:"Évaporateur",c:false}],diff:'hard',piege:true,expl:"Le pressostat est typiquement absent des climatiseurs domestiques simples. Il se trouve dans les installations industrielles ou commerciales pour la protection et la régulation. Le climatiseur domestique comprend compresseur, condenseur, détendeur et évaporateur.",ref:"Sujet d'examen › Question 26"},
+  {q:"On considère un moteur alimenté sous 400 V, de courant d'emploi 70 A, FP=0,85. Câble cuivre de 352 m depuis TD1 (2% de chute déjà). Chute max totale = 5%. Section minimale ?",type:'multi',opts:[{t:"95 mm²",c:true},{t:"50 mm²",c:false},{t:"120 mm²",c:false},{t:"70 mm²",c:false}],diff:'hard',piege:false,expl:"Chute disponible pour le câble = 5% - 2% = 3%. Ramenée à 100m : 3 × (100/352) ≈ 0,85%/100m. Pour 70A et ≈0,85%/100m dans le tableau → section 95 mm². Vérifier dans le tableau cosφ=0,85.",ref:"Sujet d'examen › Question 27"},
+  {q:"On considère un transformateur triphasé ayant 887 A de courant nominal. La puissance apparente se trouve dans l'intervalle :",type:'multi',opts:[{t:"Entre 600 kVA et 630 kVA",c:true},{t:"Entre 190 kVA et 210 kVA",c:false},{t:"Entre 340 kVA et 370 kVA",c:false},{t:"Aucune bonne réponse proposée",c:false}],diff:'hard',piege:false,expl:"S = √3 × U × I = 1,732 × 400 × 887 ≈ 614 000 VA ≈ 614 kVA. 614 kVA se trouve bien dans l'intervalle [600 ; 630] kVA.",ref:"Sujet d'examen › Question 28"},
+  {q:"Quel type de réfrigérant pour machine frigorifique est le plus dangereux pour l'environnement (couche d'ozone) ?",type:'multi',opts:[{t:"HCFC",c:false},{t:"CFHC (n'existe pas)",c:false},{t:"CFC",c:true},{t:"HFC",c:false}],diff:'easy',piege:true,expl:"Les CFC (Chlorofluorocarbures) sont les plus destructeurs pour la couche d'ozone. Ils contiennent du chlore qui détruit l'ozone. HCFC = intermédiaire. HFC = pas de chlore mais fort potentiel de réchauffement.",ref:"Sujet d'examen › Question 29"},
+  {q:"Dans une habitation, la section de câble normalisée pour l'alimentation d'un circuit monophasé d'éclairage est :",type:'multi',opts:[{t:"3 × 6mm²",c:false},{t:"3 × 2,5mm²",c:false},{t:"3 × 4mm²",c:false},{t:"3 × 1,5mm²",c:true}],diff:'easy',piege:false,expl:"Circuit d'éclairage monophasé = 3 × 1,5 mm² (phase + neutre + terre). Circuit de prises secteur = 3 × 2,5 mm². Ne pas confondre les deux circuits.",ref:"Sujet d'examen › Question 30"},
+  {q:"Dans une habitation, la section de câble normalisée pour l'alimentation d'un circuit monophasé de prises secteur confort (hors prises force) est :",type:'multi',opts:[{t:"3 × 6mm²",c:false},{t:"3 × 1,5mm²",c:false},{t:"3 × 10mm²",c:false},{t:"3 × 2,5mm²",c:true}],diff:'easy',piege:true,expl:"Prises secteur confort = 3 × 2,5 mm². Éclairage = 3 × 1,5 mm². Les prises de force (cuisine, lave-linge) utilisent des sections plus grandes (3 × 4 ou 3 × 6 mm²).",ref:"Sujet d'examen › Question 31"},
+  {q:"Le réfrigérant R134a est un :",type:'multi',opts:[{t:"HCFC",c:false},{t:"CFC",c:false},{t:"HFC",c:true},{t:"CFHC",c:false}],diff:'med',piege:false,expl:"R134a = HFC (Hydrofluorocarbone). Il ne contient pas de chlore (donc pas de destruction directe de l'ozone) mais a un fort pouvoir de réchauffement global (GWP élevé). Détection par détecteur électronique spécial.",ref:"Sujet d'examen › Question 32"},
+  {q:"Extrait NFC15-100 : « L'intensité de réglage du disjoncteur doit être supérieure au courant permanent et inférieure au courant admissible par l'artère. » La bonne interprétation est :",type:'multi',opts:[{t:"Le câble supporte un courant supérieur au max du disjoncteur, qui autorise un courant inférieur au courant normal du circuit",c:true},{t:"Le câble supporte un courant inférieur au min du disjoncteur, qui autorise un courant supérieur au courant normal",c:false},{t:"Le câble supporte un courant supérieur au max du disjoncteur, qui autorise un courant supérieur au courant normal",c:false},{t:"Le câble supporte un courant inférieur au min du disjoncteur, qui autorise un courant inférieur au courant normal",c:false}],diff:'hard',piege:true,expl:"I_circuit < I_réglage_disjoncteur < I_admissible_câble. Le câble supporte plus que le maximum du disjoncteur. Le disjoncteur autorise plus que le courant normal. Ordre : I_circuit < I_disjoncteur < I_câble.",ref:"Sujet d'examen › Question 33"},
+  {q:"La figure présente un climatiseur split domestique avec les lettres A, B et C. A est en haut (unité intérieure murale), B est la liaison au milieu, C est en bas à droite (unité extérieure). La combinaison correcte est :",type:'multi',opts:[{t:"A=condenseur, B=liaisons électrique et frigorifique, C=évaporateur",c:false},{t:"A=unité de condensation, B=cordon électrique, C=unité extérieure",c:false},{t:"A=unité intérieure, B=liaisons électrique et frigorifique, C=unité extérieure",c:true},{t:"A=unité intérieure, B=cordon électrique, C=unité extérieure",c:false}],diff:'med',piege:true,expl:"Split = unité intérieure (A, avec l'évaporateur) + liaisons électrique ET frigorifique (B, pas juste le cordon électrique) + unité extérieure (C, avec le condenseur et le compresseur).",ref:"Sujet d'examen › Question 34"},
+  {q:"L'une de ces méthodes ne permet PAS de retrouver une fuite de réfrigérant sur un circuit frigorifique :",type:'multi',opts:[{t:"Parcours des tuyauteries avec une lampe haloïde",c:false},{t:"Aspersion des raccords avec de l'eau savonneuse",c:false},{t:"Projection d'air comprimé sur les tuyauteries",c:true},{t:"Recherche à l'aide d'un détecteur électronique",c:false}],diff:'med',piege:false,expl:"La projection d'air comprimé sur les tuyauteries ne permet PAS de détecter une fuite. Les méthodes valides : eau savonneuse, lampe haloïde (CFC/HCFC), détecteur électronique, traceur fluorescent UV.",ref:"Sujet d'examen › Question 35"},
+  {q:"La tension alternative maximale de contact indirect autorisée dans une salle d'eau comportant une baignoire est :",type:'multi',opts:[{t:"10V",c:false},{t:"12V",c:true},{t:"6V",c:false},{t:"18V",c:false}],diff:'hard',piege:true,expl:"La tension maximale de contact indirect autorisée dans une salle d'eau avec baignoire est de 12V en courant alternatif. Cette valeur correspond aux locaux mouillés.",ref:"Sujet d'examen › Question 36"},
+  {q:"Dans une procédure de consignation, MALT signifie :",type:'multi',opts:[{t:"Mise à la terre",c:true},{t:"Moteur à l'arrêt libéré pour travaux",c:false},{t:"Mesure de conducteurs actifs longs sous tension",c:false},{t:"Machine à la terre",c:false}],diff:'easy',piege:false,expl:"MALT = Mise À La Terre. C'est une étape de la procédure de consignation réalisée après la VAT (vérification d'absence de tension), pour protéger les travailleurs contre les réenclenchements accidentels.",ref:"Sujet d'examen › Question 37"},
+  {q:"Le courant d'emploi total en alimentation triphasée 400V d'un réseau de 50 lampes monophasées (40W, FP=0,85) est le plus proche de :",type:'multi',opts:[{t:"Environ 6 A",c:false},{t:"Environ 8,7 A",c:false},{t:"Environ 10 A",c:false},{t:"Environ 3,4 A",c:true}],diff:'hard',piege:true,expl:"P_totale = 50 × 40 = 2000 W. I = P / (√3 × U × cos φ) = 2000 / (1,732 × 400 × 0,85) ≈ 3,4 A. Erreur courante : utiliser la formule monophasée (diviser par U×cosφ sans √3) → 5,9 A incorrect.",ref:"Sujet d'examen › Question 38"},
+  {q:"Quelle est l'utilité du tabouret isolant ?",type:'multi',opts:[{t:"Isoler l'exécutant électricien de la terre",c:true},{t:"Permettre d'évacuer vers la terre le courant de défaut",c:false},{t:"Permettre à l'exécutant d'être en équilibre en hauteur afin de mieux voir les appareils",c:false},{t:"Éviter que l'exécutant ait les deux pieds joints",c:false}],diff:'med',piege:true,expl:"Le tabouret isolant sert à ISOLER l'électricien de la terre. En cas de contact accidentel avec une partie sous tension, le courant ne peut pas passer par le corps vers la terre. C'est un EPI essentiel.",ref:"Sujet d'examen › Question 39"},
+  {q:"Suite de numéros correspondant à la chaine d'actions chronologiques pour une procédure de consignation (N°1=identification circuit, N°2=alimentation, N°3=accès armoire, N°6=condamnation, N°7=séparation source, N°8=mesurage/VAT) :",type:'multi',opts:[{t:"7-6-1-10",c:false},{t:"3-10-8-7-2-5",c:false},{t:"3-8-9-4-5",c:false},{t:"6-9-2-5",c:false}],diff:'hard',piege:true,expl:"La procédure de consignation correcte est : (1) Identification du circuit, (2) Accès à l'armoire, (3) Séparation de la source, (4) Condamnation, (5) VAT. La séquence la plus proche du sujet est 3-10-8-7-2-5 mais dépend des numéros complets non visibles dans le PDF. Mémoriser l'ordre : Identifier → Accès → Séparer → Condamner → VAT → MALT.",ref:"Sujet d'examen › Question 40"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M11';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div style="margin-bottom:20px">
+  <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-bottom:6px">🔬 Méthode & Anti-pièges M11</div>
+  <div style="font-size:13px;color:var(--text3)">Mots-pièges, chiffres-clés, schémas de décision</div>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-pièges fréquents</div>
+    <span class="piege-word">quinquennale</span>
+    <span class="piege-word">annuelle</span>
+    <span class="piege-word">70 kW</span>
+    <span class="piege-word">25 mm²</span>
+    <span class="piege-word">28m (IGH)</span>
+    <span class="piege-word">8 jours</span>
+    <span class="piege-word">1 an (GPA)</span>
+    <span class="piege-word">H1V vs B1T</span>
+    <span class="piege-word">MALT vs VAT</span>
+    <span class="piege-word">R134a = HFC</span>
+    <span class="piege-word">CFC = pire ozone</span>
+    <span class="piege-word">√3 triphasé</span>
+    <span class="piege-word">marge nulle = critique</span>
+    <span class="piege-word">&lt; 15 jours/tâche</span>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">📊 Chiffres-clés absolus</div>
+    <table class="chiffres-table">
+      <tr><th>Valeur</th><th>Signification</th></tr>
+      <tr><td>1 an</td><td>Fréquence vérif. électrique / GPA / Délai 1er contrôle électrique</td></tr>
+      <tr><td>2 ans</td><td>Garantie biennale / Vérif. électrique si 0 observation</td></tr>
+      <tr><td>5 ans</td><td>Fréquence vérif. climatisation / Délai 1er contrôle clim</td></tr>
+      <tr><td>10 ans</td><td>Garantie décennale</td></tr>
+      <tr><td>8 jours</td><td>Délai ajout réserves PV sans professionnel (par LRAR)</td></tr>
+      <tr><td>70 kW</td><td>Seuil puissance pour contrôle thermique obligatoire</td></tr>
+      <tr><td>28 m</td><td>Hauteur seuil IGH (Immeuble Grande Hauteur)</td></tr>
+      <tr><td>25 mm²</td><td>Section min. ceinturage fond de fouille (cuivre nu)</td></tr>
+      <tr><td>1,5 mm²</td><td>Section câble circuit éclairage monophasé habitation</td></tr>
+      <tr><td>2,5 mm²</td><td>Section câble circuit prises confort habitation</td></tr>
+      <tr><td>12 V</td><td>Tension max. contact indirect salle d'eau avec baignoire</td></tr>
+      <tr><td>35%</td><td>Part des incendies d'origine électrique</td></tr>
+      <tr><td>√3 ≈ 1,732</td><td>Facteur triphasé pour calcul I et S</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="margin-top:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🔄 Schémas de décision</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">📅 Quel contrôle ? Quelle fréquence ?</div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text">Installation électrique → <strong>Annuelle</strong> (ou 2 ans si 0 obs.). 1er contrôle : ≤ 1 an après installation.</div></div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text">Climatisation / thermodynamique > 70 kW → <strong>Tous les 5 ans</strong>. 1er contrôle : ≤ 5 ans après installation.</div></div>
+    <div class="schema-step"><div class="schema-num">?</div><div class="schema-text">Puissance ≤ 70 kW → <strong>Pas de contrôle thermique obligatoire</strong>.</div></div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">🛡️ Quelle garantie s'applique ?</div>
+    <div class="schema-step"><div class="schema-num">1</div><div class="schema-text">Désordre noté au PV ou apparu dans l'année → <strong>GPA (1 an)</strong> — MOE + Entrepreneur obligés.</div></div>
+    <div class="schema-step"><div class="schema-num">2</div><div class="schema-text">Équipement défaillant non soumis à décennale → <strong>Biennale (2 ans)</strong>.</div></div>
+    <div class="schema-step"><div class="schema-num">3</div><div class="schema-text">Dommage compromettant solidité ou usage → <strong>Décennale (10 ans)</strong>.</div></div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">⚡ Habilitation électrique — Choix</div>
+    <div class="schema-step"><div class="schema-num">B</div><div class="schema-text">Tension = Basse Tension (BT, &lt; 1000V AC). Ex: B1T = BT, travaux sous tension.</div></div>
+    <div class="schema-step"><div class="schema-num">H</div><div class="schema-text">Tension = Haute Tension (HT, ≥ 1000V AC). Ex: H1V = HT, travaux au voisinage HT.</div></div>
+    <div class="schema-step"><div class="schema-num">!</div><div class="schema-text">15 kV = HT → habilitation <strong>H1V</strong> requise pour intervenir au voisinage.</div></div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">❄️ Réfrigérants — Mémorisation</div>
+    <div class="schema-step"><div class="schema-num">C</div><div class="schema-text"><strong>CFC</strong> = Chlorofluorocarbone. Chlore = destruction ozone. LE PLUS DANGEREUX.</div></div>
+    <div class="schema-step"><div class="schema-num">HC</div><div class="schema-text"><strong>HCFC</strong> = Hydro-CFC. Chlore en moins grande quantité. Intermédiaire.</div></div>
+    <div class="schema-step"><div class="schema-num">H</div><div class="schema-text"><strong>HFC</strong> = Hydrofluorocarbone. SANS chlore. R134a est HFC. Détection : détecteur électronique spécial.</div></div>
+  </div>
+</div>
+
+<div style="margin-top:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🔒 Procédure de consignation — Ordre chronologique</div>
+<div class="methode-card" style="margin-bottom:12px">
+  <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Identifier</strong> le circuit à traiter</div></div>
+  <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Accéder</strong> à l'armoire / tableau électrique</div></div>
+  <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Séparer</strong> la source (ouvrir le disjoncteur / sectionneur)</div></div>
+  <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Condamner</strong> (verrouiller en position ouverte)</div></div>
+  <div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>VAT</strong> — Vérification de l'Absence de Tension</div></div>
+  <div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>MALT</strong> — Mise à la Terre + court-circuit</div></div>
+  <div class="schema-step"><div class="schema-num">7</div><div class="schema-text"><strong>Baliser</strong> et signaler la zone de travail</div></div>
+</div>
+
+<div style="margin-top:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">📐 Confusions classiques à éviter</div>
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">🔴 Confusions acteurs</div>
+    <table class="chiffres-table">
+      <tr><th>Confus</th><th>Réalité</th></tr>
+      <tr><td>MOA décide techniquement</td><td>NON — MOA décide des besoins. MOE décide techniquement.</td></tr>
+      <tr><td>AMOA = décideur</td><td>NON — AMOA conseille. MOA reste le décideur final.</td></tr>
+      <tr><td>Bureau contrôle = public</td><td>NON — entreprise accréditée de droit PRIVÉ.</td></tr>
+      <tr><td>Entrepreneur = MOE</td><td>NON — MOE conçoit, entrepreneur exécute.</td></tr>
+    </table>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">🔴 Confusions techniques</div>
+    <table class="chiffres-table">
+      <tr><th>Erreur fréquente</th><th>Correct</th></tr>
+      <tr><td>Éclairage = 2,5 mm²</td><td>Éclairage = 1,5 mm² / Prises = 2,5 mm²</td></tr>
+      <tr><td>Clim = 1 an</td><td>Clim = 5 ans / Électrique = 1 an</td></tr>
+      <tr><td>GPA = 2 ans</td><td>GPA = 1 an / Biennale = 2 ans</td></tr>
+      <tr><td>Produire froid = créer froid</td><td>Produire froid = DÉPLACER la chaleur</td></tr>
+      <tr><td>Classe I = double isolation</td><td>Classe II = double isolation (pas de terre)</td></tr>
+    </table>
+  </div>
+</div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

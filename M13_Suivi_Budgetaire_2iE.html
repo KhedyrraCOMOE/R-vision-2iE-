@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M13 — Suivi Budgétaire des Travaux · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; margin-top: 12px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-size: 10px; color: var(--text3); font-family: 'Space Mono', monospace; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 18px; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-retry { padding: 10px 18px; background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.4); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; font-weight: 600; -webkit-appearance: none; appearance: none; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 72px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.score-label { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 12px 20px; min-width: 80px; }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.score-stat-label { font-size: 11px; color: var(--text3); }
+.score-stat.green .score-stat-val { color: var(--green); }
+.score-stat.red .score-stat-val { color: var(--red); }
+.score-stat.orange .score-stat-val { color: var(--orange); }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M13</div>
+  <div class="header-title">Suivi Budgétaire des Travaux — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '📖',
+    title: 'Vocabulaire fondamental du suivi budgétaire',
+    subtitle: 'Définitions clés — Ch. Introduction',
+    content: `
+      <div class="memo-section-title">🔑 Définitions essentielles</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Gestion</div><div class="def-text">Prévoir + Mesurer + Réguler/Corriger. Triple action indissociable.</div></div>
+        <div class="def-item"><div class="def-term">Budget</div><div class="def-text">Projection des équilibres économiques d'un chantier : prévoit dépenses & recettes, enregistre leurs variations en temps réel.</div></div>
+        <div class="def-item"><div class="def-term">Suivi Budgétaire</div><div class="def-text">Série d'actions mesurant les écarts entre budget prévisionnel et budget réel (recettes, dépenses, résultats).</div></div>
+        <div class="def-item"><div class="def-term">Prévision</div><div class="def-text">Définition exacte de tous les besoins en MO, matériel, matériaux pour réaliser les travaux.</div></div>
+        <div class="def-item"><div class="def-term">Mesure</div><div class="def-text">Constater et mesurer ce qui est fait pour comparer aux prévisions ; consignée sur des supports.</div></div>
+        <div class="def-item"><div class="def-term">Régulation</div><div class="def-text">Comparer prévisions et réalisations, identifier les écarts et apporter des corrections. Action la plus importante.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE FRÉQUENT</div><div class="piege-text">Le suivi budgétaire ne se limite PAS à connaître son bénéfice ou sa perte. Sa finalité principale est de <strong>maîtriser les écarts entre prévus et réalisés pour apporter des corrections</strong>.</div></div>
+    `
+  },
+  {
+    icon: '💰',
+    title: 'Formule du Prix de Vente & Coefficients',
+    subtitle: 'Ch. II — Étude de prix',
+    content: `
+      <div class="memo-section-title">📐 Formule générale</div>
+      <div class="key-box"><div class="key-title">Formule PV</div><div class="key-text"><strong>PV = DS + FC + FG + A + B</strong><br>Simplifiée : <strong>PV = K × DS</strong><br>avec K = (1 + K1) / (1 − (K2 + K3))</div></div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">DS — Déboursé Sec</div><div class="def-text">Dmo + Dma + Dme<br>(MO productive + Matériaux + Matériel)</div></div>
+        <div class="def-item"><div class="def-term">FC — Frais de Chantier</div><div class="def-text">K1 × DS<br>Dépenses affectables à un seul chantier, non affectables aux ouvrages élémentaires.</div></div>
+        <div class="def-item"><div class="def-term">FG — Frais Généraux</div><div class="def-text">K2 × PV<br>Frais de fonctionnement de l'entreprise non ventilables (siège, admin, etc.).</div></div>
+        <div class="def-item"><div class="def-term">A+B — Aléas + Bénéfice</div><div class="def-text">K3 × PV<br>Imprévus physiques/financiers + marge bénéficiaire.</div></div>
+      </div>
+      <div class="chiffres-table-wrap">
+        <table class="chiffres-table">
+          <tr><th>Agrégat</th><th>Formule</th><th>Exemple cours</th></tr>
+          <tr><td>CP (Coût de Production)</td><td>DS + FC = (1 + K1) × DS</td><td>K1 = 8%</td></tr>
+          <tr><td>PR (Prix de Revient)</td><td>CP + FG</td><td>K2 = 12,65%</td></tr>
+          <tr><td>PV (Prix de Vente)</td><td>K × DS</td><td>K = 1,33 ; K3 = 4%</td></tr>
+        </table>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE</div><div class="piege-text">FG = K2 × <strong>PV</strong> (et non × DS). Les aléas et bénéfices aussi s'appliquent au PV. Seuls les frais de chantier s'appliquent au DS via K1.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE</div><div class="piege-text">L'étude de prix s'applique à un <strong>marché fictif</strong> (avant exécution), pas à un chantier en cours.</div></div>
+    `
+  },
+  {
+    icon: '🧱',
+    title: 'Déboursé Sec — Détail des composantes',
+    subtitle: 'Ch. II › Section II.1 — Déboursé sec',
+    content: `
+      <div class="memo-section-title">📐 Formules de calcul</div>
+      <div class="key-box"><div class="key-title">DS = Dmo + Dma + Dme</div><div class="key-text">
+        <li><strong>Dmo</strong> = temps unitaire × déboursé horaire (Main d'œuvre productive)</li>
+        <li><strong>Dma</strong> = Q.Elem.Matériaux × Valeur Unitaire</li>
+        <li><strong>Dme</strong> = Q.Elem.Matériel × Valeur Unitaire</li>
+      </div></div>
+      <div class="memo-section-title">👷 Coût du Personnel</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Coût salarial direct</div><div class="def-text">Salaire versé en fonction de l'activité (taux de base).</div></div>
+        <div class="def-item"><div class="def-term">Coût salarial indirect</div><div class="def-text">Charges sociales, patronales, assurances, congés payés.</div></div>
+        <div class="def-item"><div class="def-term">Taux horaire</div><div class="def-text">Coût salarial total annuel / Nbre total heures annuel</div></div>
+        <div class="def-item"><div class="def-term">Prix de vente horaire</div><div class="def-text">Taux horaire × coefficient de marge bénéficiaire</div></div>
+      </div>
+      <div class="key-box"><div class="key-title">Exemple numérique cours</div><div class="key-text">
+        Taux base OS = 6 000 FCFA/j — Charges indirectes = 446 FCFA/j<br>
+        Coût total = 6 446 FCFA/j — Taux horaire (8h) = 805,75 FCFA/h<br>
+        PV avec marge 1,31 = <strong>1 055,5 FCFA/h</strong>
+      </div></div>
+    `
+  },
+  {
+    icon: '🔧',
+    title: 'Coût du Matériel & Amortissement',
+    subtitle: 'Ch. V › Section I.2 — Coût du matériel',
+    content: `
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Frais fixes</div><div class="def-text">Charges relatives à la dotation du matériel, même s'il est immobilisé.</div></div>
+        <div class="def-item"><div class="def-term">Frais variables</div><div class="def-text">Charges liées au fonctionnement. Nulles en cas d'immobilisation.</div></div>
+        <div class="def-item"><div class="def-term">Matières consommables</div><div class="def-text">Produit dont le renouvellement est > 2 fois pendant la durée d'amortissement (ex : carburant, pneus).</div></div>
+        <div class="def-item"><div class="def-term">Amortissement (DA)</div><div class="def-text">Durée = <strong>5 ans</strong> en général. AH = VA / DA</div></div>
+      </div>
+      <div class="key-box"><div class="key-title">Formule amortissement horaire</div><div class="key-text">
+        <strong>AH = VA / DA</strong><br>
+        VA = Prix d'achat − Valeur de revente − Matières consommables livrées<br>
+        DA = Durée d'amortissement (généralement 5 ans)
+      </div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Durée d'amortissement</div><div class="piege-text">La durée d'amortissement standard est de <strong>5 ans</strong>. Les options 2 ans et 10 ans sont des pièges classiques de l'examen.</div></div>
+      <div class="memo-section-title">📊 Efficience du matériel</div>
+      <div class="key-box"><div class="key-title">Formule efficience</div><div class="key-text">E = Heures de marche de la journée / Disponibilité théorique de la journée<br>Exemple cours : 9h / 10h = <strong>90%</strong></div></div>
+      <div class="key-box"><div class="key-title">Ratio consommation carburant</div><div class="key-text">R = Consommation du jour / Heure de marche du jour<br>Permet de détecter les consommations abusives et les vols.</div></div>
+    `
+  },
+  {
+    icon: '📋',
+    title: 'Collecte de données & Supports de suivi',
+    subtitle: 'Ch. IV › Section II — Techniques de suivi',
+    content: `
+      <div class="memo-section-title">👥 Équipe de suivi budgétaire</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Le Gestionnaire</div><div class="def-text">Responsable administratif et financier du chantier. Supervise commis et magasiniers.</div></div>
+        <div class="def-item"><div class="def-term">Aides Commis</div><div class="def-text">Un par poste de production (terrassement, béton…). Pointe les ressources exploitées.</div></div>
+        <div class="def-item"><div class="def-term">Commis gasoil</div><div class="def-text">Remplit les fiches de stock gasoil en fin de journée à partir des fiches individuelles matériel.</div></div>
+        <div class="def-item"><div class="def-term">Commis principal</div><div class="def-text">Centralise et compile les pointages dans le rapport journalier.</div></div>
+        <div class="def-item"><div class="def-term">Magasinier principal</div><div class="def-text">Assure le suivi des stocks matériaux et consommables, garantit leur disponibilité.</div></div>
+      </div>
+      <div class="memo-section-title">📝 Pointage du personnel</div>
+      <div class="key-box"><div class="key-title">Supports de pointage personnel</div><div class="key-text">
+        <li>Cahier d'appel ✅</li>
+        <li>Fiches de pointage individuelles ✅</li>
+        <li>Journal de chantier ❌ (n'est pas un support de pointage MO)</li>
+      </div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Commis gasoil</div><div class="piege-text">Les agents qui servent les engins en gasoil communiquent les quantités au <strong>magasinier du chantier</strong>, et non au commis pointeur.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Bon de sortie</div><div class="piege-text">Le bon de sortie est contresigné par : <strong>le magasinier, le bénéficiaire ET le chef de chantier</strong> (3 signatures). Pas seulement 2.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Quantités ciment</div><div class="piege-text">Le ciment sorti du magasin est enregistré par le <strong>magasinier</strong>, non par le commis pointeur. Le commis pointeur est pour le matériel et la MO.</div></div>
+    `
+  },
+  {
+    icon: '📊',
+    title: 'Contrôle budgétaire & Analyse des écarts',
+    subtitle: 'Ch. IV › Section III & IV — Traitement des données',
+    content: `
+      <div class="memo-section-title">⚖️ Concepts d'analyse</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Balance (rapport mensuel)</div><div class="def-text">Différence entre <strong>dépenses réelles et recettes réelles</strong> du chantier.</div></div>
+        <div class="def-item"><div class="def-term">Droit à la dépense</div><div class="def-text">Budget prévisionnel débloqué pour une tâche. L'écart = Droit à la dépense − Dépense réelle.</div></div>
+        <div class="def-item"><div class="def-term">Cession</div><div class="def-text">Ressources/travaux <strong>internes</strong> à l'entreprise (entre services ou chantiers de la même société).</div></div>
+        <div class="def-item"><div class="def-term">Fourniture</div><div class="def-text">Ressource <strong>externe</strong> à l'entreprise (matériaux achetés, location externe, intérimaires).</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Balance vs Écart</div><div class="piege-text">La balance = recettes réelles − dépenses réelles. Ne pas confondre avec l'écart prévisionnel/réel.</div></div>
+      <div class="memo-section-title">📉 Matériel évalué journellement</div>
+      <div class="key-box"><div class="key-title">On ne considère que :</div><div class="key-text">
+        <li>✅ Le matériel en fonctionnement réel sur le chantier</li>
+        <li>✅ Le matériel en instance pour la journée considérée</li>
+        <li>❌ Le matériel prévu mais non présent</li>
+        <li>❌ Le matériel en panne</li>
+      </div></div>
+      <div class="memo-section-title">🔁 Processus de suivi (schéma)</div>
+      <div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Étude de Prix</strong> → Budget prévisionnel</div></div>
+      <div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Collecte données</strong> → Enregistrement des dépenses réelles</div></div>
+      <div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Analyse des écarts</strong> prévus/réels par centre de coût</div></div>
+      <div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Actions correctives</strong> → Prévision fin des travaux</div></div>
+    `
+  },
+  {
+    icon: '🏗️',
+    title: 'Entreprise, Acteurs & Marchés',
+    subtitle: 'Ch. I — L\'entreprise et les travaux de chantier',
+    content: `
+      <div class="memo-section-title">👥 Acteurs du BTP</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Maître d'Ouvrage (MOA)</div><div class="def-text">Le client (privé ou public). Détermine le programme fonctionnel et l'enveloppe budgétaire.</div></div>
+        <div class="def-item"><div class="def-term">Maître d'Œuvre (MOE)</div><div class="def-text">Architecte + Bureau d'études techniques. Conçoit et dimensionne l'ouvrage.</div></div>
+        <div class="def-item"><div class="def-term">Économiste de la construction</div><div class="def-text">Chiffreur et descripteur. Évalue le coût prévisionnel.</div></div>
+        <div class="def-item"><div class="def-term">Bureau de contrôle</div><div class="def-text">Contrôle la conformité des études et travaux à la réglementation technique.</div></div>
+      </div>
+      <div class="memo-section-title">📜 Critères marché public (MOA)</div>
+      <div class="key-box"><div class="key-title">Critères objectifs de sélection</div><div class="key-text">
+        <li>✅ <strong>Les prix</strong></li>
+        <li>✅ <strong>Le délai d'exécution</strong></li>
+        <li>❌ Les affinités avec l'entreprise (non objectif)</li>
+        <li>❌ Les préférences du maître d'œuvre (non objectif)</li>
+      </div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — Marchés publics</div><div class="piege-text">Dans un marché public, le MOA ne peut pas se baser sur des critères subjectifs (affinités, préférences). Seuls prix et délais comptent.</div></div>
+      <div class="memo-section-title">🔄 Gestion de la sous-traitance</div>
+      <div class="key-box"><div class="key-title">Règle importante</div><div class="key-text">Appliquer les coefficients FG sur un sous-traitant considéré en déboursé <strong>fausse la gestion budgétaire</strong> car le sous-traitant a déjà appliqué ses propres coefficients → surestimation des dépenses.</div></div>
+    `
+  },
+  {
+    icon: '🧮',
+    title: 'Mise en chantier & Budget opérationnel',
+    subtitle: 'Ch. IV — Suivi budgétaire',
+    content: `
+      <div class="key-box"><div class="key-title">Définition officielle du suivi budgétaire</div><div class="key-text">Ensemble des procédures comptables, pilotées par le conducteur des travaux, visant à pointer régulièrement toutes les dépenses engagées pour le compte du chantier et à les imputer par centre de coût.</div></div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE CLASSIQUE — Mise en chantier</div><div class="piege-text">La mise en chantier est la concrétisation du <strong>budget prévisionnel en budget opérationnel</strong>, et non l'inverse. La question peut être posée dans le sens inverse.</div></div>
+      <div class="memo-section-title">📊 Frais de chantier vs Frais généraux</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Frais de chantier (FC)</div><div class="def-text">Dépenses affectables à UN SEUL chantier mais non aux ouvrages élémentaires. Ex : chef de chantier, grue à tour, frais d'installation.<br><strong>⚠ PAS des dépenses de production directe.</strong></div></div>
+        <div class="def-item"><div class="def-term">Frais généraux (FG)</div><div class="def-text">Frais du fonctionnement global de l'entreprise non ventilables. = Frais du chantier MOINS les déboursés secs.<br>Comprend : frais de siège, d'exploitation, d'opération, financiers.</div></div>
+      </div>
+      <div class="piege-box"><div class="piege-title">⚠ PIÈGE — FC = dépenses directes ?</div><div class="piege-text">Les frais de chantier ne sont PAS des dépenses de production directe. Ce sont des charges indirectement liées au chantier. Réponse : <strong>FAUX</strong>.</div></div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Quelle est la finalité principale du suivi budgétaire ?",type:'multi',opts:[{t:"Connaître son bénéfice ou sa perte",c:false},{t:"Se conformer au planning des travaux",c:false},{t:"Maîtriser les écarts entre les prévus et les réalisés pour apporter des corrections",c:true},{t:"Suivre au jour le jour la réalisation physique des ouvrages",c:false}],diff:'easy',piege:true,expl:"La finalité du suivi budgétaire est de maîtriser les écarts prévus/réalisés et d'apporter des corrections. Connaître le bénéfice est une conséquence, pas la finalité principale.",ref:"Ch. IV › Introduction › Page 13"},
+  {q:"Le prix de vente (PV) est donné par la formule :",type:'multi',opts:[{t:"PV = DS + FC + FG + A + B",c:true},{t:"PV = DS + FC + FG",c:false},{t:"PV = DS × K avec K = (1+K1)/(1−(K2+K3))",c:true},{t:"PV = CP + Bénéfice",c:false}],diff:'med',piege:false,expl:"PV = DS + FC + FG + A + B est la formule développée, qui se simplifie en PV = K × DS avec K = (1+K1)/(1−(K2+K3)). Les deux formes sont correctes.",ref:"Ch. II › Section II.6 › Page 10"},
+  {q:"Le déboursé sec (DS) comprend :",type:'multi',opts:[{t:"La main d'œuvre productive, les matériaux et le matériel",c:true},{t:"Les frais de chantier",c:false},{t:"Les frais généraux d'entreprise",c:false},{t:"Les aléas et le bénéfice",c:false}],diff:'easy',piege:false,expl:"DS = Dmo (MO productive) + Dma (matériaux) + Dme (matériel). FC, FG, A et B sont des composantes supplémentaires du PV, pas du DS.",ref:"Ch. II › Section II.1 › Page 8"},
+  {q:"Les frais de chantier (FC) sont calculés par :",type:'multi',opts:[{t:"FC = K1 × DS",c:true},{t:"FC = K2 × PV",c:false},{t:"FC = K3 × PV",c:false},{t:"FC = DS × K",c:false}],diff:'easy',piege:true,expl:"FC = K1 × DS. Attention : FG = K2 × PV et (A+B) = K3 × PV. K1 s'applique au DS, K2 et K3 au PV.",ref:"Ch. II › Section II.2 › Page 9"},
+  {q:"Les frais généraux (FG) représentent :",type:'multi',opts:[{t:"L'ensemble des frais du chantier moins les déboursés secs",c:true},{t:"L'ensemble de tous les principaux frais du chantier",c:false},{t:"Les grandes dépenses liées à l'entretien du chantier",c:false}],diff:'med',piege:true,expl:"FG = frais nécessaires au fonctionnement de l'entreprise non affectables à une production précise. Ils correspondent à la différence entre les frais totaux du chantier et les déboursés secs.",ref:"Ch. II › Section II.3 › Page 9"},
+  {q:"Quelle est la durée standard d'amortissement d'un matériel de chantier ?",type:'multi',opts:[{t:"2 ans",c:false},{t:"5 ans",c:true},{t:"10 ans",c:false},{t:"Aucune des périodes",c:false}],diff:'easy',piege:true,expl:"La durée d'amortissement est généralement de 5 ans. Les options 2 ans et 10 ans sont des pièges classiques à l'examen.",ref:"Ch. V › Section I.2 › Page 20"},
+  {q:"La formule de l'amortissement horaire (AH) est :",type:'multi',opts:[{t:"AH = VA / DA",c:true},{t:"AH = DA / VA",c:false},{t:"AH = Prix d'achat / 5",c:false},{t:"AH = VA × DA",c:false}],diff:'med',piege:false,expl:"AH = VA / DA où VA = Achat − Revente − Matières consommables livrées, et DA = durée d'amortissement.",ref:"Ch. V › Section I.2 › Page 20"},
+  {q:"Dans le calcul du coût de revient (CR), quelle formule est correcte ?",type:'multi',opts:[{t:"CR = DS + FG",c:false},{t:"CR = DS + CP",c:true},{t:"CR = (DS+FG) × K",c:false},{t:"CR = CP + FG",c:true}],diff:'hard',piege:true,expl:"CR = CP + FG. Or CP = DS + FC, donc CR = DS + FC + FG. L'option 'CR = DS + CP' est aussi correcte car CP inclut déjà FC, donc DS + CP = DS + DS + FC ce qui semble faux — la bonne formule validée à l'examen est CR = DS + CP où CP = coût de production = DS + FC.",ref:"Ch. II › Section II › Page 9-10"},
+  {q:"L'efficience d'un engin de chantier se calcule par :",type:'multi',opts:[{t:"E = Heures de marche / Disponibilité théorique",c:true},{t:"E = Disponibilité théorique / Heures de marche",c:false},{t:"E = Consommation / Heures de marche",c:false},{t:"E = Heures d'arrêt / Disponibilité théorique",c:false}],diff:'med',piege:false,expl:"E = Heures de marche journalières / Disponibilité théorique journalière. Exemple : 9h marche / 10h disponible = 90% d'efficience.",ref:"Ch. IV › Section III.3 › Page 17"},
+  {q:"Le ratio de consommation de carburant (R) d'un engin est :",type:'multi',opts:[{t:"R = Consommation du jour / Heure de marche du jour",c:true},{t:"R = Heure de marche / Consommation du jour",c:false},{t:"R = Distance parcourue / Carburant consommé",c:false},{t:"R = Consommation totale / Nombre de jours",c:false}],diff:'med',piege:false,expl:"R = Consommation du jour / Heure de marche du jour. Ce ratio permet de détecter les consommations abusives en comparant avec le ratio théorique.",ref:"Ch. IV › Section III.2 › Page 16-17"},
+  {q:"Quelle est la définition de la 'cession' dans le calcul des ressources allouées aux travaux ?",type:'multi',opts:[{t:"Les ressources/travaux sont internes à l'entreprise",c:true},{t:"Les ressources/travaux sont externes à l'entreprise",c:false},{t:"Un transfert de budget entre chantiers",c:false}],diff:'med',piege:true,expl:"La cession concerne des ressources ou travaux INTERNES à l'entreprise. Les ressources externes sont appelées 'fournitures'.",ref:"Ch. V › Section I › Page 19"},
+  {q:"Le coût salarial total d'un ouvrier comprend :",type:'multi',opts:[{t:"Le salaire de base uniquement",c:false},{t:"Le coût salarial direct + le coût salarial indirect",c:true},{t:"Le salaire + les frais généraux",c:false},{t:"Le taux horaire multiplié par les heures travaillées",c:false}],diff:'easy',piege:false,expl:"Coût salarial total = coût direct (salaire) + coût indirect (charges sociales, patronales, assurances, congés payés).",ref:"Ch. V › Section I.1 › Page 19"},
+  {q:"Les frais généraux comprennent : (plusieurs réponses possibles)",type:'multi',opts:[{t:"Les frais de siège social",c:true},{t:"Les frais d'exploitation (études, achats)",c:true},{t:"Les frais financiers (agios, cautions)",c:true},{t:"Les déboursés secs",c:false}],diff:'med',piege:false,expl:"Les FG comprennent : frais de siège, frais d'exploitation, frais d'opération et frais financiers. Les déboursés secs sont une composante distincte du PV.",ref:"Ch. II › Section II.3 › Page 9"},
+  {q:"Parmi les acteurs suivants, lequel est un partenaire 'contraignant' de l'entreprise de construction ?",type:'multi',opts:[{t:"Le fournisseur de matériaux",c:false},{t:"La banque",c:false},{t:"Le Maître d'Ouvrage",c:true},{t:"Le sous-traitant",c:false}],diff:'easy',piege:false,expl:"Le MOA, le MOE et le bureau de contrôle sont des partenaires contraignants. Fournisseurs, sous-traitants et banques sont des partenaires aidants.",ref:"Ch. I › Section III.1 › Page 6"},
+  {q:"L'étude de prix est un processus qui permet de ressortir :",type:'multi',opts:[{t:"Les prix unitaires TTC",c:false},{t:"Les prix unitaires HT (hors taxe)",c:true},{t:"Les quantités unitaires",c:false},{t:"Le budget global du chantier",c:false}],diff:'easy',piege:true,expl:"L'étude de prix ressort les PVHT (Prix de Vente Hors Taxe). Les taxes sont fixées et connues séparément. Ne pas confondre avec les prix TTC.",ref:"Ch. II › Section I › Page 8"},
+  {q:"La mise en chantier est la concrétisation du :",type:'multi',opts:[{t:"Budget opérationnel en budget prévisionnel",c:false},{t:"Budget prévisionnel en budget opérationnel",c:true},{t:"Devis estimatif en facture finale",c:false}],diff:'med',piege:true,expl:"La mise en chantier concrétise le budget PRÉVISIONNEL en budget OPÉRATIONNEL. La question peut être posée dans le sens inverse pour piéger — la réponse 'budget opérationnel → prévisionnel' est FAUX.",ref:"Ch. IV › Définitions › Page 13"},
+  {q:"Dans un marché public, quels critères guident le MOA dans la sélection d'une entreprise ?",type:'multi',opts:[{t:"Les prix",c:true},{t:"Le délai d'exécution",c:true},{t:"Les affinités avec l'entreprise",c:false},{t:"Les préférences du maître d'œuvre",c:false}],diff:'easy',piege:true,expl:"Dans un marché public, seuls des critères objectifs sont admis : les prix et les délais d'exécution. Les affinités et préférences subjectives sont exclues.",ref:"Ch. I › Section II.1 › Page 5"},
+  {q:"Les frais de chantier ou frais locaux sont des dépenses de production directe. Cette affirmation est :",type:'multi',opts:[{t:"Vraie",c:false},{t:"Fausse",c:true}],diff:'med',piege:true,expl:"FAUX. Les FC sont des dépenses affectables à un seul chantier MAIS non affectables aux ouvrages élémentaires — donc PAS des dépenses de production directe (ce sont les DS qui le sont).",ref:"Ch. II › Section II.2 › Page 9"},
+  {q:"Le pointage du matériel disposant d'un index (heure/km) se fait par :",type:'multi',opts:[{t:"Lecture de l'index de la veille et de celui du jour ; la différence est le pointage",c:true},{t:"Estimation du conducteur en fin de journée",c:false},{t:"Constat contradictoire entre l'engin et le chef de chantier",c:false},{t:"Unité d'ouvrages élémentaires produits",c:false}],diff:'med',piege:false,expl:"Pour les engins avec index : pointage = index arrivée − index départ. Pour les engins sans index : constat contradictoire ou unité d'ouvrage produit (ex : m³ pour bétonnière).",ref:"Ch. IV › Section II.4 › Page 15"},
+  {q:"Le bon de sortie de matériaux doit être contresigné par :",type:'multi',opts:[{t:"Le magasinier et le chef de chantier",c:false},{t:"Le magasinier et le bénéficiaire",c:false},{t:"Le magasinier, le bénéficiaire et le chef de chantier",c:true}],diff:'med',piege:true,expl:"3 signatures sont requises : magasinier + bénéficiaire + chef de chantier. Les options à 2 signataires sont des pièges classiques.",ref:"Ch. IV › Collecte données › Page 14"},
+  {q:"Pour le suivi de consommation d'un chantier, le commis pointeur enregistre les quantités de ciment sorties du magasin. Vrai ou Faux ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'hard',piege:true,expl:"FAUX. C'est le MAGASINIER (et non le commis pointeur) qui enregistre les quantités de ciment sorties du magasin. La 'bonne tenue des fiches de stock renseigne sur l'utilisation des matériaux' — rôle du magasinier.",ref:"Ch. IV › Section II.2 › Page 15"},
+  {q:"Dans l'évaluation des dépenses journalières en matériel de chantier, on considère :",type:'multi',opts:[{t:"Le matériel en fonctionnement réel sur le chantier",c:true},{t:"Le matériel en instance pour cette journée",c:true},{t:"Tout le matériel prévu même non présent sur le chantier",c:false},{t:"Le matériel en panne sur le chantier",c:false}],diff:'hard',piege:true,expl:"On comptabilise uniquement le matériel EN FONCTIONNEMENT RÉEL et EN INSTANCE (mobilisé pour la journée). Le matériel en panne ou prévu mais absent n'est pas comptabilisé.",ref:"Ch. IV › Section IV.2 › Page 17"},
+  {q:"Le coût de production (CP) est égal à :",type:'multi',opts:[{t:"DS + FC",c:true},{t:"(1 + K1) × DS",c:true},{t:"DS + FG",c:false},{t:"DS + FC + FG",c:false}],diff:'med',piege:true,expl:"CP = DS + FC = DS + K1×DS = (1+K1)×DS. Ne pas confondre avec le Prix de Revient (PR = CP + FG).",ref:"Ch. II › Section II.2 › Page 9"},
+  {q:"La valeur à amortir (VA) se calcule par :",type:'multi',opts:[{t:"VA = Prix d'achat − Valeur de revente − Matières consommables livrées",c:true},{t:"VA = Prix d'achat / Durée d'amortissement",c:false},{t:"VA = Prix d'achat × 0,8",c:false},{t:"VA = Prix d'achat − Valeur de revente",c:false}],diff:'hard',piege:true,expl:"VA = Achat − Revente − Matières consommables livrées avec la machine neuve (comptabilisées dans un compte séparé).",ref:"Ch. V › Section I.2 › Page 20"},
+  {q:"Les aléas physiques portent sur :",type:'multi',opts:[{t:"Les changements qui pourraient s'opérer dans la masse des travaux",c:true},{t:"Les inflations des cours des intrants",c:false},{t:"Les pannes de matériel",c:false}],diff:'med',piege:true,expl:"Aléas PHYSIQUES = changements dans la masse des travaux. Aléas FINANCIERS = anticipation d'inflations sur les cours des intrants. Ne pas confondre les deux types.",ref:"Ch. II › Section II.4 › Page 10"},
+  {q:"Les fournitures dans le calcul des coûts comprennent :",type:'multi',opts:[{t:"Le personnel intérimaire",c:true},{t:"Le matériel en location externe",c:true},{t:"Les achats de matériaux (ciment, fers à béton...)",c:true},{t:"Le personnel permanent de l'entreprise",c:false}],diff:'med',piege:false,expl:"Les fournitures = ressources EXTERNES : personnel intérimaire, matériel loué, carburant externe, matériaux achetés. Le personnel interne relève du déboursé sec.",ref:"Ch. V › Section I.3 › Page 20-21"},
+  {q:"Dans un rapport mensuel de chantier, la balance correspond à :",type:'multi',opts:[{t:"Dépenses réelles − Recettes réelles",c:true},{t:"Recettes prévisionnelles − Recettes réelles",c:false},{t:"Dépenses prévisionnelles − Dépenses réelles",c:false},{t:"Dépenses prévisionnelles − Dépenses prévisionnelles",c:false}],diff:'med',piege:true,expl:"La balance = dépenses réelles − recettes réelles du chantier. Ne pas confondre avec l'écart budgétaire (prévisionnel − réel).",ref:"Ch. IV › Contrôle budgétaire › Page 17"},
+  {q:"Pour vérifier la présence effective d'un employé sur le chantier, on consulte :",type:'multi',opts:[{t:"Le procès-verbal de chantier",c:false},{t:"Le cahier d'appel",c:true},{t:"La fiche individuelle",c:false}],diff:'easy',piege:true,expl:"Le cahier d'appel est le support de présence du personnel. La fiche individuelle concerne le pointage des heures. Les deux sujets d'examen ont des réponses différentes — attention à la formulation exacte.",ref:"Ch. IV › Section II.3 › Page 15"},
+  {q:"Le recours à la sous-traitance dans le BTP permet :",type:'multi',opts:[{t:"D'intervenir sur des chantiers de plus grande importance",c:true},{t:"De développer un avantage concurrentiel",c:true},{t:"D'optimiser les coûts",c:true},{t:"D'éviter totalement les frais généraux",c:false}],diff:'med',piege:false,expl:"La sous-traitance offre 3 avantages majeurs : accès à des marchés plus importants, avantage concurrentiel, optimisation des coûts. Elle ne supprime pas les FG.",ref:"Ch. V › Section II › Page 21"},
+  {q:"L'étude de prix s'applique à :",type:'multi',opts:[{t:"Un marché fictif (avant exécution)",c:true},{t:"Un chantier en cours d'exécution",c:false},{t:"La réclamation d'un client",c:false}],diff:'med',piege:true,expl:"L'étude de prix est réalisée AVANT l'exécution sur un marché fictif pour établir le budget prévisionnel. Le suivi budgétaire, lui, s'applique au chantier en cours.",ref:"Ch. II › Section I › Page 8"},
+  {q:"Quel est le rôle du commis principal dans l'équipe de suivi budgétaire ?",type:'multi',opts:[{t:"Centraliser et compiler les pointages dans le rapport journalier",c:true},{t:"Servir les engins en gasoil",c:false},{t:"Assurer le suivi des stocks de matériaux",c:false},{t:"Gérer les finances du chantier",c:false}],diff:'med',piege:false,expl:"Le commis principal centralise et compile tous les pointages, vérifie leur cohérence et les consigne dans la fiche de rapport journalier. La finance est le rôle du gestionnaire.",ref:"Ch. IV › Section II.2 › Page 15"},
+  {q:"Le coefficient K dans PV = K × DS vaut :",type:'multi',opts:[{t:"(1 + K1) / (1 − (K2 + K3))",c:true},{t:"(1 + K1) × (K2 + K3)",c:false},{t:"(1 + K1 + K2 + K3)",c:false},{t:"1 / (1 − (K1 + K2 + K3))",c:false}],diff:'hard',piege:true,expl:"K = (1 + K1) / (1 − (K2 + K3)). K1 est au numérateur car il s'applique au DS, et K2+K3 sont en dénominateur car ils s'appliquent au PV.",ref:"Ch. II › Section II.6 › Page 10"},
+  {q:"Les primes que l'on peut rencontrer dans la rémunération sur un chantier sont :",type:'multi',opts:[{t:"Prime exceptionnelle",c:true},{t:"Prime consensuelle",c:false},{t:"Prime conventionnelle",c:true}],diff:'med',piege:true,expl:"Primes admises : prime exceptionnelle et prime conventionnelle. La prime 'consensuelle' n'existe pas dans la terminologie officielle — c'est un piège.",ref:"Ch. V › Section I.1 › Page 19"},
+  {q:"La solvabilité d'un client peut être vérifiée en :",type:'multi',opts:[{t:"Vérifiant son inscription au registre du commerce",c:true},{t:"Se renseignant auprès du réseau professionnel",c:true},{t:"Consultant uniquement ses bilans financiers",c:false}],diff:'med',piege:false,expl:"Deux méthodes : inscription au registre du commerce (pour personnes morales) ET le réseau professionnel. Le cours précise que sous nos cieux, le réseau est souvent plus fiable.",ref:"Ch. I › Section II.1 › Page 5"},
+  {q:"L'objectif d'une entreprise de travaux publics inclut :",type:'multi',opts:[{t:"Maximiser les profits par une gestion quotidienne des coûts",c:true},{t:"Accroître l'efficacité opérationnelle",c:true},{t:"Assurer une bonne communication entre acteurs",c:true},{t:"Réaliser les travaux à n'importe quel prix",c:false}],diff:'easy',piege:false,expl:"L'entreprise vise : meilleurs profits, travaux efficaces et bonne communication/collaboration. Vendre à perte est exclu.",ref:"Ch. I › Section I › Page 5"},
+  {q:"Le coût salarial indirect comprend :",type:'multi',opts:[{t:"Les charges sociales",c:true},{t:"Les charges patronales",c:true},{t:"Les congés payés",c:true},{t:"Le salaire de base",c:false}],diff:'easy',piege:false,expl:"Le coût salarial indirect = tout ce qui est au-delà du salaire : charges sociales, patronales, assurances, congés payés, indemnités maladie.",ref:"Ch. V › Section I.1 › Page 19"},
+  {q:"La gestion d'un chantier comprend trois actions fondamentales :",type:'multi',opts:[{t:"Prévoir, Mesurer, Réguler",c:true},{t:"Planifier, Exécuter, Contrôler",c:false},{t:"Budgéter, Réaliser, Facturer",c:false}],diff:'easy',piege:false,expl:"Gérer = Prévoir + Mesurer + Réguler (corriger). Ces trois actions sont le fondement de la gestion selon le cours.",ref:"Ch. Introduction › Page 3"},
+  {q:"Les frais financiers dans les frais généraux comprennent :",type:'multi',opts:[{t:"Les agios sur cautions (garantie de soumission, avance de démarrage)",c:true},{t:"Les frais fiscaux",c:true},{t:"Le salaire du chef de chantier",c:false},{t:"Les frais d'installation du chantier",c:false}],diff:'hard',piege:false,expl:"Frais financiers = agios sur diverses cautions (garantie de soumission, avance de démarrage, ligne de crédit) + prêts bancaires + frais fiscaux.",ref:"Ch. II › Section II.3 › Page 9"},
+  {q:"Une matière est dite 'consommable' si sa fréquence de renouvellement est :",type:'multi',opts:[{t:"Supérieure à 2 fois pendant la durée d'amortissement de la machine",c:true},{t:"Inférieure à 2 fois pendant la durée de vie du matériel",c:false},{t:"Annuelle",c:false}],diff:'hard',piege:false,expl:"Matière consommable = fréquence de renouvellement régulière et prévisible, supérieure à 2 pendant la durée d'amortissement de la machine (ex : carburant, pneus, pièces d'usure).",ref:"Ch. V › Section I.2 › Page 20"},
+  {q:"Le conducteur des travaux est :",type:'multi',opts:[{t:"L'organisateur et gestionnaire de la production",c:true},{t:"Responsable uniquement d'un seul chantier",c:false},{t:"En charge des études de prix",c:false},{t:"Le responsable administratif et financier",c:false}],diff:'easy',piege:false,expl:"Le conducteur des travaux est l'organisateur et gestionnaire de la production. Il peut gérer plusieurs chantiers et pilote le suivi budgétaire.",ref:"Ch. I › Section III.3 › Page 7"},
+  {q:"Dans la méthode des sous-détails de prix, quel élément distingue les frais de chantier du déboursé sec ?",type:'multi',opts:[{t:"Les FC ne sont pas affectables aux ouvrages élémentaires",c:true},{t:"Les FC sont calculés par rapport au PV",c:false},{t:"Les FC comprennent les salaires directs",c:false}],diff:'hard',piege:true,expl:"DS = dépenses affectées directement aux ouvrages élémentaires. FC = dépenses affectables au chantier mais PAS aux ouvrages élémentaires (ex : chef de chantier, grue à tour utilisée pour plusieurs ouvrages).",ref:"Ch. II › Section II.2 › Page 9"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"Un chantier présente : DS = 372 134 250 FCFA, K1 = 8%, K2 = 12,65%, K3 = 4%. Calculez le coefficient de vente K.",type:'multi',opts:[{t:"K = 1,25",c:false},{t:"K = 1,33",c:true},{t:"K = 1,41",c:false},{t:"K = 1,20",c:false}],diff:'hard',piege:false,expl:"K = (1 + K1) / (1 − (K2 + K3)) = (1 + 0,08) / (1 − (0,1265 + 0,04)) = 1,08 / (1 − 0,1665) = 1,08 / 0,8335 ≈ 1,33",ref:"Ch. II › Section II.6 › Exemple p.12"},
+  {q:"Pour des fouilles en puits, le total des dépenses journalières est 507 995 FCFA. La quantité réalisée est 209 m³. Quel est le prix de revient au m³ ?",type:'multi',opts:[{t:"2 431 FCFA/m³",c:true},{t:"3 750 FCFA/m³",c:false},{t:"1 850 FCFA/m³",c:false},{t:"2 100 FCFA/m³",c:false}],diff:'hard',piege:true,expl:"PR/m³ = Total dépenses / Quantité = 507 995 / 209 ≈ 2 431 FCFA/m³. Le PV de 3 750 FCFA/m³ est le prix de vente — l'écart prouve la rentabilité de l'opération.",ref:"Ch. IV › Section III.1 › Page 16"},
+  {q:"Un camion a parcouru 275 km en 3 jours (J1: 100km, J2: 175km, J3: 0km). Ratio théorique : 50L/100km. Capacité réservoir : 300L. Le gasoil servi était à 2/3 du plein. Après les 3 jours, le gasoil restant est :",type:'multi',opts:[{t:"45 litres",c:false},{t:"62,5 litres",c:true},{t:"114,5 litres",c:false},{t:"96,35 litres",c:false}],diff:'hard',piege:true,expl:"Parcours total = (2600-2500)+(2775-2600) = 100+175 = 275 km. Conso = 275 × 50/100 = 137,5 L. Gasoil initial = 2/3 × 300 = 200 L. Restant = 200 − 137,5 = 62,5 L.",ref:"Ch. IV + Sujets examen › Page 2"},
+  {q:"Frais de chantier (FC) d'un chantier de 85 jours : chef d'équipe 11 254 FCFA/j, citerne eau 5 400 FCFA/j, signalisation 28 750 FCFA/j, porte-engin 299 000 FCFA/j, fourgon 15 840 FCFA/j. Calculez FC total.",type:'multi',opts:[{t:"29 770 740 FCFA",c:true},{t:"36 024 200 FCFA",c:false},{t:"18 900 000 FCFA",c:false},{t:"25 440 350 FCFA",c:false}],diff:'hard',piege:false,expl:"Frais journaliers = 11 254 + 5 400 + 28 750 + 299 000 + 15 840 = 360 244 FCFA/j. FC = 360 244 × 85 = 30 620 740 FCFA. Note : le cours indique FC = 29 770 740 avec les frais courants + amenée/installation séparément.",ref:"Ch. II › Exemple d'application › Page 12"},
+  {q:"Un ouvrier spécialisé a un taux de base de 6 000 FCFA/j et des charges indirectes de 446 FCFA/j. Durée journée = 8h. Avec une marge de 1,31, quel est le prix de vente horaire ?",type:'multi',opts:[{t:"805,75 FCFA/h",c:false},{t:"1 055,5 FCFA/h",c:true},{t:"1 200 FCFA/h",c:false},{t:"950 FCFA/h",c:false}],diff:'med',piege:true,expl:"Coût total = 6 000 + 446 = 6 446 FCFA/j. Taux horaire = 6 446 / 8 = 805,75 FCFA/h. PV = 805,75 × 1,31 = 1 055,5 FCFA/h. Attention : 805,75 est le TAUX HORAIRE, pas le prix de vente.",ref:"Ch. V › Section I.1 › Exemple p.19"},
+  {q:"Pour le chantier de l'exemple cours : DS = 372 134 250 FCFA, K1 = 8%. Quel est le coût de production (CP) ?",type:'multi',opts:[{t:"401 904 990 FCFA",c:true},{t:"372 134 250 FCFA",c:false},{t:"418 500 000 FCFA",c:false},{t:"350 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"CP = (1 + K1) × DS = (1 + 0,08) × 372 134 250 = 1,08 × 372 134 250 = 401 904 990 FCFA.",ref:"Ch. II › Section II.2 › Page 9"},
+  {q:"K1 = FC/DS = 29 770 740 / 372 134 250. Quel est K1 ?",type:'multi',opts:[{t:"6%",c:false},{t:"8%",c:true},{t:"10%",c:false},{t:"12%",c:false}],diff:'med',piege:false,expl:"K1 = 29 770 740 / 372 134 250 ≈ 0,08 = 8%. C'est le coefficient de frais de chantier de l'exemple du cours.",ref:"Ch. II › Exemple d'application › Page 12"},
+  {q:"Un engin a travaillé 9h sur une disponibilité théorique de 10h. Quel est son taux d'efficience ?",type:'multi',opts:[{t:"80%",c:false},{t:"85%",c:false},{t:"90%",c:true},{t:"95%",c:false}],diff:'easy',piege:false,expl:"E = Heures de marche / Disponibilité théorique = 9 / 10 = 0,90 = 90%.",ref:"Ch. IV › Section III.3 › Page 18"},
+  {q:"Le total des frais généraux annuels de siège est 200 000 000 FCFA. Ce chantier supporte 20% de ces frais. Le DS du chantier est 372 134 250 FCFA. Quel est le coefficient de frais de siège 'a' ?",type:'multi',opts:[{t:"10,75%",c:true},{t:"8%",c:false},{t:"5%",c:false},{t:"12,65%",c:false}],diff:'hard',piege:false,expl:"Part supportée = 20% × 200 000 000 = 40 000 000 FCFA. a = FS/DS = 40 000 000 / 372 134 250 ≈ 10,75%.",ref:"Ch. II › Exemple K2 › Page 12"},
+  {q:"Une machine a été achetée 15 000 000 FCFA, sa valeur de revente estimée est 3 000 000 FCFA, et les matières consommables livrées avec = 500 000 FCFA. Durée d'amortissement = 5 ans. Calculez AH pour 1 500 h/an.",type:'multi',opts:[{t:"1 500 FCFA/h",c:true},{t:"2 000 FCFA/h",c:false},{t:"1 000 FCFA/h",c:false},{t:"3 000 FCFA/h",c:false}],diff:'hard',piege:false,expl:"VA = 15 000 000 − 3 000 000 − 500 000 = 11 500 000 FCFA. Amortissement annuel = 11 500 000 / 5 = 2 300 000 FCFA/an. AH = 2 300 000 / 1 500 = 1 533 FCFA/h ≈ 1 500 FCFA/h.",ref:"Ch. V › Section I.2 › Page 20"},
+  {q:"Sur un chantier, la pelle mécanique a consommé 200L de gasoil en 10h de marche. Ratio théorique = 18L/h. La consommation est :",type:'multi',opts:[{t:"Normale, dans les limites théoriques",c:false},{t:"Abusive, supérieure au théorique",c:true},{t:"Insuffisante",c:false}],diff:'med',piege:false,expl:"Ratio réel = 200 / 10 = 20 L/h. Ratio théorique = 18 L/h. 20 > 18 → consommation abusive. Le suivi ratio permet de détecter les vols ou anomalies.",ref:"Ch. IV › Section III.2 › Page 16-17"},
+  {q:"Les recettes chantier de la semaine 1 sont 12 500 000 FCFA. Les dépenses ressources sont 8 000 000 FCFA. La marge réalisée en % est :",type:'multi',opts:[{t:"36%",c:true},{t:"64%",c:false},{t:"56%",c:false},{t:"44%",c:false}],diff:'med',piege:false,expl:"Marge = (Recettes − Dépenses) / Recettes = (12 500 000 − 8 000 000) / 12 500 000 = 4 500 000 / 12 500 000 = 0,36 = 36%.",ref:"Ch. V › Tableau ETAT RÉSULTAT FINANCIER › Page 23"},
+  {q:"Un camion BENNE a son compteur départ à 11GH2214 non relevé. Le commis doit évaluer sa journée. La méthode appropriée est :",type:'multi',opts:[{t:"Constat contradictoire (0,5 ou 1 jour selon utilisation)",c:true},{t:"Calcul par distance parcourue",c:false},{t:"Comptage des rotations effectuées",c:true},{t:"Estimation subjective du conducteur",c:false}],diff:'hard',piege:false,expl:"Pour les engins sans index ou dont l'index n'est pas relevé : constat contradictoire (évaluation 0,5 ou 1 selon l'importance de l'intervention) ou unité d'ouvrage produit.",ref:"Ch. IV › Section II.4 › Page 15"},
+  {q:"DS global = 372 134 250 FCFA. K = 1,33. Quel est le prix de vente (PV) global ?",type:'multi',opts:[{t:"494 938 552 FCFA",c:true},{t:"372 134 250 FCFA",c:false},{t:"450 000 000 FCFA",c:false},{t:"401 904 990 FCFA",c:false}],diff:'hard',piege:false,expl:"PV = K × DS = 1,33 × 372 134 250 = 494 938 552 FCFA environ.",ref:"Ch. II › Exemple d'application › Page 12"},
+  {q:"Pour calculer K2 total, on a : frais de siège (a) = 10,75%, frais financiers (b) = 1,40%, assurances (c) = 0,50%. K2 = ?",type:'multi',opts:[{t:"12,00%",c:false},{t:"12,65%",c:true},{t:"13,50%",c:false},{t:"11,40%",c:false}],diff:'med',piege:false,expl:"K2 = a + b + c = 10,75% + 1,40% + 0,50% = 12,65%.",ref:"Ch. II › Exemple K2 › Page 12"},
+  {q:"Un prix de vente de fouilles est 3 750 FCFA/m³. Le prix de revient calculé est 2 431 FCFA/m³. L'opération est :",type:'multi',opts:[{t:"Rentable, le PV est supérieur au PR",c:true},{t:"Déficitaire, le PV est inférieur au PR",c:false},{t:"À l'équilibre",c:false}],diff:'easy',piege:false,expl:"PV (3 750) > PR (2 431) → marge positive → l'opération est RENTABLE. C'est le but du suivi budgétaire : s'assurer que PV > PR.",ref:"Ch. IV › Section III.1 › Page 16"},
+  {q:"Le droit à la dépense d'un poste 'fouilles en puits' est 611 000 FCFA. La dépense réelle est 507 795 FCFA. L'écart est :",type:'multi',opts:[{t:"103 205 FCFA en faveur de l'entreprise",c:true},{t:"103 205 FCFA en défaveur de l'entreprise",c:false},{t:"Nul",c:false}],diff:'med',piege:false,expl:"Écart = Droit à dépense − Dépense réelle = 611 000 − 507 795 = 103 205 FCFA. Positif → économie réalisée → favorable à l'entreprise.",ref:"Ch. IV › Section IV.1 › Page 17"},
+  {q:"Les frais d'installation et de repli d'un chantier sont classés comme :",type:'multi',opts:[{t:"Frais de chantier (FC)",c:true},{t:"Déboursé sec (DS)",c:false},{t:"Frais généraux (FG)",c:false},{t:"Aléas",c:false}],diff:'med',piege:false,expl:"Les frais d'installation et de repli sont des exemples typiques de frais de chantier : affectables au chantier mais pas à des ouvrages élémentaires spécifiques.",ref:"Ch. II › Section II.2 › Page 9"},
+  {q:"Sur 85 jours de chantier, les frais courants journaliers totaux sont : chef équipe 11 254 + citerne 5 400 + signalisation 28 750 = 45 404 FCFA/j. Quel est le total frais courants ?",type:'multi',opts:[{t:"3 859 340 FCFA",c:true},{t:"4 000 000 FCFA",c:false},{t:"5 200 000 FCFA",c:false},{t:"2 900 000 FCFA",c:false}],diff:'med',piege:false,expl:"Total = 45 404 × 85 = 3 859 340 FCFA. S'y ajoutent les frais d'amenée et d'installation pour obtenir le FC total.",ref:"Ch. II › Exemple FC › Page 12"},
+  {q:"Pour l'exemple numérique du cours, avec DS = 372 134 250 et FC = 29 770 740 : quel est le coût de production CP ?",type:'multi',opts:[{t:"401 904 990 FCFA",c:true},{t:"372 134 250 FCFA",c:false},{t:"342 363 510 FCFA",c:false},{t:"450 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"CP = DS + FC = 372 134 250 + 29 770 740 = 401 904 990 FCFA.",ref:"Ch. II › Exemple d'application › Page 12"},
+  {q:"Un sous-traitant propose ses travaux à 50 000 000 FCFA (déjà ses propres marges incluses). L'entreprise principale applique par erreur K2 = 12,65% sur ce montant. Quel est l'impact ?",type:'multi',opts:[{t:"Surestimation des dépenses de 6 325 000 FCFA, perte de compétitivité",c:true},{t:"Bonne pratique de gestion, permet de couvrir les risques",c:false},{t:"Impact nul car le sous-traitant n'a pas de FG",c:false}],diff:'hard',piege:false,expl:"Appliquer FG sur un sous-traitant qui a DÉJÀ appliqué ses coefficients = double comptabilisation → surestimation de 50M × 12,65% = 6,325M FCFA → perte de compétitivité ou fausse la gestion.",ref:"Ch. V › Section II › Page 21"},
+  {q:"K1 (frais chantier) = 8%, K2 (frais généraux) = 12,65%, K3 (aléas+bénéfice) = 4%. PV = K × DS. Quel est le numérateur de K ?",type:'multi',opts:[{t:"1 + 0,08 = 1,08",c:true},{t:"1 + 0,1265 = 1,1265",c:false},{t:"1 + 0,04 = 1,04",c:false},{t:"1 + 0,2465 = 1,2465",c:false}],diff:'hard',piege:true,expl:"K = (1 + K1) / (1 − (K2 + K3)). Le numérateur est (1 + K1) = 1 + 0,08 = 1,08. K2 et K3 vont au dénominateur car ils s'appliquent au PV.",ref:"Ch. II › Section II.6 › Page 10"},
+  {q:"Fouilles en puits réalisées à 3,750 FCFA/m³ de PV. PR = 2 431 FCFA/m³. La marge bénéficiaire en % du PV est environ :",type:'multi',opts:[{t:"35%",c:true},{t:"15%",c:false},{t:"50%",c:false},{t:"20%",c:false}],diff:'hard',piege:false,expl:"Marge = (PV − PR) / PV = (3750 − 2431) / 3750 = 1319 / 3750 ≈ 35,2%.",ref:"Ch. IV › Section III.1 › Page 16"},
+  {q:"La durée prévisionnelle d'un chantier est 85 jours. Les frais d'amenée = porte-engin 299 000 + fourgon 15 840 = 314 840 FCFA/j. Quel est le total amenée et installation ?",type:'multi',opts:[{t:"26 761 400 FCFA",c:true},{t:"20 000 000 FCFA",c:false},{t:"30 000 000 FCFA",c:false},{t:"18 500 000 FCFA",c:false}],diff:'med',piege:false,expl:"Total amenée = 314 840 × 85 = 26 761 400 FCFA.",ref:"Ch. II › Exemple FC › Page 12"},
+  {q:"Un chantier a : Recettes prévisionnelles = 600 MF, Dépenses prévisionnelles = 480 MF, Dépenses réelles = 510 MF, Recettes réelles = 580 MF. La balance réelle est :",type:'multi',opts:[{t:"580 − 510 = 70 MF (bénéfice)",c:true},{t:"600 − 480 = 120 MF (prévisionnel)",c:false},{t:"600 − 510 = 90 MF",c:false},{t:"580 − 480 = 100 MF",c:false}],diff:'hard',piege:true,expl:"Balance = Recettes réelles − Dépenses réelles = 580 − 510 = 70 MF. La balance est un indicateur RÉEL, pas prévisionnel.",ref:"Ch. IV › Contrôle budgétaire › Page 17"},
+  {q:"Le ratio de consommation d'un engin est calculé sur la journée du 05/01/2023 : gasoil consommé = 200L, durée de marche = 10h. R = ?",type:'multi',opts:[{t:"20 L/h",c:true},{t:"200 L/j",c:false},{t:"0,05 h/L",c:false},{t:"10 L/h",c:false}],diff:'easy',piege:false,expl:"R = Consommation du jour / Heure de marche = 200 / 10 = 20 L/h.",ref:"Ch. IV › Section III.2 › Page 16-17"},
+  {q:"Le Prix de Revient (PR) d'un ouvrage comprend :",type:'multi',opts:[{t:"DS + FC + FG",c:true},{t:"DS + FC",c:false},{t:"DS + FG",c:false},{t:"DS + FC + FG + A + B",c:false}],diff:'med',piege:true,expl:"PR = CP + FG = (DS + FC) + FG = DS + FC + FG. Les aléas et bénéfices ne font pas partie du PR mais s'ajoutent pour obtenir le PV.",ref:"Ch. II › Section II.3 › Page 9"},
+  {q:"Mise en situation : le gestionnaire du chantier reçoit une fiche de stock de gasoil incohérente. Qui est responsable de la corriger avant transmission ?",type:'multi',opts:[{t:"Le commis principal",c:true},{t:"Le commis gasoil",c:false},{t:"Le gestionnaire lui-même",c:false},{t:"Le conducteur des travaux",c:false}],diff:'hard',piege:false,expl:"Le commis principal centralise et vérifie la cohérence des pointages avant de les consigner dans le rapport journalier. C'est son rôle de contrôle.",ref:"Ch. IV › Section II.2 › Page 15"},
+  {q:"Pour un chantier BTP, les aléas représentent K3 = 4% du PV. Si DS = 300 000 000 et K = 1,33 : quel est le montant des aléas ?",type:'multi',opts:[{t:"15 960 000 FCFA",c:true},{t:"12 000 000 FCFA",c:false},{t:"13 300 000 FCFA",c:false},{t:"16 000 000 FCFA",c:false}],diff:'hard',piege:false,expl:"PV = K × DS = 1,33 × 300 000 000 = 399 000 000 FCFA. Aléas = K3 × PV = 0,04 × 399 000 000 = 15 960 000 FCFA.",ref:"Ch. II › Section II.4 et II.6 › Page 10-12"},
+  {q:"Un aide commis doit pointer les ressources d'un poste 'terrassement'. Lequel des éléments suivants NE fait PAS partie de son pointage ?",type:'multi',opts:[{t:"Matériel utilisé",c:false},{t:"Main d'œuvre",c:false},{t:"Matériaux consommés",c:false},{t:"Frais généraux imputés",c:true}],diff:'hard',piege:false,expl:"L'aide commis pointe matériel, MO et matériaux exploités sur son poste. Les frais généraux sont calculés globalement par le gestionnaire, pas pointés par l'aide commis.",ref:"Ch. IV › Section II.2 › Page 15"},
+  {q:"Un bull BULLD7G a consommé 200L le matin et 250L le soir (soit 450L total). Il a marché 10h. Comparé à un ratio théorique de 40 L/h, la situation est :",type:'multi',opts:[{t:"Consommation excessive (ratio réel 45 L/h > 40 L/h théorique)",c:true},{t:"Normale",c:false},{t:"Économique",c:false}],diff:'hard',piege:false,expl:"Ratio réel = 450L / 10h = 45 L/h. Théorique = 40 L/h. 45 > 40 → consommation excessive → investigation nécessaire (vol, fuite, mauvais état moteur).",ref:"Ch. IV › Collecte données › Fiches gasoil p.14"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL (sujets PDF)
+const serie3 = [
+  {q:"Le suivi budgétaire a pour finalité de :",type:'multi',opts:[{t:"Connaître son bénéfice ou sa perte",c:false},{t:"Se conformer au planning des travaux",c:false},{t:"Maîtriser les écarts entre les prévus et les réalisés pour apporter des corrections",c:true},{t:"Suivre au jour le jour, la réalisation physique des ouvrages sur le chantier",c:false}],diff:'easy',piege:true,expl:"La finalité du suivi budgétaire est de maîtriser les écarts prévus/réalisés pour CORRIGER. Ce n'est pas simplement connaître le bénéfice ni suivre l'avancement physique.",ref:"Sujet examen UE5 › Q61/Q73 — Ch. IV › Page 13"},
+  {q:"Pour vérifier la présence effective d'un employé sur le chantier, l'on doit consulter :",type:'multi',opts:[{t:"Le procès-verbal de chantier",c:false},{t:"Le cahier d'appel",c:true},{t:"La fiche individuelle",c:false}],diff:'easy',piege:true,expl:"Le cahier d'appel sert à vérifier la présence. La fiche individuelle sert au pointage détaillé des heures. Note : dans le 2ème sujet, la réponse validée est 'cahier d'appel'.",ref:"Sujet examen UE5 › Q62/Q63 — Ch. IV › Page 15"},
+  {q:"Quels sont les critères qui guident le choix du maître d'ouvrage dans la sélection d'une entreprise dans le cas d'un marché public :",type:'multi',opts:[{t:"Les préférences du maître d'œuvre",c:false},{t:"Les affinités avec l'entreprise",c:false},{t:"Le délai d'exécution",c:true},{t:"Les prix",c:true}],diff:'easy',piege:true,expl:"Dans un marché public : critères objectifs uniquement → délai d'exécution + prix. Affinités et préférences sont des critères subjectifs non admis.",ref:"Sujet examen UE5 › Q63/Q69 — Ch. I › Page 5"},
+  {q:"Pour un chantier donné les frais généraux c'est : (choisissez)",type:'multi',opts:[{t:"L'ensemble des frais du chantier moins les déboursés secs",c:true},{t:"L'ensemble de tous les principaux frais du chantier",c:false},{t:"L'ensemble des grandes dépenses liées à l'entretien du chantier",c:false}],diff:'med',piege:true,expl:"FG = frais du chantier MOINS les déboursés secs. Ni l'ensemble des principaux frais (trop large), ni uniquement l'entretien (trop restrictif).",ref:"Sujet examen UE5 › Q64/Q61 — Ch. II › Page 9"},
+  {q:"L'étude de prix est un processus qui permet de ressortir :",type:'multi',opts:[{t:"Les prix unitaires TTC",c:false},{t:"Les prix unitaires HT",c:true},{t:"Les quantités unitaires",c:false}],diff:'easy',piege:true,expl:"L'étude de prix ressort les PVHT (Prix de Vente Hors Taxe). TTC est piégeux car les taxes sont séparées. Quantités → c'est l'avant-métré, pas l'étude de prix.",ref:"Sujet examen UE5 › Q65/Q64 — Ch. II › Page 8"},
+  {q:"Quelles sont les primes/indemnités liées à la rémunération des employés que l'on peut rencontrer sur un chantier ?",type:'multi',opts:[{t:"Prime exceptionnelle",c:true},{t:"Prime consensuelle",c:false},{t:"Prime conventionnelle",c:true}],diff:'med',piege:true,expl:"Primes réelles : exceptionnelle + conventionnelle. La prime 'consensuelle' n'existe pas — c'est le piège classique de l'examen.",ref:"Sujet examen UE5 › Q66/Q62 — Ch. V › Page 19"},
+  {q:"Un relevé de compteur d'un camion : J1: départ 2500 arrivée 2600 ; J2: départ 2600 arrivée 2775 ; J3: départ 2775 arrivée 2775. Ratio conso = 50L/100km. Capacité réservoir = 300L. Le gasoil servi était au 2/3 du plein. Gasoil restant après parcours :",type:'multi',opts:[{t:"Aucune des réponses",c:false},{t:"45 litres",c:false},{t:"114,5 litres",c:false},{t:"62,500 litres",c:true},{t:"96,35 litres",c:false}],diff:'hard',piege:true,expl:"Distance totale = (2600-2500) + (2775-2600) + (2775-2775) = 100 + 175 + 0 = 275 km. Conso = 275 × 50/100 = 137,5 L. Gasoil initial = 2/3 × 300 = 200 L. Restant = 200 − 137,5 = 62,5 L.",ref:"Sujet examen UE5 › Q67/Q66 — Ch. IV › Page 16"},
+  {q:"L'amortissement d'un matériel se calcule sur une période de :",type:'multi',opts:[{t:"Aucune des périodes",c:false},{t:"10 ans",c:false},{t:"5 ans",c:true},{t:"2 ans",c:false}],diff:'easy',piege:true,expl:"Durée d'amortissement standard = 5 ans. Les autres options (2 ans, 10 ans) sont des pièges. 'Aucune des périodes' est aussi faux.",ref:"Sujet examen UE5 › Q68/Q76 — Ch. V › Page 20"},
+  {q:"Pour l'évaluation des dépenses journalières en matériel de chantier, on ne considère que les éléments suivants :",type:'multi',opts:[{t:"Tout le matériel prévu dans la tâche journalière prévisionnelle même non présent sur le chantier",c:false},{t:"Le matériel en instance pour cette journée considérée",c:true},{t:"Le matériel en fonctionnement réel sur le chantier",c:true},{t:"Le matériel en panne sur le chantier",c:false}],diff:'hard',piege:true,expl:"On comptabilise : matériel en fonctionnement réel + matériel en instance. On EXCLUT le matériel en panne et le matériel prévu mais absent.",ref:"Sujet examen UE5 › Q69/Q74 — Ch. IV › Page 15"},
+  {q:"L'étude de prix s'applique :",type:'multi',opts:[{t:"A un chantier en cours d'exécution",c:false},{t:"A un marché fictif",c:true}],diff:'med',piege:true,expl:"L'étude de prix s'applique à un MARCHÉ FICTIF avant exécution pour établir le budget. Pendant l'exécution, c'est le suivi budgétaire qui s'applique.",ref:"Sujet examen UE5 › Q70/Q65 — Ch. II › Page 8"},
+  {q:"Dans le calcul du coût des fournitures l'on considère :",type:'multi',opts:[{t:"Les frais du personnel interne à l'entreprise",c:false},{t:"Tout frais lié à une ressource externe de l'entreprise",c:true},{t:"Les frais du personnel intérimaire",c:true}],diff:'med',piege:true,expl:"Fournitures = ressources EXTERNES : personnel intérimaire, matériel en location externe, matériaux achetés. Le personnel interne = DS (déboursé sec), pas fourniture.",ref:"Sujet examen UE5 › Q71/Q75 — Ch. V › Page 20-21"},
+  {q:"Le pointage du personnel de chantier se fait avec les supports suivants :",type:'multi',opts:[{t:"Les fiches de pointage individuelles",c:true},{t:"Le journal de chantier",c:false},{t:"Un cahier d'appel",c:true},{t:"Les identités du personnel présent communiquées au gestionnaire par le commis",c:false}],diff:'med',piege:true,expl:"Supports de pointage personnel : fiches de pointage individuelles + cahier d'appel. Le journal de chantier n'est pas un support de pointage MO. La communication orale au gestionnaire n'est pas un support formel.",ref:"Sujet examen UE5 › Q72/Q70 — Ch. IV › Page 15"},
+  {q:"Sur un chantier de travaux, les agents chargés de servir les engins en gasoil communiquent les quantités servies :",type:'multi',opts:[{t:"Au magasinier du chantier",c:true},{t:"Au commis pointeur du chantier",c:false}],diff:'med',piege:true,expl:"Les quantités de gasoil sont communiquées au MAGASINIER du chantier (pour les fiches de stock). Le commis pointeur s'occupe des ressources de production (MO, matériel).",ref:"Sujet examen UE5 › Q73/Q71 — Ch. IV › Page 15"},
+  {q:"La mise en chantier est la concrétisation du budget opérationnel en budget prévisionnel",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX. La mise en chantier concrétise le budget PRÉVISIONNEL en budget OPÉRATIONNEL (et non l'inverse). L'énoncé est volontairement inversé pour piéger.",ref:"Sujet examen UE5 › Q74/Q72 — Ch. IV › Page 13"},
+  {q:"Pour le suivi de consommation d'un chantier, le commis pointeur enregistre les quantités de ciment sorties du magasin :",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'hard',piege:true,expl:"FAUX. C'est le MAGASINIER qui enregistre les sorties de matériaux (dont le ciment). Le commis pointeur s'occupe du matériel et de la MO.",ref:"Sujet examen UE5 › Q76/Q78 — Ch. IV › Page 15"},
+  {q:"Le bon de sortie doit être toujours contresigné par :",type:'multi',opts:[{t:"Le magasinier et le chef de chantier",c:false},{t:"Le magasinier, le bénéficiaire et le chef de chantier",c:true},{t:"Le magasinier et le bénéficiaire",c:false}],diff:'med',piege:true,expl:"3 signatures obligatoires : magasinier + bénéficiaire + chef de chantier. Les options à 2 signataires sont des pièges fréquents.",ref:"Sujet examen UE5 › Q77/Q80 — Ch. IV › Collecte données"},
+  {q:"Dans un rapport mensuel de travaux de chantier, la balance correspond à la différence entre :",type:'multi',opts:[{t:"Les recettes prévisionnelles et les recettes réelles du chantier",c:false},{t:"Les dépenses réelles et les recettes réelles du chantier",c:true},{t:"Les dépenses prévisionnelles et les dépenses réelles du chantier",c:false},{t:"Les dépenses prévisionnelles et les dépenses prévisionnelles du chantier",c:false}],diff:'med',piege:true,expl:"Balance = dépenses réelles − recettes réelles. Ne pas confondre avec l'écart (prévisionnel − réel). La balance est un indicateur de résultat réel instantané.",ref:"Sujet examen UE5 › Q78/Q67 — Ch. IV › Page 17"},
+  {q:"Dans le calcul des ressources allouées à des travaux, l'on parle de 'cession' lorsque :",type:'multi',opts:[{t:"Les ressources/travaux sont internes à l'entreprise",c:true},{t:"Les ressources/travaux sont externes à l'entreprise",c:false}],diff:'med',piege:true,expl:"Cession = interne à l'entreprise (entre chantiers ou services de la même société). Externe = fourniture. La confusion cession/fourniture est un piège classique.",ref:"Sujet examen UE5 › Q79/Q68 — Ch. V › Page 19"},
+  {q:"Le coût de revient se calcule par la formule (K= coefficient d'affaire ; CP= coût de production, CR= coût de revient, FG= frais généraux) :",type:'multi',opts:[{t:"CR = DS + FG",c:false},{t:"CR = (DS+FG)×K",c:false},{t:"CR = DS + CP",c:true}],diff:'hard',piege:true,expl:"CR = DS + CP. Sachant que CP = DS + FC, on a CR = DS + (DS + FC) ce qui semble redondant. La logique validée à l'examen : CR = CP + FG, et comme CP = DS+FC, CR = DS+FC+FG. L'option validée dans le sujet 2 est CR = DS+CP.",ref:"Sujet examen UE5 › Q80/Q79 — Ch. II › Page 9"},
+  {q:"Les frais de chantier ou frais locaux sont des dépenses de production directe, indispensable à un chantier. Vrai ou Faux ?",type:'multi',opts:[{t:"Vrai",c:false},{t:"Faux",c:true}],diff:'med',piege:true,expl:"FAUX selon le cours (Ch. II). Mais VRAI selon le sujet 2 corrigé (Q77). ATTENTION : dans le sujet 2, la réponse validée est VRAI. La question porte sur 'indispensables à un chantier' (vrai) même si ce ne sont pas des dépenses de production directe au sens strict. Apprenez les deux lectures.",ref:"Sujet examen UE5 › Q74/Q77 — ATTENTION : réponse divergente entre sujets"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M13';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div style="margin-bottom:20px">
+  <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-bottom:6px">🔬 Méthode anti-pièges — M13</div>
+  <div style="font-size:13px;color:var(--text3)">Mots-pièges, chiffres-clés, schémas de décision et confusions à éviter</div>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-pièges classiques</div>
+    <span class="piege-word">TTC</span>
+    <span class="piege-word">consensus</span>
+    <span class="piege-word">10 ans</span>
+    <span class="piege-word">2 ans</span>
+    <span class="piege-word">commis pointeur → ciment</span>
+    <span class="piege-word">budget opérationnel → prévisionnel</span>
+    <span class="piege-word">production directe (FC)</span>
+    <span class="piege-word">externe = cession</span>
+    <span class="piege-word">PV → bénéfice uniquement</span>
+    <span class="piege-word">matériel en panne = compté</span>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3)">Ces termes apparaissent dans les mauvaises réponses — méfiez-vous !</div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">📊 Chiffres-clés à mémoriser</div>
+    <table class="chiffres-table">
+      <tr><th>Valeur</th><th>Signification</th></tr>
+      <tr><td>5 ans</td><td>Durée amortissement standard</td></tr>
+      <tr><td>K = 1,33</td><td>Coefficient de vente (exemple cours)</td></tr>
+      <tr><td>K1 = 8%</td><td>Coeff. frais de chantier (exemple)</td></tr>
+      <tr><td>K2 = 12,65%</td><td>Coeff. frais généraux (exemple)</td></tr>
+      <tr><td>K3 = 4%</td><td>Coeff. aléas + bénéfice (exemple)</td></tr>
+      <tr><td>62,5 L</td><td>Gasoil restant (question compteur)</td></tr>
+      <tr><td>3 signatures</td><td>Bon de sortie : mag + bénéf + chef</td></tr>
+      <tr><td>90%</td><td>Efficience (9h marche / 10h dispo)</td></tr>
+      <tr><td>2 431 FCFA/m³</td><td>PR fouilles (exemple cours)</td></tr>
+      <tr><td>3 750 FCFA/m³</td><td>PV fouilles (exemple cours)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="margin:16px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px">🔁 Schéma décisionnel — Qui fait quoi ?</div>
+<div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Magasinier</strong> → Stock matériaux, sorties ciment, quantités gasoil reçues du commis gasoil</div></div>
+<div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Commis gasoil</strong> → Remplit fiches individuelles engins → transmet au magasinier</div></div>
+<div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Aide commis</strong> → Pointe MO + matériel + matériaux par poste de production</div></div>
+<div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Commis principal</strong> → Centralise, vérifie cohérence, rédige rapport journalier</div></div>
+<div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Gestionnaire</strong> → Responsable administratif et financier global du chantier</div></div>
+
+<div style="margin:16px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px">📐 Schéma — Construction du Prix de Vente</div>
+<div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>DS</strong> = Dmo + Dma + Dme (déboursé sec)</div></div>
+<div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>CP</strong> = DS + FC = (1 + K1) × DS (coût de production)</div></div>
+<div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>PR</strong> = CP + FG (prix de revient)</div></div>
+<div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>PV</strong> = PR + A + B = K × DS avec K = (1+K1)/(1−(K2+K3))</div></div>
+
+<div style="margin:16px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px">🔀 Confusions classiques à éviter</div>
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">Cession vs Fourniture</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">
+      <span style="color:var(--accent)">Cession</span> = ressource <strong>interne</strong> à l'entreprise (entre chantiers de la même société)<br><br>
+      <span style="color:var(--orange)">Fourniture</span> = ressource <strong>externe</strong> à l'entreprise (achat, location, intérimaires)
+    </div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">Balance vs Écart budgétaire</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">
+      <span style="color:var(--accent)">Balance</span> = Recettes réelles − Dépenses réelles<br><br>
+      <span style="color:var(--orange)">Écart budgétaire</span> = Prévisionnel − Réel (par centre de coût)
+    </div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">FC vs FG</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">
+      <span style="color:var(--accent)">FC</span> = affectables à UN chantier, pas aux ouvrages élémentaires. S'applique au DS (K1 × DS)<br><br>
+      <span style="color:var(--orange)">FG</span> = frais de l'entreprise entière non ventilables. S'applique au PV (K2 × PV)
+    </div>
+  </div>
+  <div class="methode-card">
+    <div class="methode-card-title">Étude de prix vs Suivi budgétaire</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">
+      <span style="color:var(--accent)">Étude de prix</span> = AVANT exécution, marché fictif, pour établir le budget prévisionnel<br><br>
+      <span style="color:var(--orange)">Suivi budgétaire</span> = PENDANT exécution, chantier réel, pour comparer et corriger
+    </div>
+  </div>
+</div>
+
+<div style="margin:16px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px">⚡ Formules instantanées</div>
+<table class="chiffres-table">
+  <tr><th>Formule</th><th>Expression</th><th>Remarque</th></tr>
+  <tr><td>PV = K × DS</td><td>K = (1+K1) / (1−K2−K3)</td><td>K1 sur DS ; K2,K3 sur PV</td></tr>
+  <tr><td>AH = VA/DA</td><td>VA = Achat − Revente − Consomm. livrées</td><td>DA = 5 ans</td></tr>
+  <tr><td>E = H.marche / H.dispo</td><td>Ex: 9/10 = 90%</td><td>Disponibilité = 10h/j</td></tr>
+  <tr><td>R = Conso/H.marche</td><td>Ex: 200L/10h = 20L/h</td><td>Comparer au ratio théorique</td></tr>
+  <tr><td>TH = Coût total / H.annuelles</td><td>Ex: 6446/8 = 805,75 FCFA/h</td><td>Taux horaire MO</td></tr>
+</table>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>

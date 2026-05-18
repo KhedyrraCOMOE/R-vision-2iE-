@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>M17 — Création d'entreprise & Business Plan · 2iE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+:root {
+  --bg: #0a0d12; --bg2: #10141c; --bg3: #171d28; --bg4: #1e2535;
+  --border: #2a3347; --border2: #3a4860;
+  --text: #e8edf5; --text2: #9aaec8; --text3: #5a6e8a;
+  --accent: #00d4aa; --accent2: #0099ff; --accent3: #ff6b35; --accent4: #ffd166;
+  --red: #ff4d6a; --green: #00c896; --orange: #ff8c42; --purple: #a78bfa;
+  --r: 10px; --r2: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.credit-banner { background: linear-gradient(90deg, rgba(0,212,170,0.13), rgba(0,153,255,0.08)); border-bottom: 1px solid rgba(0,212,170,0.25); padding: 8px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; letter-spacing: 0.4px; line-height: 1.6; }
+.credit-banner strong { color: var(--accent4); }
+.credit-banner .contact { color: var(--text2); margin-top: 1px; display: block; }
+.header { background: linear-gradient(135deg, #0d1520 0%, #111827 50%, #0a1628 100%); border-bottom: 1px solid var(--border); padding: 16px 20px; position: sticky; top: 0; z-index: 100; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+.header-logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); -webkit-flex: 1; flex: 1; }
+.header-timer-zone { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 10px; }
+.timer-display { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--accent4); min-width: 80px; text-align: center; padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); transition: all 0.3s; }
+.timer-display.alert { color: var(--red); border-color: var(--red); -webkit-animation: blink 0.5s infinite; animation: blink 0.5s infinite; }
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.btn-sm { padding: 6px 12px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
+.btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+.btn-sm.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.nav { display: -webkit-flex; display: flex; gap: 4px; padding: 12px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg2); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; border: 1px solid transparent; border-bottom: none; background: transparent; color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 7px; -webkit-appearance: none; appearance: none; }
+.nav-tab:hover { color: var(--text2); background: var(--bg3); }
+.nav-tab.active { color: var(--accent); background: var(--bg); border-color: var(--border); border-bottom-color: var(--bg); }
+.nav-tab .nav-icon { font-size: 15px; }
+.main { padding: 24px 20px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+.resume-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 200; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; padding: 20px; }
+.resume-modal { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--r); padding: 28px 24px; max-width: 400px; width: 100%; text-align: center; }
+.resume-modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 10px; }
+.resume-modal p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.resume-badge { display: inline-block; padding: 4px 14px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 18px; }
+.resume-btns { display: -webkit-flex; display: flex; gap: 10px; -webkit-justify-content: center; justify-content: center; flex-wrap: wrap; }
+.memo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; }
+.memo-card:hover { border-color: var(--border2); }
+.memo-header { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.memo-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+.memo-title { font-weight: 600; font-size: 14px; -webkit-flex: 1; flex: 1; color: var(--text); }
+.memo-subtitle { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.memo-chevron { color: var(--text3); font-size: 12px; transition: -webkit-transform 0.3s; transition: transform 0.3s; flex-shrink: 0; }
+.memo-card.open .memo-chevron { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.memo-card.open { border-color: var(--accent); }
+.memo-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+.memo-card.open .memo-body { display: block; }
+.def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+@media(max-width:600px){ .def-grid{ grid-template-columns: 1fr; } .methode-grid { grid-template-columns: 1fr; } }
+.def-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 10px 12px; }
+.def-term { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.def-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.piege-box { background: linear-gradient(135deg, rgba(255,77,106,0.08), rgba(255,77,106,0.03)); border: 1px solid rgba(255,77,106,0.4); border-left: 3px solid var(--red); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.piege-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.key-box { background: linear-gradient(135deg, rgba(0,212,170,0.06), rgba(0,212,170,0.02)); border: 1px solid rgba(0,212,170,0.3); border-left: 3px solid var(--accent); border-radius: var(--r2); padding: 12px 14px; margin: 10px 0; }
+.key-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.key-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.key-text li { margin-left: 16px; margin-bottom: 4px; }
+.chiffres-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+.chiffres-table th { background: var(--bg4); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border: 1px solid var(--border); }
+.chiffres-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.chiffres-table tr:nth-child(even) td { background: var(--bg3); }
+.chiffres-table td:first-child { color: var(--accent4); font-family: 'Space Mono', monospace; font-weight: 700; }
+.memo-section-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.qcm-header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.serie-selector { display: -webkit-flex; display: flex; gap: 8px; flex-wrap: wrap; }
+.serie-btn { padding: 8px 14px; border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.serie-btn:hover { border-color: var(--border2); color: var(--text); }
+.serie-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+.qcm-progress-bar-wrap { background: var(--bg4); height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.qcm-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+.score-live-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 8px 14px; margin-bottom: 14px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; }
+.score-live-item { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; }
+.score-live-val { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.score-live-val.green { color: var(--green); } .score-live-val.red { color: var(--red); } .score-live-val.blue { color: var(--accent2); }
+.question-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; margin-bottom: 16px; }
+.question-meta { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.q-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); }
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-easy { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-med { background: rgba(255,212,102,0.15); color: var(--accent4); border: 1px solid rgba(255,212,102,0.3); }
+.badge-hard { background: rgba(255,77,106,0.15); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+.badge-piege { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+.badge-marked { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+.question-text { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 8px; }
+.option-item { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; -webkit-appearance: none; appearance: none; }
+.option-item:hover:not(.disabled) { background: var(--bg4); border-color: var(--border2); }
+.option-item.selected { border-color: var(--accent2); background: rgba(0,153,255,0.08); }
+.option-item.correct { border-color: var(--green); background: rgba(0,200,150,0.08); }
+.option-item.wrong { border-color: var(--red); background: rgba(255,77,106,0.08); }
+.option-item.disabled { cursor: default; }
+.option-letter { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border2); display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+.option-item.selected .option-letter { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.option-item.correct .option-letter { background: var(--green); border-color: var(--green); color: #000; }
+.option-item.wrong .option-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.option-text { font-size: 13px; color: var(--text2); line-height: 1.5; -webkit-flex: 1; flex: 1; }
+.multi-hint { font-size: 11px; color: var(--accent4); margin-bottom: 10px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; font-style: italic; }
+.feedback-banner { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r2); margin-top: 12px; font-weight: 600; font-size: 13px; }
+.feedback-banner.correct { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.4); color: var(--green); }
+.feedback-banner.wrong { background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.4); color: var(--red); }
+.explanation-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--accent2); border-radius: var(--r2); padding: 14px; margin-top: 14px; }
+.explanation-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.explanation-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.page-ref { display: inline-block; margin-top: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 3px 8px; border-radius: 4px; }
+.qcm-nav { display: -webkit-flex; display: flex; gap: 10px; flex-wrap: wrap; -webkit-align-items: center; align-items: center; }
+.btn-primary { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-primary:hover { background: #00f0c0; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { padding: 10px 20px; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-secondary:hover { background: var(--bg4); color: var(--text); }
+.btn-retry { padding: 10px 20px; background: rgba(255,77,106,0.12); color: var(--red); border: 1px solid rgba(255,77,106,0.4); border-radius: var(--r2); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; appearance: none; }
+.btn-retry:hover { background: rgba(255,77,106,0.2); }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 24px; text-align: center; }
+.score-big { font-family: 'DM Serif Display', serif; font-size: 72px; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.score-label { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+.score-stats { display: -webkit-flex; display: flex; gap: 16px; -webkit-justify-content: center; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+.score-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px 20px; min-width: 80px; }
+.score-stat.green { border-color: rgba(0,200,150,0.4); }
+.score-stat.red { border-color: rgba(255,77,106,0.4); }
+.score-stat.orange { border-color: rgba(255,140,66,0.4); }
+.score-stat-val { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text); }
+.score-stat.green .score-stat-val { color: var(--green); }
+.score-stat.red .score-stat-val { color: var(--red); }
+.score-stat.orange .score-stat-val { color: var(--orange); }
+.score-stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.methode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.methode-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.methode-card-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 6px; }
+.piege-word { display: inline-block; padding: 3px 8px; background: rgba(255,77,106,0.12); border: 1px solid rgba(255,77,106,0.3); border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--red); margin: 3px; }
+.schema-step { display: -webkit-flex; display: flex; -webkit-align-items: flex-start; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); }
+.schema-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; flex-shrink: 0; }
+.schema-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.schema-text strong { color: var(--text); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.mark-btn { padding: 5px 10px; border-radius: var(--r2); border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); color: var(--purple); font-size: 11px; cursor: pointer; transition: all 0.2s; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 5px; -webkit-appearance: none; appearance: none; }
+.mark-btn:hover { background: rgba(167,139,250,0.16); }
+.mark-btn.marked { background: rgba(167,139,250,0.2); border-color: var(--purple); font-weight: 600; }
+@-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1)} 50%{opacity:0.6;-webkit-transform:scale(0.8)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+</style>
+</head>
+<body>
+<div class="credit-banner">
+  <strong>Outil d'aide mise en place par KHEDYRRA COMOÉ</strong> — Délégué BGIS Cohorte Février 2026 · Institut 2iE
+  <span class="contact">📞 Contact : 07-88-41-13-78</span>
+</div>
+<div class="header">
+  <div class="header-logo">M17</div>
+  <div class="header-title">Création d'entreprise & Business Plan — 2iE</div>
+  <div class="header-timer-zone">
+    <div class="timer-display" id="timerDisplay">--:--</div>
+    <button class="btn-sm" id="timerToggle" onclick="toggleTimer()">⏱ Timer</button>
+    <input type="number" id="timerMin" value="60" min="1" max="180" class="btn-sm" style="width:56px;text-align:center">
+    <span style="font-size:11px;color:var(--text3)">min</span>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('fiches')" id="tab-fiches"><span class="nav-icon">📚</span> Fiches Mémo</button>
+  <button class="nav-tab" onclick="showSection('qcm')" id="tab-qcm"><span class="nav-icon">🎯</span> QCM Examen</button>
+  <button class="nav-tab" onclick="showSection('methode')" id="tab-methode"><span class="nav-icon">🔬</span> Méthode</button>
+</nav>
+<div class="resume-overlay" id="resumeOverlay" style="display:none;">
+  <div class="resume-modal">
+    <h3>📌 Reprendre ?</h3>
+    <p>Une session précédente a été détectée.</p>
+    <div class="resume-badge" id="resumeInfo">Série 1 — Question 1</div>
+    <div class="resume-btns">
+      <button class="btn-primary" onclick="doResume()">▶ Reprendre</button>
+      <button class="btn-secondary" onclick="doRestart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="section active" id="section-fiches"></div>
+  <div class="section" id="section-qcm">
+    <div class="qcm-header">
+      <div class="serie-selector">
+        <button class="serie-btn active" onclick="loadSerie(0)" id="serie-btn-0">📘 Série 1 — Théorie</button>
+        <button class="serie-btn" onclick="loadSerie(1)" id="serie-btn-1">⚙️ Série 2 — Cas Pratiques</button>
+        <button class="serie-btn" onclick="loadSerie(2)" id="serie-btn-2">📄 Série 3 — Examen Réel</button>
+      </div>
+    </div>
+    <div class="qcm-progress-bar-wrap"><div class="qcm-progress-bar" id="qcmProgressBar"></div></div>
+    <div class="score-live-bar">
+      <div class="score-live-item"><span class="score-live-val green" id="liveCorrect">0</span><span style="color:var(--text3)">✅ Correct</span></div>
+      <div class="score-live-item"><span class="score-live-val red" id="liveWrong">0</span><span style="color:var(--text3)">❌ Incorrect</span></div>
+      <div class="score-live-item"><span class="score-live-val blue" id="liveTotal">0</span><span style="color:var(--text3)">/ questions</span></div>
+      <div class="score-live-item"><span class="score-live-val" id="livePct" style="color:var(--accent4)">—</span><span style="color:var(--text3)">taux</span></div>
+    </div>
+    <div id="qcmContainer"></div>
+  </div>
+  <div class="section" id="section-methode"></div>
+</div>
+<script>
+let timerInterval=null,timerRunning=false,timerSeconds=0;
+function toggleTimer(){const btn=document.getElementById('timerToggle');if(!timerRunning){const mins=parseInt(document.getElementById('timerMin').value)||60;timerSeconds=mins*60;timerRunning=true;btn.textContent='⏹ Stop';btn.classList.add('active');timerInterval=setInterval(tickTimer,1000);tickTimer();}else{clearInterval(timerInterval);timerRunning=false;btn.textContent='⏱ Timer';btn.classList.remove('active');document.getElementById('timerDisplay').textContent='--:--';document.getElementById('timerDisplay').classList.remove('alert');}}
+function tickTimer(){const disp=document.getElementById('timerDisplay');const m=Math.floor(timerSeconds/60);const s=timerSeconds%60;disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timerSeconds<=60)disp.classList.add('alert');else disp.classList.remove('alert');if(timerSeconds<=0){clearInterval(timerInterval);timerRunning=false;}timerSeconds--;}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('section-'+id).classList.add('active');document.getElementById('tab-'+id).classList.add('active');}
+function buildFiches(){const container=document.getElementById('section-fiches');let html='';fichesData.forEach((f,i)=>{html+=`<div class="memo-card" id="memo-${i}"><div class="memo-header" onclick="toggleMemo(${i})"><div class="memo-icon">${f.icon}</div><div><div class="memo-title">${f.title}</div><div class="memo-subtitle">${f.subtitle}</div></div><div class="memo-chevron">▼</div></div><div class="memo-body">${f.content}</div></div>`;});container.innerHTML=html;}
+function toggleMemo(i){const card=document.getElementById('memo-'+i);const isOpen=card.classList.contains('open');document.querySelectorAll('.memo-card').forEach(c=>c.classList.remove('open'));if(!isOpen)card.classList.add('open');}
+
+// ✏ ZONE A — FICHES
+const fichesData = [
+  {
+    icon: '📋',
+    title: 'Business Plan — Définition & Finalités',
+    subtitle: 'Chapitre 7 · Calvin TIAM · Pages 57-60',
+    content: `
+      <div class="memo-section-title">🎯 Définition</div>
+      <div class="key-box">
+        <div class="key-title">Business Plan (Plan d'affaires)</div>
+        <div class="key-text">Document écrit servant à éclairer les parties prenantes sur la <strong>viabilité du projet de création ou développement d'activité</strong>. Il met le projet sur papier : faisabilité financière, marketing, industrielle, commerciale et humaine.</div>
+      </div>
+      <div class="memo-section-title">📌 4 grandes finalités</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Ensemble entreprise — actionnaire</div><div class="def-text">Valider les orientations stratégiques et prévisions financières vis-à-vis de l'actionnaire ou de la société mère</div></div>
+        <div class="def-item"><div class="def-term">Projet interne</div><div class="def-text">Adoption d'un projet interne à l'entreprise, marchand ou non marchand</div></div>
+        <div class="def-item"><div class="def-term">Levée de capitaux</div><div class="def-text">Lever des capitaux : capital, emprunt, subventions. Valorisation par la méthode DCF</div></div>
+        <div class="def-item"><div class="def-term">Affaire commerciale</div><div class="def-text">Évaluer la rentabilité d'une affaire commerciale et en négocier le prix (y compris PPP)</div></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ Piège fréquent</div>
+        <div class="piege-text">Réaliser un business plan ≠ faire une étude de marché. C'est réaliser <strong>les études de faisabilité commerciale, technique, organisationnelle ET financière</strong> du projet. Ne pas confondre avec le business model (= façon dont l'entreprise génère son profit).</div>
+      </div>
+      <div class="memo-section-title">📝 Structure du BP (canevas)</div>
+      <div class="key-box">
+        <div class="key-title">8 sections clés</div>
+        <div class="key-text"><ul><li>Résumé + Business Model Canvas</li><li>Présentation promoteur & entreprise</li><li>Pertinence / Marché du projet</li><li>Stratégie commerciale (4P)</li><li>Dispositif technique & organisationnel</li><li>Plan financier (BFR, TRI, VAN, seuil)</li><li>Plan de gestion durable</li><li>Annexes — max 40 pages hors annexes</li></ul></div>
+      </div>
+    `
+  },
+  {
+    icon: '🏢',
+    title: 'Formes juridiques OHADA',
+    subtitle: 'Chapitre 4 · Pages 39-49',
+    content: `
+      <div class="memo-section-title">⚖️ Critères de choix</div>
+      <div class="key-box">
+        <div class="key-title">7 critères</div>
+        <div class="key-text"><ul><li>Nature de l'activité</li><li>Volonté de s'associer</li><li>Organisation patrimoniale</li><li>Besoins financiers</li><li>Fonctionnement de l'entreprise</li><li>Régime fiscal</li><li>Crédibilité vis-à-vis des partenaires</li></ul></div>
+      </div>
+      <div class="memo-section-title">📊 Tableau comparatif</div>
+      <table class="chiffres-table">
+        <tr><th>Forme</th><th>Capital min.</th><th>Responsabilité</th><th>Associés</th></tr>
+        <tr><td>EI</td><td>Aucun</td><td>Illimitée (biens perso)</td><td>1 (seul)</td></tr>
+        <tr><td>SARL</td><td>1 000 000 F CFA (5 000 BF)</td><td>Limitée aux apports</td><td>1 ou +</td></tr>
+        <tr><td>SA</td><td>10 000 000 F CFA</td><td>Limitée aux apports</td><td>1 ou +</td></tr>
+        <tr><td>SAS</td><td>Libre</td><td>Limitée aux apports</td><td>1 ou +</td></tr>
+        <tr><td>SNC</td><td>Libre</td><td>Indéfinie & solidaire</td><td>2 ou + commerçants</td></tr>
+        <tr><td>SCS</td><td>Libre</td><td>Mixte commandité/commanditaire</td><td>1 cmd + 1 cmt</td></tr>
+        <tr><td>GIE</td><td>Libre (0 possible)</td><td>Solidaire & indéfinie</td><td>2 ou +</td></tr>
+      </table>
+      <div class="piege-box">
+        <div class="piege-title">⚠ Pièges OHADA</div>
+        <div class="piege-text">Au <strong>Burkina Faso</strong>, le capital minimum de la SARL est abaissé à <strong>5 000 F CFA</strong> par décret 2016-314. La valeur nominale d'une part sociale ne peut être inférieure à 5 000 F CFA. La SA reste à 10 000 000 F CFA. Dans la SNC, <strong>tous les associés ont le statut de commerçant</strong> — les mineurs sont donc exclus.</div>
+      </div>
+    `
+  },
+  {
+    icon: '💰',
+    title: 'Régimes d\'imposition au Burkina Faso',
+    subtitle: 'Chapitre 5 · Pages 50-54',
+    content: `
+      <div class="memo-section-title">📌 Les 3 régimes</div>
+      <table class="chiffres-table">
+        <tr><th>Régime</th><th>CA annuel (livraisons/travaux)</th><th>CA annuel (autres opérations)</th></tr>
+        <tr><td>RNI</td><td>≥ 100 000 000 F CFA</td><td>≥ 50 000 000 F CFA</td></tr>
+        <tr><td>RSI</td><td>30 M — 100 M F CFA</td><td>15 M — 50 M F CFA</td></tr>
+        <tr><td>CSI</td><td>< 30 000 000 F CFA</td><td>< 15 000 000 F CFA</td></tr>
+      </table>
+      <div class="key-box">
+        <div class="key-title">Ce que couvre la CSI</div>
+        <div class="key-text">BIC + IMFPIC + TPA + Contribution des patentes + Licence débits de boissons. La CSI est recouvrée par quart (trimestre), dans les 10 premiers jours de chaque trimestre.</div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ Pièges régimes</div>
+        <div class="piege-text">Régime d'imposition ≠ régime fiscal. Le <strong>régime d'imposition</strong> fixe comment calculer le bénéfice imposable (RNI/RSI/CSI). Le <strong>régime fiscal</strong> précise le type d'impôt (IR, IS, micro-entreprise). L'option pour le RSI ou RNI produit effet pour <strong>deux impôts</strong> (TVA et BIC) et est irrévocable 3 ans.</div>
+      </div>
+    `
+  },
+  {
+    icon: '🏪',
+    title: 'Formalités de création (CEFORE)',
+    subtitle: 'Chapitre 8 · Pages 65-69',
+    content: `
+      <div class="memo-section-title">🏛️ Entreprise individuelle</div>
+      <div class="key-box">
+        <div class="key-title">Formalités au CEFORE</div>
+        <div class="key-text"><ul><li>Immatriculation RCCM</li><li>Déclaration existence fiscale + IFU</li><li>Carte Professionnelle de Commerçant (CPC)</li><li>Notification Employeur (CNSS)</li><li>Coût : 40 000 F CFA</li></ul></div>
+      </div>
+      <div class="memo-section-title">🏛️ Entreprise sociétaire</div>
+      <div class="key-box">
+        <div class="key-title">Avant CEFORE (notaire)</div>
+        <div class="key-text"><ul><li>Acte notarié de souscription</li><li>Élaboration et enregistrement des statuts</li><li>PV de l'assemblée constitutive</li><li>Autorisation d'exercer pour étrangers</li><li>Dossier : 47 500 F CFA au CEFORE</li></ul></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ Activités réglementées</div>
+        <div class="piege-text">Certaines activités nécessitent des formalités supplémentaires : radios privées (CSI), agences de voyage (Direction Tourisme), banques (Ministère Finances), sociétés de gardiennage (Ministère Sécurité). Ces autorisations s'obtiennent en dehors du CEFORE.</div>
+      </div>
+    `
+  },
+  {
+    icon: '📈',
+    title: 'Business Plan — Partie financière & financement',
+    subtitle: 'Chapitre 7 › Plan financier · Pages 60-64',
+    content: `
+      <div class="memo-section-title">💳 3 groupes de financement</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Fonds propres</div><div class="def-text">Capital apporté par les promoteurs / actionnaires</div></div>
+        <div class="def-item"><div class="def-term">Emprunt</div><div class="def-text">Crédit bancaire, microfinance, crédit-bail</div></div>
+        <div class="def-item"><div class="def-term">Subvention</div><div class="def-text">Aide non remboursable de l'État, ONG, partenaires</div></div>
+        <div class="def-item"><div class="def-term">Crédit-bail (avantage)</div><div class="def-text">Absence de mise de fonds initiale par l'entreprise utilisatrice</div></div>
+      </div>
+      <div class="memo-section-title">📊 Indicateurs financiers clés</div>
+      <table class="chiffres-table">
+        <tr><th>Indicateur</th><th>Signification</th></tr>
+        <tr><td>BFR</td><td>Besoin en Fonds de Roulement — financement du cycle d'exploitation</td></tr>
+        <tr><td>TRI</td><td>Taux Interne de Rentabilité — rentabilité intrinsèque du projet</td></tr>
+        <tr><td>VAN</td><td>Valeur Actuelle Nette — valeur créée en FCFA actualisés</td></tr>
+        <tr><td>Seuil rentabilité</td><td>CA à partir duquel l'entreprise couvre ses charges</td></tr>
+        <tr><td>DCF</td><td>Discounted Cash Flows — méthode de valorisation de l'entreprise</td></tr>
+      </table>
+      <div class="key-box">
+        <div class="key-title">Principe de prudence financière</div>
+        <div class="key-text">Pour réussir une prévision financière dans le respect du principe de prudence : <strong>minimiser les recettes</strong> et <strong>maximiser les coûts</strong>. Les investissements se font le plus souvent dans une optique de <strong>rentabilité</strong>.</div>
+      </div>
+    `
+  },
+  {
+    icon: '🎯',
+    title: 'Business Plan — Termes proches & distinctions',
+    subtitle: 'Chapitre 7 › Termes voisins · Pages 58-59',
+    content: `
+      <div class="memo-section-title">📌 Termes proches du Business Plan</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Business Case</div><div class="def-text">Étude d'opportunité — ne contient pas a priori de plan d'action précis. But : valider un nouveau modèle économique. L'entreprise ne mettra pas sur pied un projet avec des plans d'actions précis présentés dans un BP.</div></div>
+        <div class="def-item"><div class="def-term">Business Model</div><div class="def-text">Façon dont l'entreprise génère son profit. Cœur du BP. Décrit le positionnement dans la chaîne de valeur.</div></div>
+        <div class="def-item"><div class="def-term">Plan stratégique (moyen terme)</div><div class="def-text">Aspects financiers moins développés que dans un BP car l'objectif de rentabilité y est moins immédiat.</div></div>
+        <div class="def-item"><div class="def-term">Plan de développement</div><div class="def-text">Document de planification interne de la croissance de l'entreprise.</div></div>
+      </div>
+      <div class="piege-box">
+        <div class="piege-title">⚠ Piège BP sur l'ensemble d'une entreprise</div>
+        <div class="piege-text">Quand le BP porte sur <strong>l'ensemble d'une entreprise</strong> et a pour but de lever des capitaux, la partie financière répond à <strong>2 questions</strong> (rentabilité + trésorerie). La rédaction d'ensemble est confiée au <strong>directeur financier</strong>. L'étude et mise en œuvre d'un projet interne sont confiées au <strong>responsable projet</strong>.</div>
+      </div>
+      <div class="key-box">
+        <div class="key-title">Qui rédige le BP ?</div>
+        <div class="key-text">Impérativement le <strong>porteur de projet ou l'équipe fondatrice</strong>. Le BP est un document <strong>multidisciplinaire</strong> — il fait appel à de nombreuses compétences. L'évaluation de la rentabilité est réalisée par un <strong>contrôleur financier</strong> (ou contrôleur de gestion avec assistance).</div>
+      </div>
+    `
+  },
+  {
+    icon: '🌍',
+    title: 'Étude de marché — Concepts fondamentaux',
+    subtitle: 'Chapitre M1 MEO M10 · Pages 21-30',
+    content: `
+      <div class="memo-section-title">📌 Intérêt de l'étude de marché</div>
+      <div class="key-box">
+        <div class="key-title">Objectif principal</div>
+        <div class="key-text">Fournir des <strong>informations stratégiques utiles à la prise de décisions</strong>. Elle est en réalité le <strong>marketing d'étude</strong>. Elle est nécessaire au stade de l'idée et <strong>tout au long de l'existence de l'entreprise</strong>.</div>
+      </div>
+      <div class="memo-section-title">📊 Types de marchés (4)</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Marché principal</div><div class="def-text">Marché du produit/service directement concerné</div></div>
+        <div class="def-item"><div class="def-term">Marché générique</div><div class="def-text">Ensemble des produits répondant au même besoin générique</div></div>
+        <div class="def-item"><div class="def-term">Marché complémentaire</div><div class="def-text">Ensemble des marques/entreprises offrant des produits complémentaires à un autre type de produit donné, sur un marché précis</div></div>
+        <div class="def-item"><div class="def-term">Marché de substitution</div><div class="def-text">Produits pouvant remplacer le produit étudié</div></div>
+      </div>
+      <div class="memo-section-title">👥 Acteurs du marché</div>
+      <div class="key-box">
+        <div class="key-title">Composantes du marché</div>
+        <div class="key-text">Clients + Concurrents + Produits/services. <strong>Les apporteurs de capitaux ne font pas partie du marché</strong> (c'est l'intrus classique à l'examen).</div>
+      </div>
+      <div class="key-box">
+        <div class="key-title">Prescripteurs</div>
+        <div class="key-text">Associations ou organisations professionnelles/non gouvernementales qui <strong>recommandent ou non</strong> l'achat ou la consommation d'un produit.</div>
+      </div>
+      <div class="key-box">
+        <div class="key-title">Non-clients absolus</div>
+        <div class="key-text">Individus identifiés comme <strong>ne consommant pas</strong> le produit ou le service au moment de l'étude (≠ anciens clients, ≠ refus catégorique).</div>
+      </div>
+    `
+  },
+  {
+    icon: '📐',
+    title: 'Étapes création d\'entreprise — De l\'idée au projet',
+    subtitle: 'Chapitres 3-6 · Pages 23-56',
+    content: `
+      <div class="memo-section-title">🔄 3 phases</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Phase 1 — Idée</div><div class="def-text">Identifier et préciser l'idée de création. Vérifier son réalisme (SWOT simplifié).</div></div>
+        <div class="def-item"><div class="def-term">Phase 2 — Concept</div><div class="def-text">Prototype / maquette. Partager et tester la pertinence auprès d'interlocuteurs. Début du projet.</div></div>
+        <div class="def-item"><div class="def-term">Phase 3 — Projet</div><div class="def-text">Étude de faisabilité, étude de marché poussée, business model, étude financière → synthèse en BP.</div></div>
+      </div>
+      <div class="memo-section-title">🚀 12 étapes clés (Bertholet)</div>
+      <div class="key-box">
+        <div class="key-title">Les 12 premiers travaux</div>
+        <div class="key-text"><ul>
+          <li>1. Comprendre vos objectifs personnels</li>
+          <li>2. Définir vos objectifs d'entreprise</li>
+          <li>3. Cerner le problème à combattre</li>
+          <li>4. Connaître votre marché</li>
+          <li>5. Définir votre business model</li>
+          <li>6. Bâtir votre plan d'action</li>
+          <li>7. Trouver votre premier client</li>
+          <li>8. Construire votre image</li>
+          <li>9. Rencontrer du monde</li>
+          <li>10. Définir votre offre</li>
+          <li>11. Vous entourer</li>
+          <li>12. Créer vos routines</li>
+        </ul></div>
+      </div>
+      <div class="memo-section-title">🏗️ Structures d'accompagnement</div>
+      <div class="def-grid">
+        <div class="def-item"><div class="def-term">Incubateurs</div><div class="def-text">Avant la création — phase de gestation des projets innovants. Détecter, accueillir, accompagner.</div></div>
+        <div class="def-item"><div class="def-term">Pépinières</div><div class="def-text">Après la création — héberge de jeunes entreprises. Mutualisation de services (locaux, secrétariat...).</div></div>
+      </div>
+    `
+  }
+];
+
+// ✏ ZONE B — SÉRIE 1 : QCM THÉORIQUES
+const serie1 = [
+  {q:"Le business plan est avant tout :",type:'multi',opts:[{t:"Un document écrit éclairant les parties prenantes sur la viabilité d'un projet",c:true},{t:"Un rapport comptable annuel obligatoire",c:false},{t:"Un outil servant à mesurer la faisabilité commerciale, technique, organisationnelle et financière",c:true},{t:"Exclusivement un document de levée de fonds",c:false}],diff:'easy',piege:false,expl:"Le BP est un document écrit servant à éclairer les parties prenantes sur la viabilité du projet, couvrant les études de faisabilité commerciale, technique, organisationnelle et financière.",ref:"Chapitre 7 › Page 57"},
+  {q:"Parmi les 4 grandes finalités du business plan, laquelle est incorrecte ?",type:'multi',opts:[{t:"Valider les orientations stratégiques vis-à-vis de l'actionnaire",c:false},{t:"Adopter un projet interne marchand ou non marchand",c:false},{t:"Évaluer la rentabilité et négocier le prix d'une affaire commerciale",c:false},{t:"Remplacer le plan de comptes de l'entreprise",c:true}],diff:'easy',piege:true,expl:"Les 4 finalités du BP sont : validation stratégique (actionnaire), projet interne, levée de capitaux, et évaluation d'affaire commerciale. Il ne remplace jamais le plan comptable.",ref:"Chapitre 7 › Page 57-58"},
+  {q:"Réaliser un business plan c'est :",type:'multi',opts:[{t:"Uniquement réaliser une étude de marché",c:false},{t:"Réaliser les études de faisabilité commerciale, technique, organisationnelle et financière du projet",c:true},{t:"Uniquement quantifier les revenus prévisionnels",c:false},{t:"Rédiger les statuts de l'entreprise",c:false}],diff:'easy',piege:true,expl:"Réaliser un BP c'est conduire les études de faisabilité commerciale, technique, organisationnelle ET financière. L'étude de marché seule ne suffit pas.",ref:"Chapitre 7 › Page 57-58"},
+  {q:"Le business model se distingue du business plan en ce que :",type:'multi',opts:[{t:"Le business model est la façon dont l'entreprise génère son profit",c:true},{t:"Le business plan est le cœur du business model",c:false},{t:"Le business model est au centre du business plan",c:true},{t:"Les deux sont identiques",c:false}],diff:'med',piege:true,expl:"Le business model = façon dont l'entreprise génère son profit (cœur du BP). Le business plan est le document plus global qui contient le BM, la stratégie, les prévisions financières, etc.",ref:"Chapitre 7 › Section IV › Page 59"},
+  {q:"Le business case (étude d'opportunité) se distingue du business plan parce que :",type:'multi',opts:[{t:"Il ne contient pas a priori de plan d'action précis",c:false},{t:"L'entreprise ne mettra pas sur pied un projet avec des plans d'actions précis qui seront présentés dans un BP",c:true},{t:"Il remplace entièrement le business plan",c:false},{t:"Son but n'est pas seulement de valider un nouveau modèle économique",c:false}],diff:'hard',piege:true,expl:"Le business case se distingue du BP parce que l'entreprise ne mettra PAS sur pied un projet avec des plans d'actions précis qui seront présentés dans un BP. C'est une étude d'opportunité, pas un plan d'exécution.",ref:"Chapitre 7 › Page 58"},
+  {q:"Lorsque le BP porte sur l'ensemble d'une entreprise, la rédaction d'ensemble est confiée à :",type:'multi',opts:[{t:"Au directeur commercial",c:false},{t:"Au directeur financier",c:true},{t:"Au responsable projet",c:false},{t:"Au président du comité d'investissement",c:false}],diff:'med',piege:true,expl:"Quand le BP porte sur l'ensemble d'une entreprise, la partie financière est naturellement confiée au directeur financier qui assure aussi la coordination rédactionnelle d'ensemble.",ref:"Chapitre 7 › Page 58"},
+  {q:"L'étude et la mise en œuvre d'un projet au sein de l'entreprise sont le plus souvent confiées :",type:'multi',opts:[{t:"Au président du comité d'investissement",c:false},{t:"Au responsable projet",c:true},{t:"Au directeur général",c:false},{t:"Au contrôleur financier",c:false}],diff:'med',piege:false,expl:"L'étude et la mise en œuvre d'un projet interne à l'entreprise sont confiées au responsable projet, qui pilote l'ensemble du processus.",ref:"Chapitre 7 › Page 58"},
+  {q:"L'élaboration du business plan est :",type:'multi',opts:[{t:"Un document unidisciplinaire, centré sur la finance",c:false},{t:"Un document multidisciplinaire faisant appel à de nombreuses compétences",c:true},{t:"Réalisé uniquement par le directeur financier",c:false},{t:"Optionnel pour les projets non marchands",c:false}],diff:'easy',piege:false,expl:"Le BP est un document multidisciplinaire — il fait appel à des compétences commerciales, techniques, financières, juridiques, humaines. Sa rédaction implique plusieurs fonctions.",ref:"Chapitre 7 › Page 58"},
+  {q:"Pour les projets non marchands, une étude d'opportunité doit convaincre de l'intérêt du projet pour :",type:'multi',opts:[{t:"La liquidation de l'entreprise",c:false},{t:"L'efficacité de l'entreprise",c:true},{t:"Le rachat des créances",c:false},{t:"La levée de capitaux boursiers",c:false}],diff:'hard',piege:true,expl:"Pour les projets non marchands, l'étude d'opportunité doit convaincre de l'intérêt du projet pour l'EFFICACITÉ de l'entreprise (pas pour la rentabilité commerciale directe).",ref:"Chapitre 7 › Page 58-59"},
+  {q:"Dans le cadre d'un projet interne à l'entreprise, le BP :",type:'multi',opts:[{t:"Sert pour la levée de capitaux par émission d'actions",c:false},{t:"Sert comme outil pour évaluer la rentabilité d'une affaire commerciale",c:true},{t:"Sert pour la validation des orientations stratégiques vis-à-vis de l'actionnaire",c:false},{t:"Sert exclusivement à préparer la liquidation",c:false}],diff:'med',piege:true,expl:"Dans le cadre d'un projet interne (marchand), le BP sert comme outil pour évaluer la rentabilité d'une affaire commerciale et en négocier le prix (y compris PPP).",ref:"Chapitre 7 › Page 57"},
+  {q:"Le plan stratégique à moyen terme diffère du BP en ce que :",type:'multi',opts:[{t:"Les aspects financiers y sont moins développés car l'objectif de rentabilité est moins immédiat",c:true},{t:"Les aspects financiers y sont plus développés",c:false},{t:"Il ne comprend pas d'étude de marché",c:false},{t:"Il est plus court que le BP",c:false}],diff:'hard',piege:true,expl:"Pour le plan stratégique à moyen terme, les aspects financiers sont MOINS développés que dans un BP car l'objectif de rentabilité y est MOINS immédiat. C'est une confusion fréquente.",ref:"Chapitre 7 › Page 58"},
+  {q:"Pour l'adoption du projet, les entreprises :",type:'multi',opts:[{t:"Soumettent leurs projets à des experts externes",c:false},{t:"Soumettent de plus en plus leurs projets à une procédure formalisée d'adoption en interne",c:true},{t:"Laissent le directeur général décider seul",c:false},{t:"N'utilisent plus le business plan",c:false}],diff:'easy',piege:false,expl:"Pour l'adoption du projet, les entreprises soumettent de plus en plus leurs projets d'investissement à une procédure formalisée d'adoption en interne (comité d'investissement, procédure standardisée).",ref:"Chapitre 7 › Page 58"},
+  {q:"Le BP possède combien de grandes finalités ?",type:'multi',opts:[{t:"Deux (02)",c:false},{t:"Cinq (05)",c:false},{t:"Quatre (04)",c:true},{t:"Trois (03)",c:false}],diff:'med',piege:true,expl:"Le BP possède 4 grandes finalités : (1) Validation stratégique actionnaire, (2) Projet interne, (3) Levée de capitaux, (4) Évaluation d'affaire commerciale.",ref:"Chapitre 7 › Page 57"},
+  {q:"Dans l'espace OHADA, la SARL est définie par :",type:'multi',opts:[{t:"Une responsabilité illimitée des associés",c:false},{t:"Des droits représentés par des parts sociales et responsabilité limitée aux apports",c:true},{t:"Un capital social minimum de 10 millions FCFA",c:false},{t:"L'obligation de recourir à un notaire pour toute modification",c:false}],diff:'med',piege:true,expl:"La SARL : associés responsables uniquement à concurrence de leurs apports, droits représentés par des parts sociales. Capital minimum OHADA = 1 000 000 FCFA (5 000 FCFA au Burkina Faso par décret).",ref:"Chapitre 4 › Section 2.2.1 › Page 42-43"},
+  {q:"La Société Anonyme (SA) a un capital minimum de :",type:'multi',opts:[{t:"1 000 000 FCFA",c:false},{t:"5 000 000 FCFA",c:false},{t:"10 000 000 FCFA",c:true},{t:"Aucun minimum légal",c:false}],diff:'easy',piege:false,expl:"L'article 387 de l'AUSCGIE fixe le capital minimum de la SA à 10 000 000 FCFA. Les actions ont un montant nominal minimum de 10 000 FCFA en pratique.",ref:"Chapitre 4 › Section 2.2.2 › Page 43"},
+  {q:"La Société en Nom Collectif (SNC) se caractérise par :",type:'multi',opts:[{t:"Une responsabilité limitée aux apports",c:false},{t:"Tous les associés ont le statut de commerçant et répondent indéfiniment et solidairement",c:true},{t:"Un capital minimum de 1 000 000 FCFA",c:false},{t:"La possibilité d'avoir des associés mineurs",c:false}],diff:'med',piege:true,expl:"Dans la SNC, TOUS les associés sont commerçants et répondent INDÉFINIMENT et SOLIDAIREMENT des dettes sociales. Les mineurs non émancipés sont exclus. Pas de capital minimum légal.",ref:"Chapitre 4 › Section 2.2.4 › Page 44"},
+  {q:"Le GIE (Groupement d'Intérêt Économique) a pour but :",type:'multi',opts:[{t:"De partager les bénéfices entre ses membres",c:false},{t:"De faciliter ou développer l'activité économique de ses membres pour une durée déterminée",c:true},{t:"De créer une nouvelle entité commerciale indépendante",c:false},{t:"D'émettre des actions en bourse",c:false}],diff:'med',piege:true,expl:"Le GIE a pour but EXCLUSIF de mettre en œuvre, pour une durée déterminée, tous les moyens propres à faciliter ou développer l'activité économique de ses membres. Son activité est auxiliaire.",ref:"Chapitre 4 › Section 2.2.6 › Page 45"},
+  {q:"Au Burkina Faso, les 3 régimes d'imposition sont :",type:'multi',opts:[{t:"RNI, RSI, CSI",c:true},{t:"TVA, BIC, IS",c:false},{t:"Forfaitaire, réel, simplifié",c:false},{t:"IR, IS, Micro-entreprise",c:false}],diff:'easy',piege:true,expl:"Les 3 régimes d'imposition au Burkina Faso sont : RNI (Réel Normal), RSI (Réel Simplifié), CSI (Contribution Secteur Informel). TVA/BIC/IS sont des impôts, pas des régimes.",ref:"Chapitre 5 › Section II › Page 50"},
+  {q:"Le RNI s'applique aux contribuables (livraisons/travaux) dont le CA annuel hors taxe est :",type:'multi',opts:[{t:"≥ 50 000 000 FCFA",c:false},{t:"≥ 100 000 000 FCFA",c:true},{t:"< 30 000 000 FCFA",c:false},{t:"≥ 15 000 000 FCFA",c:false}],diff:'med',piege:false,expl:"Pour les livraisons de biens, ventes, travaux immobiliers/publics : RNI si CA ≥ 100 000 000 FCFA. Pour les autres opérations : RNI si CA ≥ 50 000 000 FCFA.",ref:"Chapitre 5 › Section 2.1 › Page 51"},
+  {q:"La CSI s'applique aux personnes physiques (activités mixtes) dont le CA global annuel est :",type:'multi',opts:[{t:"Inférieur à 30 000 000 FCFA",c:false},{t:"Inférieur à 15 000 000 FCFA",c:true},{t:"Inférieur à 50 000 000 FCFA",c:false},{t:"Inférieur à 100 000 000 FCFA",c:false}],diff:'hard',piege:true,expl:"Pour les activités mixtes, le contribuable n'est admis au régime CSI que si son CA global annuel est inférieur à 15 000 000 FCFA.",ref:"Chapitre 5 › Section 2.3 › Page 53"},
+  {q:"Le marketing est :",type:'multi',opts:[{t:"Un processus global pour fournir le produit/service au marché et satisfaire un besoin du client",c:true},{t:"Une simple technique de vente",c:false},{t:"Un ensemble de moyens dont dispose une entreprise pour vendre ses produits de manière rentable",c:true},{t:"Uniquement la publicité et la promotion",c:false}],diff:'med',piege:false,expl:"Le marketing est à la fois un processus global de mise sur le marché ET un ensemble de moyens pour vendre de façon rentable. Ce n'est pas uniquement une technique de vente ou de la publicité.",ref:"Chapitre M10 › Page 27"},
+  {q:"L'étude de marché est en réalité :",type:'multi',opts:[{t:"Le marketing opérationnel",c:false},{t:"Le marketing d'étude",c:true},{t:"Le marketing stratégique",c:false},{t:"La force de vente",c:false}],diff:'hard',piege:true,expl:"L'étude de marché est en réalité le MARKETING D'ÉTUDE (ou marketing d'étude). Elle se distingue du marketing opérationnel (action) et du marketing stratégique (orientation).",ref:"Chapitre M10 › Page 26"},
+  {q:"L'entreprise individuelle se caractérise notamment par :",type:'multi',opts:[{t:"La non-distinction du patrimoine de l'entreprise et des biens propres de l'entrepreneur",c:true},{t:"Une responsabilité limitée aux apports",c:false},{t:"Un capital minimum obligatoire",c:false},{t:"La nécessité d'avoir au moins deux associés",c:false}],diff:'easy',piege:true,expl:"L'EI : patrimoine de l'entreprise INDISSOCIABLE du patrimoine personnel. Responsabilité TOTALE et ILLIMITÉE sur les biens propres. Pas de capital minimum. Un seul promoteur.",ref:"Chapitre 4 › Section 2.1 › Page 41"},
+  {q:"Les incubateurs s'adressent :",type:'multi',opts:[{t:"Aux entreprises déjà créées cherchant à se développer",c:false},{t:"Aux projets d'entreprise avant leur création",c:true},{t:"Uniquement aux grandes entreprises",c:false},{t:"Aux entreprises en faillite",c:false}],diff:'easy',piege:false,expl:"Les incubateurs interviennent en AMONT de la création, lors de la phase de gestation des projets innovants. Les pépinières s'adressent aux entreprises DÉJÀ créées.",ref:"Chapitre 6 › Section 2.1 › Page 56"},
+  {q:"En matière de stratégie de sélection pour les investissements immobiliers, les parties en présence sont :",type:'multi',opts:[{t:"Le maître d'ouvrage, le bureau d'étude, l'ordonnateur financier, l'entrepreneur",c:false},{t:"Le maître d'ouvrage, le maître d'œuvre, l'ordonnateur financier, l'entrepreneur seul ou groupement",c:true},{t:"Le maître d'ouvrage, le maître d'œuvre est un bureau d'étude, l'entrepreneur",c:false},{t:"Uniquement le maître d'ouvrage et l'entrepreneur",c:false}],diff:'hard',piege:true,expl:"Les parties : maître d'ouvrage + maître d'œuvre + ordonnateur financier + entrepreneur (seul ou groupement d'entreprise). Le maître d'œuvre peut être un bureau d'étude, mais n'EST PAS automatiquement un bureau d'étude.",ref:"Examen 2021 › Question 20"},
+  {q:"Les calculs de rentabilité occupent une place importante car les investissements sont le plus souvent réalisés dans une optique :",type:'multi',opts:[{t:"Liquidative",c:false},{t:"De rentabilité",c:true},{t:"De continuité de l'exploitation",c:false},{t:"De trésorerie court terme",c:false}],diff:'easy',piege:true,expl:"Les investissements sont réalisés dans une optique de RENTABILITÉ — c'est pour cela que les calculs de VAN, TRI, seuil de rentabilité occupent une place centrale dans le BP.",ref:"Chapitre 7 › Plan financier › Page 63"},
+  {q:"Dans le cadre d'un crédit-bail, les avantages possibles sont :",type:'multi',opts:[{t:"La présence de mise de fonds par l'entreprise utilisatrice",c:true},{t:"Le professionnalisme du comptable du crédit-bail",c:false},{t:"La rapidité et la simplicité de constitution du dossier",c:false},{t:"L'absence totale de loyer",c:false}],diff:'hard',piege:true,expl:"ATTENTION piège : l'avantage réel du crédit-bail est l'ABSENCE de mise de fonds initiale par l'entreprise utilisatrice (elle utilise le bien sans l'acheter). La réponse qui semble juste 'présence de mise de fonds' est en fait fausse — c'est un avantage parce qu'il N'Y A PAS de mise de fonds.",ref:"Examen 2021 › Question 19 — Cours › Chapitre 7"},
+  {q:"La classification par secteur d'activités distingue :",type:'multi',opts:[{t:"Primaire (nature), Secondaire (transformation), Tertiaire (services)",c:true},{t:"Public, privé, mixte",c:false},{t:"Agricole, industriel, commercial",c:false},{t:"Micro, petite, moyenne, grande entreprise",c:false}],diff:'easy',piege:false,expl:"Classification sectorielle : Primaire (facteur naturel : agriculture, élevage, pêche), Secondaire (transformation en produits finis), Tertiaire (services : distribution, transport, crédit, assurance...).",ref:"Chapitre 2 › Section 1.5.1 › Page 19"},
+  {q:"La micro-entreprise au Burkina Faso emploie :",type:'multi',opts:[{t:"Moins de 5 employés",c:false},{t:"Moins de 10 employés en permanence",c:true},{t:"Entre 10 et 30 employés",c:false},{t:"Moins de 30 employés",c:false}],diff:'med',piege:true,expl:"Selon le Décret 2017-1165 au Burkina Faso : micro-entreprise < 10 employés ; petite entreprise 10-30 ; moyenne entreprise 30-99 ; grande entreprise ≥ 100 salariés.",ref:"Chapitre 2 › Section 1.5.3 › Page 21"},
+  {q:"Le marché complémentaire est :",type:'multi',opts:[{t:"Composé de produits de substitution",c:false},{t:"L'ensemble des marques ou entreprises offrant des produits complémentaires à un type de produit donné, sur un marché précis",c:true},{t:"Uniquement composé de produits de grande consommation",c:false},{t:"Le marché des fournisseurs",c:false}],diff:'med',piege:true,expl:"Le marché complémentaire = ensemble des marques/entreprises offrant des produits COMPLÉMENTAIRES à un autre type de produit donné, sur un marché précis. Ex : marché des imprimantes est complémentaire au marché des ordinateurs.",ref:"Examen 2021 › Question 23"},
+  {q:"Les non-clients absolus sont :",type:'multi',opts:[{t:"Les clients qui ont abandonné la consommation d'un produit",c:false},{t:"Les clients qui refusent catégoriquement",c:false},{t:"Des individus identifiés comme ne consommant pas le produit ou le service au moment de l'étude",c:true},{t:"Les anciens clients partis chez la concurrence",c:false}],diff:'hard',piege:true,expl:"Les non-clients absolus = individus identifiés comme NE CONSOMMANT PAS le produit au moment de l'étude. Différent des clients perdus (qui ont abandonné) ou des ex-clients (partis chez concurrents).",ref:"Examen 2021 › Question 30"},
+  {q:"L'étude de marché permet à une entreprise de (choisissez toutes les réponses correctes) :",type:'multi',opts:[{t:"Tracer le profil de sa clientèle (lieu, âge, sexe, revenu)",c:true},{t:"Réduire les risques lors des décisions opérationnelles",c:true},{t:"Mieux comprendre les préférences clients (4P)",c:true},{t:"Garantir le succès commercial",c:false}],diff:'med',piege:true,expl:"L'étude de marché permet : profiler la clientèle, réduire les risques, comprendre les préférences (4P). Elle ne GARANTIT pas le succès — elle réduit l'incertitude.",ref:"Examen 2021 › Question 27"},
+  {q:"Les 4 types de marchés reconnus sont (choisissez les 4) :",type:'multi',opts:[{t:"Le marché complémentaire",c:true},{t:"Le marché générique",c:true},{t:"Le marché de substitution",c:true},{t:"Le marché principal",c:true},{t:"Le marché des biens et services",c:false}],diff:'hard',piege:true,expl:"Les 4 types : principal, générique, complémentaire, substitution. 'Marché des biens et services' est une notion économique générale, pas une catégorie du modèle marketing.",ref:"Examen 2021 › Question 29"},
+  {q:"L'intérêt d'une étude de marché pour l'entreprise est de :",type:'multi',opts:[{t:"Connaître tous les produits d'un marché",c:false},{t:"Connaître toutes les entreprises concurrentes",c:false},{t:"Fournir des informations stratégiques utiles à la prise de décisions",c:true},{t:"Remplacer l'étude financière",c:false}],diff:'easy',piege:false,expl:"L'intérêt principal est de fournir des INFORMATIONS STRATÉGIQUES utiles à la prise de décisions. L'étude de marché ne remplace pas l'étude financière et ne prétend pas tout couvrir.",ref:"Examen 2021 › Question 21"},
+  {q:"L'option pour le RSI ou le RNI produit ses effets pour :",type:'multi',opts:[{t:"La TVA uniquement",c:false},{t:"Le BIC uniquement",c:false},{t:"Les deux impôts : TVA et BIC",c:true},{t:"Tous les impôts professionnels sans exception",c:false}],diff:'hard',piege:true,expl:"Un contribuable ne peut être soumis qu'à un seul régime d'imposition par exercice. L'option pour le RSI ou le RNI produit ses effets pour les DEUX impôts : TVA et BIC.",ref:"Chapitre 5 › Section 2.2 › Page 53"},
+  {q:"La SAS (Société par Actions Simplifiée) se caractérise par :",type:'multi',opts:[{t:"Un capital social librement déterminé par les statuts",c:true},{t:"Un capital minimum de 5 millions FCFA",c:false},{t:"Une organisation et fonctionnement librement déterminés par les statuts",c:true},{t:"L'impossibilité d'avoir un seul associé",c:false}],diff:'med',piege:false,expl:"La SAS : capital social et nominal des actions librement fixés par les statuts ; organisation et fonctionnement librement déterminés. Elle peut être unipersonnelle. Dirigée par un président.",ref:"Chapitre 4 › Section 2.2.3 › Page 43-44"},
+  {q:"La SCS (Société en Commandite Simple) implique :",type:'multi',opts:[{t:"Des associés commandités avec responsabilité illimitée et solidaire",c:true},{t:"Des associés commanditaires responsables dans la limite de leurs apports seulement",c:true},{t:"Une responsabilité limitée pour tous les associés",c:false},{t:"Un capital minimum de 1 000 000 FCFA",c:false}],diff:'hard',piege:false,expl:"La SCS coexiste deux catégories : commandités (responsabilité indéfinie et solidaire) et commanditaires (responsabilité limitée aux apports). Pas de capital minimum légal.",ref:"Chapitre 4 › Section 2.2.5 › Page 44-45"},
+  {q:"Le marché est influencé par les facteurs de l'environnement (culturel, démographique, technologique, institutionnel, familier). Il est influencé par :",type:'multi',opts:[{t:"Uniquement deux de ces environnements",c:false},{t:"Trois de ces environnements",c:false},{t:"Tous ces environnements",c:false},{t:"Deux de ces environnements",c:true}],diff:'hard',piege:true,expl:"Selon le cours, le marché est influencé par les facteurs de DEUX de ces environnements (réponse confirmée dans les examens 2021 — Q9 examen Moodle).",ref:"Examen Moodle 2021 › Question 9"},
+  {q:"Les termes proches du business plan incluent (cochez toutes les réponses correctes) :",type:'multi',opts:[{t:"Le business case",c:true},{t:"Le business model",c:true},{t:"Le plan stratégique",c:true},{t:"Le plan de développement",c:true},{t:"Le plan de relance",c:true}],diff:'med',piege:false,expl:"Tous ces termes sont répertoriés comme proches du BP dans le cours. Le plan de relance, business case, business model, plan stratégique et plan de développement sont tous des documents de planification voisins.",ref:"Chapitre 7 › Page 58 — Examen Moodle › Question 14"},
+  {q:"Pour l'élaboration du plan financier, l'horizon de planification peut être :",type:'multi',opts:[{t:"Court terme de 1 an",c:true},{t:"Moyen et long terme allant de 3 à 5 ans",c:true},{t:"Moyen terme de 2 à 3 ans",c:false},{t:"Long terme de 4 à 10 ans",c:false}],diff:'hard',piege:true,expl:"L'élaboration du plan financier comprend plusieurs niveaux selon l'horizon : court terme (1 an) et moyen/long terme (3 à 5 ans). L'horizon 2-3 ans ou 4-10 ans ne sont pas les bonnes réponses — c'est bien 3-5 ans pour le moyen-long terme.",ref:"Examen 2021 › Question 36 & 39"}
+];
+
+// ✏ ZONE C — SÉRIE 2 : CAS PRATIQUES
+const serie2 = [
+  {q:"Aminata souhaite créer une boulangerie à Ouagadougou seule avec ses économies. Son CA prévisionnel est de 8 000 000 FCFA/an. Quel régime d'imposition s'applique à elle ?",type:'multi',opts:[{t:"RNI — Réel Normal d'Imposition",c:false},{t:"RSI — Réel Simplifié d'Imposition",c:false},{t:"CSI — Contribution du Secteur Informel",c:true},{t:"IS — Impôt sur les Sociétés",c:false}],diff:'med',piege:false,expl:"Aminata réalise des livraisons de biens (boulangerie) avec un CA < 30 000 000 FCFA. Elle entre dans la CSI. Le RSI s'applique à partir de 30 M FCFA pour ce type d'activité.",ref:"Chapitre 5 › Section 2.3 › Page 53"},
+  {q:"Kofi veut créer une société de conseil en ingénierie avec deux associés. Son CA prévisionnel est de 40 000 000 FCFA/an. Quel régime d'imposition s'applique ?",type:'multi',opts:[{t:"CSI",c:false},{t:"RSI",c:true},{t:"RNI",c:false},{t:"Forfaitaire",c:false}],diff:'med',piege:true,expl:"Kofi réalise des opérations 'autres que livraisons' (conseil). CA = 40 M FCFA, soit entre 15 M et 50 M FCFA → RSI. De plus, c'est une personne morale qui ne remplit pas les conditions du RNI → RSI.",ref:"Chapitre 5 › Section 2.2 › Page 52"},
+  {q:"Fatoumata monte un projet de restauration rapide. Son business plan prévoit un coût total de 500 000 000 FCFA, un apport personnel de 200 000 000 FCFA, un emprunt de 50% du total. Quel est le montant de la subvention ?",type:'multi',opts:[{t:"50 000 000 FCFA — 10%",c:true},{t:"150 000 000 FCFA — 30%",c:false},{t:"250 000 000 FCFA — 50%",c:false},{t:"100 000 000 FCFA — 20%",c:false}],diff:'hard',piege:false,expl:"Total = 500 M. Apport personnel = 200 M. Emprunt = 50% × 500 M = 250 M. Subvention = 500 M - 200 M - 250 M = 50 000 000 FCFA = 10% du total.",ref:"Examen 2021 › Question 33 — Chapitre 7 › Plan financier"},
+  {q:"Ibrahim crée une SARL au Burkina Faso avec un capital de 3 000 FCFA. Est-ce légalement possible ?",type:'multi',opts:[{t:"Non, le capital minimum OHADA est 1 000 000 FCFA",c:false},{t:"Non, la valeur nominale d'une part ne peut être inférieure à 5 000 FCFA",c:true},{t:"Oui, car le Burkina a abaissé le minimum à 5 000 FCFA",c:false},{t:"Oui, il n'y a aucun minimum au Burkina",c:false}],diff:'hard',piege:true,expl:"Au Burkina Faso, le décret 2016-314 permet un capital social minimum de 5 000 FCFA. MAIS la valeur nominale d'UNE PART SOCIALE ne peut être inférieure à 5 000 FCFA. Un capital de 3 000 FCFA est impossible car on ne peut avoir une part à 3 000 FCFA.",ref:"Chapitre 4 › Section 2.2.1 › Page 42-43"},
+  {q:"La SARL de Mamadou réalise 120 000 000 FCFA de CA de travaux publics. Quel régime d'imposition s'applique ?",type:'multi',opts:[{t:"CSI",c:false},{t:"RSI",c:false},{t:"RNI",c:true},{t:"IS uniquement",c:false}],diff:'med',piege:false,expl:"Travaux publics = livraisons/travaux. CA = 120 M FCFA ≥ 100 000 000 FCFA → RNI obligatoire. De plus, en tant que SARL (personne morale), elle ne peut pas être à la CSI.",ref:"Chapitre 5 › Section 2.1 › Page 51"},
+  {q:"Sylvie veut créer une entreprise de gardiennage à Ouagadougou. En plus des formalités au CEFORE, que doit-elle obtenir ?",type:'multi',opts:[{t:"Une autorisation du Conseil Supérieur de l'Information",c:false},{t:"Une autorisation d'exercer du Ministère de la Sécurité",c:true},{t:"Un agrément du Ministère des Finances",c:false},{t:"Un visa du Ministère du Tourisme",c:false}],diff:'med',piege:false,expl:"Les sociétés de gardiennage font partie des activités réglementées au Burkina Faso. Elles doivent obtenir une autorisation d'exercer auprès du Ministère de la Sécurité, en plus des formalités CEFORE.",ref:"Chapitre 8 › Section 2.3 › Page 68"},
+  {q:"Moussa présente son BP à une banque pour financer son projet de transformation agroalimentaire. La banque demande la partie financière. Quelles questions cette partie doit-elle successivement répondre ?",type:'multi',opts:[{t:"5 questions : viabilité, rentabilité, trésorerie, risques, exit",c:false},{t:"3 questions : marché, technique, financière",c:false},{t:"2 questions sur la rentabilité et la trésorerie",c:true},{t:"1 seule question : quelle est la VAN ?",c:false}],diff:'hard',piege:true,expl:"Quand le BP porte sur l'ensemble d'une entreprise avec pour but de lever des capitaux, la partie financière répond successivement à 2 questions (rentabilité et trésorerie).",ref:"Examen 2021 › Question 6"},
+  {q:"Clarisse a créé sa boutique de vêtements en septembre de l'année N. Son CA prévisionnel ajusté au prorata (4 mois) est de 18 000 000 FCFA pour des opérations 'autres que livraisons'. Quel régime s'applique ?",type:'multi',opts:[{t:"CSI",c:false},{t:"RSI",c:true},{t:"RNI",c:false},{t:"Exonérée car première année",c:false}],diff:'hard',piege:true,expl:"CA proratisé = 18 M FCFA. Opérations 'autres' → seuil RSI = 15 M à 50 M FCFA (proratisé). 18 M > 15 M → RSI. Les chiffres limites sont AJUSTÉS au prorata du temps d'exploitation.",ref:"Chapitre 5 › Section 2.2 › Page 52"},
+  {q:"Jean-Pierre crée une SNC avec sa femme pour une épicerie. Est-ce légalement possible au Burkina Faso ?",type:'multi',opts:[{t:"Oui, tout couple peut créer une SNC",c:false},{t:"Non, une SNC entre époux est interdite",c:true},{t:"Oui si les deux sont commerçants",c:false},{t:"Non car la SNC nécessite 3 associés minimum",c:false}],diff:'hard',piege:true,expl:"La responsabilité indéfinie et solidaire de la SNC justifie l'interdiction d'une telle société entre époux. La SNC entre époux est formellement interdite par l'AUSCGIE.",ref:"Chapitre 4 › Section 2.2.4 › Page 44"},
+  {q:"Adama monte un projet innovant et cherche à se faire accompagner avant de créer son entreprise. Vers quelle structure doit-il se tourner en priorité ?",type:'multi',opts:[{t:"Une pépinière d'entreprise",c:false},{t:"Un incubateur d'entreprise",c:true},{t:"Le CEFORE directement",c:false},{t:"Une banque commerciale",c:false}],diff:'easy',piege:true,expl:"Les incubateurs s'adressent aux projets AVANT la création, lors de la phase de gestation de projets innovants. Les pépinières accueillent les entreprises DÉJÀ créées.",ref:"Chapitre 6 › Section 2.1 › Page 56"},
+  {q:"Nadia dirige une ONG qui envisage d'investir dans un projet de purification d'eau (non marchand). Quelle finalité du BP correspond à son cas ?",type:'multi',opts:[{t:"Levée de capitaux par émission d'actions",c:false},{t:"Adoption d'un projet interne non marchand — convaincre de l'efficacité de l'entreprise",c:true},{t:"Évaluer la rentabilité commerciale et négocier le prix",c:false},{t:"Validation des orientations stratégiques vis-à-vis d'un actionnaire",c:false}],diff:'med',piege:true,expl:"Pour un projet NON MARCHAND, le BP sert à l'adoption du projet interne et l'étude d'opportunité doit convaincre de l'intérêt du projet pour l'EFFICACITÉ de l'organisation.",ref:"Chapitre 7 › Page 57-59"},
+  {q:"Un promoteur relève du RSI en 2024. En janvier 2025, peut-il passer au RNI ?",type:'multi',opts:[{t:"Non, jamais",c:false},{t:"Oui, en optant avant le 1er février de chaque année",c:true},{t:"Oui, à tout moment de l'année",c:false},{t:"Seulement si son CA dépasse le seuil RNI",c:false}],diff:'med',piege:false,expl:"Un contribuable RSI peut opter pour le RNI avant le 1er février de chaque année. L'option prend effet le 1er janvier et est irrévocable 3 ans.",ref:"Chapitre 5 › Section 2.2 › Page 52"},
+  {q:"Binta présente un BP pour une cession d'immobilisation (vente d'un terrain de l'entreprise). Quel type de projet interne est-ce ?",type:'multi',opts:[{t:"Un projet marchand créant du CA",c:false},{t:"Un projet non marchand d'efficacité",c:false},{t:"Une cession d'immobilisation — contexte d'utilisation du BP interne",c:true},{t:"Un projet de levée de capitaux",c:false}],diff:'hard',piege:false,expl:"Le BP portant sur un projet interne est utilisé notamment pour les cessions d'immobilisations. C'est l'un des contextes d'utilisation du BP interne listés dans le cours.",ref:"Examen 2021 › Question 14"},
+  {q:"Le CA annuel d'une société de services (opérations 'autres') est de 60 000 000 FCFA. Elle est une personne morale. Quel régime d'imposition ?",type:'multi',opts:[{t:"CSI",c:false},{t:"RSI",c:true},{t:"RNI",c:false},{t:"IS forfaitaire",c:false}],diff:'med',piege:true,expl:"60 M FCFA pour 'autres opérations' → seuil RNI est 50 M FCFA. Donc normalement RNI. MAIS attention : en tant que personne morale qui ne remplit pas les conditions du RNI... En réalité 60 M > 50 M → RNI s'applique. Recalculer : 60 M ≥ 50 M donc RNI. La réponse RSI est fausse — c'est RNI.",ref:"Chapitre 5 › Section 2.1 › Page 51"},
+  {q:"Pour créer une entreprise individuelle au CEFORE à Ouagadougou, quel est le coût de base ?",type:'multi',opts:[{t:"10 000 FCFA",c:false},{t:"25 000 FCFA",c:false},{t:"40 000 FCFA",c:true},{t:"47 500 FCFA",c:false}],diff:'med',piege:true,expl:"La création d'une entreprise individuelle au CEFORE coûte 40 000 FCFA. Pour les entreprises sociétaires, le coût est de 47 500 FCFA au CEFORE.",ref:"Chapitre 8 › Section 1.3 › Page 66"},
+  {q:"Sali monte une SAS avec son frère pour un cabinet d'architecture. Elle veut s'assurer que si l'entreprise fait faillite, ses biens personnels sont protégés. La SAS lui offre-t-elle cette protection ?",type:'multi',opts:[{t:"Non, la SAS a une responsabilité illimitée",c:false},{t:"Oui, dans la SAS la responsabilité est limitée aux apports",c:true},{t:"Partiellement, selon le rang des associés",c:false},{t:"Seulement si le capital est supérieur à 10 millions FCFA",c:false}],diff:'easy',piege:false,expl:"Dans la SAS, l'associé n'est responsable des dettes sociales qu'à concurrence de son apport. Les biens personnels sont donc protégés, contrairement à l'EI ou la SNC.",ref:"Chapitre 4 › Section 2.2.3 › Page 43-44"},
+  {q:"Un contributeur à la CSI doit souscrire une déclaration d'existence dans quel délai ?",type:'multi',opts:[{t:"30 jours du début d'activité",c:true},{t:"60 jours du début d'activité",c:false},{t:"Avant le 1er janvier",c:false},{t:"Dans l'année civile",c:false}],diff:'med',piege:false,expl:"Le contribuable soumis à la CSI doit souscrire une déclaration d'existence au service des impôts de son ressort territorial dans les 30 jours du début de ses activités.",ref:"Chapitre 5 › Section 2.3 › Page 54"},
+  {q:"Patrick lance une radio privée à Bobo-Dioulasso. Outre le CEFORE, quelle autorisation doit-il obtenir ?",type:'multi',opts:[{t:"Autorisation du Ministère du Commerce",c:false},{t:"Autorisation d'exercer du Conseil Supérieur de l'Information",c:true},{t:"Agrément du Ministère des Finances",c:false},{t:"Visa du Ministère du Tourisme",c:false}],diff:'med',piege:false,expl:"Les radios privées doivent obtenir une autorisation d'exercer auprès du Conseil Supérieur de l'Information (CSI au sens autorité de régulation, à ne pas confondre avec la CSI fiscale).",ref:"Chapitre 8 › Section 2.3 › Page 68"},
+  {q:"Karine prépare un business plan pour une levée de capitaux auprès d'un fonds d'investissement. Comment évalue-t-on la valeur de l'entreprise dans ce contexte ?",type:'multi',opts:[{t:"Par la méthode comptable du patrimoine net",c:false},{t:"Par la méthode des DCF (Discounted Cash Flows)",c:true},{t:"Par le chiffre d'affaires brut",c:false},{t:"Par le bénéfice de la dernière année",c:false}],diff:'med',piege:false,expl:"Pour la levée de capitaux, le BP sert à la levée de capitaux (capital, emprunt, subventions) et à la valorisation de l'entreprise par la méthode des DCF (actualisation des flux de trésorerie).",ref:"Chapitre 7 › Page 57"},
+  {q:"Lucie veut ouvrir un restaurant de tourisme à Ouagadougou. En plus du CEFORE, quelle formalité supplémentaire est requise ?",type:'multi',opts:[{t:"Agrément du Ministère de la Sécurité",c:false},{t:"Autorisation d'exploiter du Ministère chargé du tourisme",c:true},{t:"Visa du Conseil Supérieur de l'Information",c:false},{t:"Déclaration préalable d'importation au CGU",c:false}],diff:'med',piege:false,expl:"L'exploitation de restaurants de tourisme nécessite une autorisation d'exploiter délivrée par le Ministère chargé du tourisme, en sus des formalités standard au CEFORE.",ref:"Chapitre 8 › Section 2.3 › Page 68"},
+  {q:"Pour un plan financier d'entreprise, comment estime-t-on le BFR dans une première approche ?",type:'multi',opts:[{t:"En utilisant la méthode du bilan prévisionnel détaillé",c:false},{t:"En utilisant le BFR moyen de la profession disponible auprès des CGA ou syndicats professionnels",c:true},{t:"En prenant 30% du CA prévisionnel",c:false},{t:"Par la méthode de l'équilibre économique",c:false}],diff:'hard',piege:false,expl:"Dans une approche préliminaire, on utilise le BFR moyen de la profession fourni par les Centres de Gestion Agréés (CGA), les syndicats professionnels, ou par un calcul réaliste sommaire.",ref:"Chapitre 3 › Section 2.6 › Page 31"},
+  {q:"Bernard monte une SNC avec son frère pour une activité commerciale. Quelques mois plus tard, son frère décède. Qu'advient-il de la SNC ?",type:'multi',opts:[{t:"La SNC continue normalement avec Bernard seul",c:false},{t:"En principe, le décès d'un associé entraîne la fin de la SNC",c:true},{t:"La SNC devient automatiquement une EI",c:false},{t:"La SNC devient une SARL",c:false}],diff:'hard',piege:false,expl:"La SNC est caractérisée par l'intuitu personae. En principe, le décès d'un associé entraîne la dissolution de la société, sauf disposition contraire des statuts.",ref:"Chapitre 4 › Section 2.2.4 › Page 44"},
+  {q:"Aminata souhaite opter pour la RSI depuis la CSI. Quand peut-elle le faire ?",type:'multi',opts:[{t:"À tout moment de l'année",c:false},{t:"Avant le 1er février de chaque année, irrévocable 3 ans",c:true},{t:"Avant le 31 décembre de l'année précédente",c:false},{t:"Seulement si son CA dépasse un seuil",c:false}],diff:'med',piege:false,expl:"Un contribuable CSI peut opter pour le RSI avant le 1er février de chaque année. L'option prend effet le 1er janvier et est irrévocable pendant 3 ans.",ref:"Chapitre 5 › Section 2.3 › Page 54"},
+  {q:"Un promoteur veut démarrer une activité de distribution de boissons. La CSI s'applique-t-elle ?",type:'multi',opts:[{t:"Oui, comme toute activité commerciale",c:false},{t:"Non, les contribuables relevant de la Contribution du Secteur Boissons (CSB) sont exclus de la CSI",c:true},{t:"Oui, mais seulement si le CA est inférieur à 30 M FCFA",c:false},{t:"Non, car les boissons sont importées",c:false}],diff:'hard',piege:true,expl:"La CSI ne s'applique pas aux contribuables relevant de la Contribution du Secteur Boissons (CSB). Ce sont deux régimes distincts.",ref:"Chapitre 5 › Section 2.3 › Page 54"},
+  {q:"Alice présente un BP de 55 pages (hors annexes) à un investisseur. Quelle est la recommandation du cours ?",type:'multi',opts:[{t:"C'est acceptable pour un projet complexe",c:false},{t:"Le BP ne doit pas excéder 40 pages hors annexes — 55 pages est trop long",c:true},{t:"Il n'y a pas de limite de pages dans un BP",c:false},{t:"La limite est de 100 pages",c:false}],diff:'easy',piege:false,expl:"Le cours indique explicitement : le business plan ne doit pas excéder 40 pages (hors annexes). Un BP de 55 pages est donc trop long selon les recommandations de Calvin TIAM.",ref:"Chapitre 7 › Section V › Page 64"},
+  {q:"Pour les frais de transport dans le plan financier d'un projet, lesquels sont pris en compte ?",type:'multi',opts:[{t:"Uniquement les transports liés à la vente des produits",c:false},{t:"Uniquement les transports liés à l'achat des matières",c:false},{t:"Les transports liés à la vente des produits ET à l'achat des marchandises/matières",c:true},{t:"Aucun frais de transport n'est inclus dans le BP",c:false}],diff:'med',piege:false,expl:"Les frais de transport couvrent les deux flux : transport lié à la VENTE des produits (sortants) et transport lié à l'ACHAT des marchandises et matières nécessaires à l'activité (entrants).",ref:"Examen 2021 › Question 34"},
+  {q:"Les charges immobilisées à caractère général n'incluent pas :",type:'multi',opts:[{t:"Les frais de recherches et de développement",c:false},{t:"Les primes de remboursement des obligations",c:false},{t:"Les besoins en fonds de roulement",c:true},{t:"Les charges à répartir sur plusieurs exercices",c:false}],diff:'hard',piege:true,expl:"Les charges immobilisées incluent frais R&D, primes de remboursement d'obligations, charges à répartir. Le BFR (Besoin en Fonds de Roulement) est un besoin de financement du cycle d'exploitation, PAS une charge immobilisée.",ref:"Examen 2021 › Question 35"},
+  {q:"Kwame présente son BP. La partie financière comprend le schéma de financement. Une affirmation est fausse, laquelle ?",type:'multi',opts:[{t:"Le schéma de financement est aussi appelé plan de financement initial",c:false},{t:"Les principales sources du schéma sont fonds propres, apports personnels et subventions",c:true},{t:"Il découle du plan d'investissement",c:false},{t:"Il assure l'ajustement entre emplois prévisionnels et sources de financement",c:false}],diff:'hard',piege:true,expl:"L'affirmation fausse : les 'principales sources' ne sont pas fonds propres + apports + subventions. Les principales sources sont fonds propres, EMPRUNT et subventions. Les 'apports personnels' font partie des fonds propres, pas une catégorie séparée.",ref:"Examen 2021 › Question 37"},
+  {q:"La méthode de l'équilibre économique pour déterminer le fonds de roulement :",type:'multi',opts:[{t:"Se base sur le CA annuel",c:false},{t:"Se base sur une fraction des charges annuelles",c:false},{t:"Impose une correspondance des charges aux produits — ne permet PAS de déterminer le FR",c:true},{t:"Est la méthode orthodoxe de calcul du FR",c:false}],diff:'hard',piege:true,expl:"La méthode de l'équilibre économique impose une correspondance des charges aux produits — elle ne permet PAS la détermination du fonds de roulement. C'est la méthode orthodoxe (écart ressources durables - emplois stables) qui le permet.",ref:"Examen 2021 › Question 38"},
+  {q:"Après son élaboration, le plan financier :",type:'multi',opts:[{t:"Reste invariable quelle que soit l'évolution de la situation économique",c:false},{t:"Constitue un outil permanent de gestion pour suivre et contrôler le développement",c:true},{t:"Doit être refait entièrement chaque année",c:false},{t:"N'est utile que pour la levée de fonds initiale",c:false}],diff:'med',piege:true,expl:"Le plan financier constitue un outil PERMANENT de gestion utilisé pour suivre, contrôler et guider le développement de l'entreprise/projet. L'affirmation fausse (examen) est qu'il resterait INVARIABLE quelle que soit l'évolution économique.",ref:"Examen 2021 › Question 40"},
+  {q:"Un promoteur crée son entreprise le 15 août. Son CA d'août à décembre (4,5 mois) pour des 'autres opérations' est de 10 000 000 FCFA. Quel régime ?",type:'multi',opts:[{t:"CSI directement car 10 M < 15 M",c:false},{t:"Il faut annualiser : CA annualisé = 10 M × (12/4.5) ≈ 26.7 M FCFA → RSI",c:true},{t:"RSI car c'est une personne physique",c:false},{t:"RNI par défaut pour toute nouvelle entreprise",c:false}],diff:'hard',piege:true,expl:"Les chiffres limites sont AJUSTÉS au prorata du temps d'exploitation. Pour 4,5 mois : seuil CSI ajusté = 15 M × (4.5/12) = 5.6 M. Seuil RSI ajusté = 50 M × (4.5/12) = 18.75 M. CA = 10 M → entre 5.6 M et 18.75 M → RSI.",ref:"Chapitre 5 › Section 2.2 › Page 52"},
+  {q:"Le marché complémentaire d'une entreprise de smartphones inclut :",type:'multi',opts:[{t:"Les fabricants d'autres marques de smartphones",c:false},{t:"Les fabricants de coques, chargeurs, écouteurs et accessoires",c:true},{t:"Les entreprises de télécommunication uniquement",c:false},{t:"Les importateurs de téléphones reconditionnés",c:false}],diff:'easy',piege:false,expl:"Le marché complémentaire = ensemble des marques/entreprises offrant des PRODUITS COMPLÉMENTAIRES à un type de produit donné. Pour les smartphones : coques, écouteurs, chargeurs, applications... sont des compléments.",ref:"Examen 2021 › Question 23"},
+  {q:"Pour son projet agricole, Diallo établit ses prévisions financières. Selon le principe de prudence, il doit :",type:'multi',opts:[{t:"Maximiser les recettes et minimiser les coûts",c:false},{t:"Minimiser les recettes et maximiser les coûts",c:true},{t:"Maximiser à la fois les recettes et les coûts",c:false},{t:"Ne pas faire de prévisions pour rester objectif",c:false}],diff:'med',piege:false,expl:"Le principe de prudence pour une prévision financière réaliste impose : MINIMISER les recettes et MAXIMISER les coûts. Cela donne une image conservatrice et évite les surprises désagréables.",ref:"Examen 2021 › Question 31"},
+  {q:"Un GIE peut être constitué par :",type:'multi',opts:[{t:"Uniquement des personnes physiques commerçantes",c:false},{t:"Deux ou plusieurs personnes physiques ou morales, y compris des professions libérales",c:true},{t:"Uniquement des sociétés commerciales",c:false},{t:"Un minimum de 5 membres",c:false}],diff:'med',piege:false,expl:"Le GIE peut être constitué par 2 ou plusieurs personnes physiques ou morales, y compris des personnes exerçant une profession libérale soumise à un statut législatif ou dont le titre est protégé.",ref:"Chapitre 4 › Section 2.2.6 › Page 45"},
+  {q:"Une banque veut savoir si elle peut accorder un crédit à une SARL dont un associé est décédé. La SARL continue-t-elle d'exister ?",type:'multi',opts:[{t:"Non, comme pour la SNC, le décès entraîne la dissolution",c:false},{t:"Oui, la SARL peut être constituée par un seul associé (unipersonnelle)",c:true},{t:"Seulement si les statuts le prévoient expressément",c:false},{t:"Non, une SARL requiert minimum 2 associés en permanence",c:false}],diff:'med',piege:true,expl:"La SARL peut être constituée par un seul associé. En cas de décès, si le survivant reprend les parts, la SARL devient unipersonnelle et continue d'exister normalement.",ref:"Chapitre 4 › Section 2.2.1 › Page 43"},
+  {q:"Trois amis veulent créer une entreprise : l'un est fonctionnaire, l'autre est mineur émancipé, le troisième est commerçant. Quelle forme juridique leur est interdite ?",type:'multi',opts:[{t:"SARL",c:false},{t:"SAS",c:false},{t:"SNC",c:true},{t:"GIE",c:false}],diff:'hard',piege:true,expl:"La SNC requiert que TOUS les associés aient le statut de commerçant. Un fonctionnaire ne peut pas exercer le commerce, et bien que le mineur émancipé puisse théoriquement devenir commerçant, la responsabilité illimitée de la SNC la rend risquée. La SNC est la forme la plus restreinte ici.",ref:"Chapitre 4 › Section 2.2.4 › Page 44"},
+  {q:"Une activité de conseil (BNC) est-elle soumise à la CSI ?",type:'multi',opts:[{t:"Oui, si le CA est inférieur à 15 000 000 FCFA",c:false},{t:"Non, les personnes physiques soumises aux BNC sont exclues de la CSI",c:true},{t:"Oui, toujours",c:false},{t:"Seulement si l'activité est exercée à temps partiel",c:false}],diff:'hard',piege:true,expl:"La CSI exclut explicitement les personnes physiques soumises à l'Impôt sur les Bénéfices Non Commerciaux (BNC). Les professions libérales (médecins, avocats, architectes...) ne sont donc pas éligibles à la CSI.",ref:"Chapitre 5 › Section 2.3 › Page 54"},
+  {q:"Paul Yameogo veut reprendre une SARL familiale dans laquelle il n'était pas associé. Peut-il entrer sans l'accord des autres associés ?",type:'multi',opts:[{t:"Oui, les parts sociales sont librement cessibles en SARL",c:false},{t:"Non, en principe les parts sont librement cessibles mais les statuts peuvent prévoir un agrément",c:true},{t:"Non, il faut l'unanimité des associés comme dans la SNC",c:false},{t:"Oui, toute personne peut acheter des parts de SARL librement",c:false}],diff:'hard',piege:true,expl:"En SARL, les parts sociales sont en principe librement cessibles MAIS les statuts peuvent prévoir des clauses d'agrément. C'est différent de la SNC où la cession requiert l'unanimité des associés.",ref:"Chapitre 4 › Tableau OHADA › Page 47-48"},
+  {q:"Pour vérifier le réalisme d'une idée de projet, le créateur doit notamment analyser ses contraintes dans 4 catégories. Lesquelles ?",type:'multi',opts:[{t:"Produit/service, marché, moyens (humains/techniques/financiers), réglementations",c:true},{t:"Marketing, finance, RH, juridique",c:false},{t:"Forces, faiblesses, opportunités, menaces",c:false},{t:"Idée, concept, projet, création",c:false}],diff:'med',piege:false,expl:"Les 4 catégories de contraintes à analyser sont : (1) contraintes propres au produit/service, (2) contraintes liées au marché, (3) contraintes de moyens (humains, techniques, financiers), (4) contraintes réglementaires.",ref:"Chapitre 3 › Section 2.6 › Pages 28-31"}
+];
+
+// ✏ ZONE D — SÉRIE 3 : EXAMEN RÉEL
+const serie3 = [
+  {q:"Dans le cadre de projet portant sur une entreprise dans son ensemble, le Business plan :",type:'multi',opts:[{t:"Sert pour la validation des orientations stratégiques et des prévisions financières vis-à-vis de l'actionnaire ou de la société mère",c:false},{t:"Sert à l'adoption d'un projet interne à l'entreprise, marchand ou non marchand",c:false},{t:"Sert comme outil pour évaluer la rentabilité d'une affaire commerciale et en négocier le prix (y compris les partenariats public privé)",c:true}],diff:'hard',piege:true,expl:"Quand le BP porte sur l'ensemble d'une entreprise (en vue de vente ou de partenariat), il sert à évaluer la rentabilité commerciale et négocier le prix, y compris les PPP. Ne pas confondre avec la validation stratégique interne.",ref:"Examen 2021 › Q1 — Chapitre 7 › Page 57"},
+  {q:"Réaliser un business plan :",type:'multi',opts:[{t:"C'est réaliser une étude de marché",c:false},{t:"C'est réaliser les études de faisabilité commerciale, technique, organisationnelle et financière du projet",c:true},{t:"C'est quantifier les revenus prévisionnels afin de réaliser un calcul de rentabilité d'investissement",c:false},{t:"C'est quantifier les revenus prévisionnels afin de réaliser un calcul de rentabilité d'investissement (doublon)",c:false}],diff:'easy',piege:true,expl:"Réaliser un BP = conduire les études de faisabilité commerciale, technique, organisationnelle ET financière. Pas seulement une étude de marché ou uniquement des calculs de rentabilité.",ref:"Examen 2021 › Q2 / Q16 — Chapitre 7"},
+  {q:"L'évaluation de la rentabilité et les prévisions financières sont souvent réalisées par :",type:'multi',opts:[{t:"Un contrôleur de gestion",c:false},{t:"Un contrôleur financier",c:true},{t:"Par l'un ou l'autre, avec l'assistance de l'un ou l'autre",c:false}],diff:'med',piege:true,expl:"C'est le contrôleur financier qui réalise principalement l'évaluation de la rentabilité et les prévisions financières. Le contrôleur de gestion peut assister mais la responsabilité principale est au contrôleur financier.",ref:"Examen 2021 › Q3 — Chapitre 7 › Page 58"},
+  {q:"Le business case (ou étude d'opportunité) se distingue du business plan :",type:'multi',opts:[{t:"en ce sens qu'il ne contient pas a priori de plan d'action précis",c:false},{t:"car son but n'étant pas seulement de valider un nouveau modèle économique",c:false},{t:"parce que l'entreprise ne mettra pas sur pied un projet avec des plans d'actions précis qui seront présentés dans un business plan",c:true}],diff:'hard',piege:true,expl:"Le business case se distingue car l'entreprise NE METTRA PAS sur pied un projet avec des plans d'actions précis qui seront présentés dans un BP. C'est une étude d'opportunité, pas un plan d'exécution.",ref:"Examen 2021 › Q4 — Chapitre 7 › Page 58"},
+  {q:"Dans le cadre d'un projet interne à l'entreprise, le business plan :",type:'multi',opts:[{t:"Sert comme outil pour évaluer la rentabilité d'une affaire commerciale et en négocier le prix (y compris les partenariats public privé)",c:true},{t:"Sert pour la Levée des capitaux : capital, emprunt, subventions. Valorisation de l'entreprise par la méthode des DCF",c:false},{t:"Sert pour la validation des orientations stratégiques et des prévisions financières vis-à-vis de l'actionnaire ou de la société mère",c:false}],diff:'hard',piege:true,expl:"Dans le cadre d'un projet INTERNE marchand, le BP sert à évaluer la rentabilité de l'affaire et en négocier le prix. La levée de capitaux (DCF) concerne le BP sur l'ensemble de l'entreprise.",ref:"Examen 2021 › Q5 — Chapitre 7 › Page 57"},
+  {q:"Lorsque le Business Plan porte sur l'ensemble d'une entreprise et a pour but de lever des capitaux, la partie financière répond alors successivement à :",type:'multi',opts:[{t:"A trois (03) questions",c:false},{t:"Deux (02) questions",c:true},{t:"Cinq (05) questions",c:false}],diff:'med',piege:false,expl:"Quand le BP porte sur l'ensemble d'une entreprise avec pour but de lever des capitaux, la partie financière répond successivement à 2 questions (sur la rentabilité et la trésorerie).",ref:"Examen 2021 › Q6 — Chapitre 7"},
+  {q:"Lorsqu'il porte sur l'ensemble d'une entreprise :",type:'multi',opts:[{t:"La rédaction d'ensemble est confiée au directeur commercial",c:false},{t:"La partie financière du business plan est naturellement confiée au directeur financier",c:true},{t:"La rédaction d'ensemble est confiée au directeur financier",c:false}],diff:'med',piege:true,expl:"C'est la PARTIE FINANCIÈRE qui est naturellement confiée au directeur financier. La rédaction d'ENSEMBLE n'est pas automatiquement confiée au DF — c'est le DF qui prend en charge la partie financière.",ref:"Examen 2021 › Q7 — Chapitre 7 › Page 58"},
+  {q:"Le business plan possède :",type:'multi',opts:[{t:"Cinq (05) grandes finalités",c:false},{t:"Quatre (04) grandes finalités",c:true},{t:"Deux (02) grandes finalités",c:false}],diff:'easy',piege:false,expl:"Le BP possède 4 grandes finalités : (1) validation stratégique actionnaire, (2) projet interne, (3) levée de capitaux, (4) évaluation d'affaire commerciale et négociation de prix.",ref:"Examen 2021 › Q8 — Chapitre 7 › Page 57"},
+  {q:"Pour les projets non marchands :",type:'multi',opts:[{t:"Une étude d'opportunité doit convaincre de l'intérêt du projet pour l'efficacité de l'entreprise",c:true},{t:"Une étude d'opportunité doit convaincre de l'intérêt du projet pour le rachat des créances de l'entreprise",c:false},{t:"Une étude d'opportunité doit convaincre de l'intérêt du projet pour l'option liquidative de l'entreprise",c:false}],diff:'hard',piege:true,expl:"Pour les projets non marchands, l'étude d'opportunité doit convaincre de l'intérêt du projet pour l'EFFICACITÉ de l'entreprise. Le rachat de créances et la liquidation sont des distracteurs.",ref:"Examen 2021 › Q9 — Chapitre 7 › Page 58-59"},
+  {q:"L'étude et la mise en œuvre d'un projet au sein de l'entreprise sont le plus souvent confiées :",type:'multi',opts:[{t:"au responsable projet",c:true},{t:"au Directeur Général",c:false},{t:"au Président du Comité d'investissement",c:false}],diff:'easy',piege:false,expl:"L'étude et la mise en œuvre d'un projet interne sont confiées au responsable projet, pas au DG ni au président du comité d'investissement.",ref:"Examen 2021 › Q10 — Chapitre 7"},
+  {q:"Le marché est constitué de différents éléments — cochez l'intrus :",type:'multi',opts:[{t:"Des clients",c:false},{t:"Des concurrents",c:false},{t:"Des gens et des produits/services",c:false},{t:"Des apporteurs de capitaux",c:true}],diff:'easy',piege:true,expl:"L'intrus est 'des apporteurs de capitaux'. Le marché est constitué de clients + concurrents + produits/services. Les apporteurs de capitaux (investisseurs, banques) font partie de l'environnement financier, pas du marché.",ref:"Examen 2021 › Q11"},
+  {q:"Pour le plan stratégique à moyen terme :",type:'multi',opts:[{t:"Les aspects financiers sont souvent moins développés que dans un business plan car l'objectif de rentabilité y est moins immédiat",c:true},{t:"Les aspects financiers sont souvent plus développés que dans un business plan car l'objectif de rentabilité y est moins immédiat",c:false},{t:"Les aspects financiers sont souvent moins développés que dans un business plan car l'objectif de rentabilité y est plus immédiat",c:false}],diff:'hard',piege:true,expl:"Plan stratégique moyen terme : aspects financiers MOINS développés que dans un BP, CAR l'objectif de rentabilité est MOINS immédiat. Double piège sur 'moins développés' ET 'moins immédiat'.",ref:"Examen 2021 › Q12 — Chapitre 7"},
+  {q:"Les étapes de la réalisation d'une étude de marché sont au nombre de :",type:'multi',opts:[{t:"Trois (03)",c:false},{t:"Quatre (04)",c:false},{t:"Cinq (05)",c:true}],diff:'med',piege:true,expl:"Les étapes de réalisation d'une étude de marché sont au nombre de 5 (cinq). C'est un chiffre à mémoriser précisément.",ref:"Examen 2021 › Q13"},
+  {q:"Le business plan portant sur un projet interne à l'entreprise est utilisé dans les contextes suivants :",type:'multi',opts:[{t:"Les cessions d'immobilisations",c:false},{t:"Les projets 'marchands' portent sur la création ou le développement de nouveaux produits, ils contribuent directement à augmenter le chiffre d'affaires",c:true},{t:"Le recrutement de personnel",c:false}],diff:'hard',piege:true,expl:"Le BP interne est utilisé notamment pour les projets marchands (création/développement de nouveaux produits contribuant au CA). Le recrutement et les cessions d'immobilisations ne nécessitent pas un BP.",ref:"Examen 2021 › Q14"},
+  {q:"Pour l'adoption du projet :",type:'multi',opts:[{t:"les entreprises soumettent de plus en plus leurs projets d'investissement à une procédure formalisée d'adoption en interne",c:true},{t:"les entreprises soumettent de plus en plus leurs projets d'investissement à experts externe",c:false},{t:"les entreprises soumettent de plus en plus leurs projets d'investissement à une procédure de validation par les professionnels",c:false}],diff:'easy',piege:false,expl:"Pour l'adoption du projet, les entreprises soumettent de plus en plus leurs projets d'investissement à une procédure FORMALISÉE D'ADOPTION EN INTERNE.",ref:"Examen 2021 › Q15"},
+  {q:"Les calculs de rentabilité occupent une place importante car les investissements sont le plus souvent réalisés dans une optique :",type:'multi',opts:[{t:"De rentabilité",c:true},{t:"Liquidative",c:false},{t:"De continuité de l'exploitation",c:false}],diff:'easy',piege:true,expl:"Les investissements sont réalisés dans une optique de RENTABILITÉ. C'est pourquoi les calculs de VAN, TRI et seuil de rentabilité sont centraux dans le BP.",ref:"Examen 2021 › Q1 Moodle / Q16 UE7 2021"},
+  {q:"L'élaboration du business plan :",type:'multi',opts:[{t:"N'implique pas la participation de personnes d'autres fonctions",c:false},{t:"Est un document multidisciplinaire",c:true},{t:"Ne fait pas appel à de nombreuses compétences au sein de l'entreprise",c:false}],diff:'easy',piege:false,expl:"Le BP est un document MULTIDISCIPLINAIRE qui fait appel à de nombreuses compétences et implique la participation de personnes de différentes fonctions.",ref:"Examen 2021 › Q17"},
+  {q:"Pour les projets marchands, il convient :",type:'multi',opts:[{t:"Tout d'abord de convaincre de l'intérêt d'un marché et de la pertinence du positionnement stratégique choisi",c:false},{t:"Egalement de s'appuyer sur des données de marché similaires pour démontrer le caractère réaliste des prévisions",c:false},{t:"Les deux réponses A et B sont correctes",c:true}],diff:'hard',piege:true,expl:"Pour les projets marchands : il convient TOUT D'ABORD de convaincre de l'intérêt du marché (A) ET ÉGALEMENT de s'appuyer sur des données similaires (B). Les deux réponses sont correctes ensemble.",ref:"Examen 2021 › Q18 — Examen Moodle Q2"},
+  {q:"Dans le cadre de crédit-bail, les avantages suivants sont possibles :",type:'multi',opts:[{t:"la présence de mise de fonds par l'entreprise utilisatrice",c:true},{t:"Le professionnalisme du comptable du crédit-bail",c:false},{t:"la rapidité et la simplicité de constitution du dossier",c:false}],diff:'hard',piege:true,expl:"PIÈGE MAJEUR : l'avantage du crédit-bail est l'ABSENCE de mise de fonds par l'entreprise. La formulation 'présence de mise de fonds' est trompeuse — c'est bien l'absence qui est un avantage. La réponse A est la correcte selon l'examen.",ref:"Examen 2021 › Q19"},
+  {q:"En matière de stratégie de sélection des entreprises pour la réalisation des investissements immobiliers, les parties en présence sont :",type:'multi',opts:[{t:"Le maître d'ouvrage, le bureau d'étude, l'ordonnateur financier, L'entrepreneur",c:false},{t:"Le maître d'ouvrage, le maître d'œuvre, l'ordonnateur financier, L'entrepreneur seul ou le groupement d'entreprise",c:true},{t:"Le maître d'ouvrage, le maître d'œuvre est un bureau d'étude, l'entrepreneur seul ou le groupement d'entreprise",c:false}],diff:'hard',piege:true,expl:"Les parties : maître d'ouvrage + maître d'œuvre + ordonnateur financier + entrepreneur (seul ou groupement). Le maître d'œuvre N'EST PAS défini comme 'un bureau d'étude' dans la bonne réponse.",ref:"Examen 2021 › Q20"},
+  {q:"l'intérêt d'une étude de marché pour l'entreprise est de :",type:'multi',opts:[{t:"fournir des informations stratégiques utiles à la prise de décisions",c:true},{t:"connaitre tous les produits et services d'un marché donné",c:false},{t:"connaitre toutes les entreprises concurrentes",c:false}],diff:'easy',piege:false,expl:"L'intérêt principal d'une étude de marché est de fournir des INFORMATIONS STRATÉGIQUES utiles à la prise de décisions.",ref:"Examen 2021 › Q21"},
+  {q:"Les prescripteurs sont :",type:'multi',opts:[{t:"des associations qui militent contre la production et la commercialisation d'un produit donné",c:false},{t:"des associations ou organisations professionnelles ou non gouvernementales qui recommandent ou non l'achat ou la consommation d'un produit",c:true},{t:"des institutions qui réglementent le marché d'un produit donné",c:false}],diff:'med',piege:true,expl:"Les prescripteurs sont des associations ou organisations pro/ONG qui RECOMMANDENT OU NON l'achat ou la consommation d'un produit. Ils ne militent pas contre et ne réglementent pas.",ref:"Examen 2021 › Q22"},
+  {q:"Le marché complémentaire est :",type:'multi',opts:[{t:"Composé de produits de substitution et des produits de grande consommation",c:false},{t:"l'ensemble des marques ou des entreprises qui offrent des produits complémentaires à un autre type de produit donné, sur un marché précis",c:true},{t:"Uniquement composé de produits de grande consommation",c:false}],diff:'med',piege:false,expl:"Le marché complémentaire = ensemble des marques/entreprises offrant des produits COMPLÉMENTAIRES à un autre type de produit, sur un marché précis.",ref:"Examen 2021 › Q23"},
+  {q:"À quel stade de la vie d'une l'entreprise est-il nécessaire de réaliser une étude de marché ?",type:'multi',opts:[{t:"au stade de création",c:false},{t:"au stade d'idée d'entreprendre",c:false},{t:"au stade d'idée et tout au long de son existence",c:true}],diff:'easy',piege:true,expl:"L'étude de marché est nécessaire dès le stade de l'IDÉE et TOUT AU LONG de l'existence de l'entreprise. Ce n'est pas uniquement à la création.",ref:"Examen 2021 › Q24"},
+  {q:"Le marketing est :",type:'multi',opts:[{t:"un processus global ou une démarche pour fournir le produit/service au marché et de satisfaire ainsi un besoin du client",c:true},{t:"une technique de vente",c:false},{t:"un ensemble de moyens dont dispose une entreprise pour vendre ses produits à ses clients d'une manière rentable",c:true}],diff:'med',piege:false,expl:"Le marketing englobe les deux : un processus global de mise sur marché ET un ensemble de moyens pour vendre de façon rentable. Ce n'est pas une simple technique de vente.",ref:"Examen 2021 › Q25"},
+  {q:"l'étude de marché est en réalité :",type:'multi',opts:[{t:"le marketing opérationnel",c:false},{t:"le marketing d'étude",c:true},{t:"le marketing stratégique",c:false}],diff:'hard',piege:true,expl:"L'étude de marché est en réalité le MARKETING D'ÉTUDE. À ne pas confondre avec le marketing opérationnel (actions commerciales) ou stratégique (orientation).",ref:"Examen 2021 › Q26"},
+  {q:"une étude de marché permet à une entreprise de :",type:'multi',opts:[{t:"tracer le profil de sa clientèle (lieu, âge, sexe, revenu, et ainsi de suite)",c:true},{t:"réduire les risques lors des décisions opérationnelles concernant le démarrage, l'innovation et la croissance",c:true},{t:"mieux comprendre ses clients et leurs préférences, notamment au niveau des 4P",c:true}],diff:'med',piege:false,expl:"L'étude de marché permet les trois : profil clientèle + réduction des risques + compréhension des préférences (4P). Toutes les réponses sont correctes.",ref:"Examen 2021 › Q27"},
+  {q:"Les études de marché permettent :",type:'multi',opts:[{t:"d'attirer et de fidéliser les clients",c:false},{t:"de connaitre le marché",c:true},{t:"de connaitre les produits vendus sur un marché donné",c:true}],diff:'med',piege:true,expl:"Les études de marché permettent de connaître le marché ET les produits qui s'y vendent. Elles ne permettent pas directement d'attirer et fidéliser les clients (c'est le rôle du marketing opérationnel).",ref:"Examen 2021 › Q28"},
+  {q:"il existe quatre types de marché qui sont :",type:'multi',opts:[{t:"le marché des biens et services",c:false},{t:"le marché complémentaire",c:true},{t:"le marché générique",c:true},{t:"le marché de substitution",c:true},{t:"le marché principal",c:true}],diff:'hard',piege:true,expl:"Les 4 types : principal, générique, complémentaire, substitution. 'Marché des biens et services' est une notion économique générale, pas un des 4 types du modèle marketing.",ref:"Examen 2021 › Q29"},
+  {q:"Les non-clients absolus sont :",type:'multi',opts:[{t:"des clients qui refusent la consommation d'un produit",c:false},{t:"des clients qui ont abandonné la consommation d'un produit donné",c:false},{t:"des individus identifiés comme ne consommant pas le produit ou le service au moment de l'étude",c:true}],diff:'hard',piege:true,expl:"Non-clients absolus = individus identifiés comme NE CONSOMMANT PAS le produit au MOMENT DE L'ÉTUDE. Différent des refus catégoriques ou des abandons.",ref:"Examen 2021 › Q30"},
+  {q:"Laquelle de ces affirmations est la plus plausible pour réussir une prévision financière dans le respect du principe de prudence ?",type:'multi',opts:[{t:"Minimiser les recettes et maximiser les coûts",c:true},{t:"Maximiser les recettes et les coûts",c:false},{t:"Maximiser les recettes et minimiser les coûts",c:false},{t:"Minimiser les recettes et les coûts",c:false}],diff:'med',piege:false,expl:"Principe de prudence : MINIMISER les recettes et MAXIMISER les coûts. Cette approche conservatrice garantit que si les prévisions se réalisent, le projet sera viable.",ref:"Examen 2021 › Q31"},
+  {q:"Laquelle de ces phrases contient les trois groupes de forme de financement disponibles ?",type:'multi',opts:[{t:"Financement par crédit-bail, par ligne de crédit et par leasing",c:false},{t:"Financement par emprunt, par subvention et par fonds propres",c:true},{t:"Financement par emprunt, par subvention et par leasing",c:false},{t:"Financement par crédit-bail, par subvention et par fonds propres",c:false}],diff:'med',piege:true,expl:"Les 3 groupes de financement : EMPRUNT + SUBVENTION + FONDS PROPRES. Le crédit-bail et le leasing sont des formes d'emprunt, pas des groupes distincts.",ref:"Examen 2021 › Q32"},
+  {q:"Exercice : Le coût de financement total d'un projet est de 500 000 000 FCFA. Apport personnel 200 000 000 FCFA, emprunt de 50%, le reste en subvention. Quelle est la proportion de la subvention ?",type:'multi',opts:[{t:"12%",c:false},{t:"8%",c:false},{t:"30%",c:false},{t:"10%",c:true}],diff:'hard',piege:false,expl:"Total = 500 M. Apport = 200 M. Emprunt = 50% × 500 M = 250 M. Subvention = 500 M - 200 M - 250 M = 50 M. Proportion = 50/500 = 10%.",ref:"Examen 2021 › Q33"},
+  {q:"Les frais de transport sont relatifs au transport lié d'une part à la vente des produits et d'autre part à l'achat des marchandises et matières nécessaires à l'activité du projet — VRAI ou FAUX ?",type:'multi',opts:[{t:"Vrai",c:true},{t:"Faux",c:false}],diff:'easy',piege:false,expl:"VRAI. Les frais de transport dans un BP couvrent les deux flux : la vente des produits (sortants) ET l'achat des marchandises/matières (entrants).",ref:"Examen 2021 › Q34"},
+  {q:"Les charges immobilisées étant des charges à caractère général avec une incidence sur le résultat, lequel de ces éléments n'en fait pas partie ?",type:'multi',opts:[{t:"Les frais de recherches et de développement",c:false},{t:"Les primes de remboursement des obligations",c:false},{t:"Les besoins en fonds de roulement",c:true},{t:"Les charges à répartir sur plusieurs exercices",c:false}],diff:'hard',piege:true,expl:"Le BFR (Besoin en Fonds de Roulement) n'est PAS une charge immobilisée — c'est un besoin de financement lié au cycle d'exploitation. Les charges immobilisées incluent R&D, primes d'obligations, charges à répartir.",ref:"Examen 2021 › Q35"},
+  {q:"L'élaboration de plan financier comprend plusieurs niveaux selon l'horizon de planification. Lesquels ?",type:'multi',opts:[{t:"L'horizon de court terme de 1 an",c:true},{t:"L'horizon de moyen terme allant de 2 à 3 ans",c:false},{t:"L'horizon de long terme allant de 4 à 10 ans",c:false},{t:"L'horizon de moyen et long terme allant de 3 à 5 ans",c:true}],diff:'hard',piege:true,expl:"Les horizons de planification financière : court terme (1 an) et moyen/long terme (3 à 5 ans). Ce ne sont pas 2-3 ans ni 4-10 ans.",ref:"Examen 2021 › Q36 & Q39"},
+  {q:"Laquelle de ces affirmations portant sur le schéma de financement est fausse ?",type:'multi',opts:[{t:"Le schéma de financement d'un projet est encore désigné par plan de financement initiale ou structure financière d'un projet",c:false},{t:"Les principales sources de financement possible du schéma de financement sont les fonds propres, les apports personnels, et les subventions",c:true},{t:"Le schéma de financement découle du plan d'investissement et indique pour chaque rubrique d'investissement, les sources de financement prévues",c:false},{t:"Le schéma de financement assure l'ajustement entre les échéanciers des emplois prévisionnels des fonds et les sources prévisionnelles de financement",c:false}],diff:'hard',piege:true,expl:"L'affirmation FAUSSE : les 3 sources du schéma ne sont pas 'fonds propres + apports personnels + subventions'. Les bonnes sources sont : fonds propres, EMPRUNT et subventions. Les 'apports personnels' sont une composante des fonds propres.",ref:"Examen 2021 › Q37"},
+  {q:"L'estimation du fonds de roulement peut être faite de plusieurs manières, lequel de ces éléments ne permet pas sa détermination ?",type:'multi',opts:[{t:"Sur la base du chiffre d'affaires en considérant une certaine périodicité du CA annuel",c:false},{t:"Sur la base des charges courantes en considérant une fraction de ces charges annuelles",c:false},{t:"Selon la méthode de l'équilibre économique qui impose une correspondance des charges aux produits",c:true},{t:"Selon la méthode orthodoxe qui correspond à l'écart entre les ressources durables et les emplois stables",c:false}],diff:'hard',piege:true,expl:"La méthode de l'équilibre économique impose une correspondance des charges aux produits — elle ne permet PAS de déterminer le fonds de roulement. C'est une méthode d'équilibre comptable, pas de calcul du FR.",ref:"Examen 2021 › Q38"},
+  {q:"Laquelle de ces affirmations portant sur le plan financier est fausse ?",type:'multi',opts:[{t:"Le plan financier est un rapport composé d'une série de tableaux qui valorise les hypothèses de travail dans un business plan",c:false},{t:"Le plan financier présente des états prévisionnels chiffrés des activités à réaliser et des moyens financiers dont l'entreprise/le projet doit disposer",c:false},{t:"Le plan financier constitue un outil permanent de gestion utilisé pour suivre, contrôler et guider le développement de l'entreprise/projet",c:false},{t:"Après son élaboration, le plan financier reste invariable quel que soit l'évolution de la situation économique et financière de l'entreprise/projet",c:true}],diff:'med',piege:true,expl:"L'affirmation FAUSSE : le plan financier ne reste pas invariable. Il doit être mis à jour en fonction de l'évolution de la situation économique et financière. C'est un outil dynamique de pilotage.",ref:"Examen 2021 › Q40"}
+];
+
+const series=[serie1,serie2,serie3];
+const STORAGE_KEY='QCM_PROGRESS_M17';
+let currentSerie=0,currentQ=0,sessionQs=[],answers={},validated={},markedWrong={},wrongList=[],isRetryMode=false,pendingResume=null;
+function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({serie:currentSerie,question:currentQ,answers,validated,markedWrong,wrongList,isRetryMode,sessionOrder:sessionQs.map(q=>q.origIdx)}));}catch(e){}}
+function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;}}
+function clearProgress(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}
+function checkResume(){const saved=loadProgress();if(!saved||Object.keys(saved.validated||{}).length===0)return;pendingResume=saved;const names=['Série 1 — Théorie','Série 2 — Cas Pratiques','Série 3 — Examen Réel'];document.getElementById('resumeInfo').textContent=(names[saved.serie]||'Série '+(saved.serie+1))+' · Question '+(saved.question+1);document.getElementById('resumeOverlay').style.display='flex';}
+function doResume(){document.getElementById('resumeOverlay').style.display='none';if(!pendingResume)return;const s=pendingResume;currentSerie=s.serie;currentQ=s.question;answers=s.answers||{};validated=s.validated||{};markedWrong=s.markedWrong||{};wrongList=s.wrongList||[];isRetryMode=s.isRetryMode||false;const src=series[currentSerie];sessionQs=(s.sessionOrder||[]).map(origIdx=>{const q=src[origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});updateSerieButtons();updateScoreLive();renderQuestion();showSection('qcm');}
+function doRestart(){document.getElementById('resumeOverlay').style.display='none';clearProgress();pendingResume=null;loadSerie(0);}
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateSerieButtons(){document.querySelectorAll('.serie-btn').forEach((b,i)=>b.classList.toggle('active',i===currentSerie&&!isRetryMode));}
+function updateScoreLive(){const vKeys=Object.keys(validated);let correct=0;sessionQs.forEach((q,i)=>{if(!validated[i])return;const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);if(cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x)))correct++;});const vCount=vKeys.length;document.getElementById('liveCorrect').textContent=correct;document.getElementById('liveWrong').textContent=vCount-correct;document.getElementById('liveTotal').textContent=sessionQs.length;document.getElementById('livePct').textContent=vCount>0?Math.round((correct/vCount)*100)+'%':'—';}
+function loadSerie(idx,retry=false){currentSerie=idx;isRetryMode=retry;currentQ=0;answers={};validated={};if(!retry){wrongList=[];const shuffledIdxs=shuffleArray(series[idx].map((_,i)=>i));sessionQs=shuffledIdxs.map(origIdx=>{const q=series[idx][origIdx];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx};});}updateSerieButtons();updateScoreLive();renderQuestion();clearProgress();}
+function loadRetry(){if(wrongList.length===0)return;isRetryMode=true;currentQ=0;answers={};validated={};sessionQs=wrongList.map(qi=>{const q=series[currentSerie][qi];return{...q,shuffledOpts:shuffleArray(q.opts.map((o,oi)=>({...o,origIdx:oi}))),origIdx:qi};});updateScoreLive();renderQuestion();}
+function renderQuestion(){const container=document.getElementById('qcmContainer');const total=sessionQs.length;const pct=total>0?((currentQ+1)/total)*100:0;document.getElementById('qcmProgressBar').style.width=pct+'%';if(currentQ>=total){showScore();return;}const q=sessionQs[currentQ];const isVal=!!validated[currentQ];const sel=answers[currentQ]||[];const isMarked=!!markedWrong[q.origIdx];const letters=['A','B','C','D','E','F'];const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const isCorrect=isVal&&cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));let optsHtml='';q.shuffledOpts.forEach((opt,i)=>{let cls='option-item';if(isVal){cls+=' disabled';if(opt.c)cls+=' correct';else if(sel.includes(i))cls+=' wrong';}else if(sel.includes(i))cls+=' selected';optsHtml+=`<button class="${cls}" onclick="selectOpt(${i})" ${isVal?'disabled':''}><div class="option-letter">${letters[i]}</div><div class="option-text">${opt.t}</div></button>`;});const feedbackHtml=isVal?`<div class="feedback-banner ${isCorrect?'correct':'wrong'}">${isCorrect?'✅ Bonne réponse !':'❌ Mauvaise réponse'}</div>`:'';const explHtml=isVal?`<div class="explanation-box"><div class="explanation-title">💡 Explication</div><div class="explanation-text">${q.expl}</div><span class="page-ref">📄 ${q.ref}</span></div>`:'';const multiHint=`<div class="multi-hint">⚠ Sélectionnez la ou les réponses correctes</div>`;const markLabel=isMarked?'✕ Retirer marque':'🔶 Marquer';container.innerHTML=`<div class="question-card"><div class="question-meta"><span class="q-num">Q${currentQ+1}/${total}${isRetryMode?' (Révision)':''}</span><span class="badge badge-${q.diff==='easy'?'easy':q.diff==='med'?'med':'hard'}">${q.diff==='easy'?'🟢 Facile':q.diff==='med'?'🟡 Moyen':'🔴 Difficile'}</span>${q.piege?'<span class="badge badge-piege">⚠ PIÈGE POSSIBLE</span>':''}${isMarked?'<span class="badge badge-marked">🔶 Marquée</span>':''}</div><div class="question-text">${q.q}</div>${multiHint}<div class="options-list">${optsHtml}</div>${feedbackHtml}${explHtml}</div><div class="qcm-nav">${!isVal?`<button class="btn-primary" onclick="validateQ()" ${sel.length===0?'disabled':''}>✓ Valider</button>`:`<button class="btn-primary" onclick="nextQ()">Suivant →</button>`}${currentQ>0?`<button class="btn-secondary" onclick="prevQ()">← Précédent</button>`:''}<button class="mark-btn ${isMarked?'marked':''}" onclick="toggleMark(${q.origIdx})">${markLabel}</button></div>`;}
+function selectOpt(i){if(validated[currentQ])return;const q=sessionQs[currentQ];if(!answers[currentQ])answers[currentQ]=[];const idx=answers[currentQ].indexOf(i);if(idx>-1)answers[currentQ].splice(idx,1);else answers[currentQ].push(i);renderQuestion();}
+function validateQ(){const q=sessionQs[currentQ];const sel=answers[currentQ]||[];if(sel.length===0)return;validated[currentQ]=true;const cIdxs=q.shuffledOpts.map((o,i)=>o.c?i:-1).filter(x=>x>=0);const ok=cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));if(!ok&&!wrongList.includes(q.origIdx))wrongList.push(q.origIdx);if(!ok)markedWrong[q.origIdx]=true;updateScoreLive();saveProgress();renderQuestion();}
+function nextQ(){currentQ++;saveProgress();renderQuestion();}
+function prevQ(){if(currentQ>0){currentQ--;saveProgress();renderQuestion();}}
+function toggleMark(origIdx){markedWrong[origIdx]=!markedWrong[origIdx];if(!markedWrong[origIdx]){const idx=wrongList.indexOf(origIdx);if(idx>-1)wrongList.splice(idx,1);}else if(!wrongList.includes(origIdx))wrongList.push(origIdx);saveProgress();renderQuestion();}
+function showScore(){const total=sessionQs.length;const correct=sessionQs.filter((q,i)=>{const sel=answers[i]||[];const cIdxs=q.shuffledOpts.map((o,oi)=>o.c?oi:-1).filter(x=>x>=0);return cIdxs.length===sel.length&&cIdxs.every(x=>sel.includes(x))&&sel.every(x=>cIdxs.includes(x));}).length;const wrong=total-correct;const pct=Math.round((correct/total)*100);const markedCount=Object.values(markedWrong).filter(v=>v).length;clearProgress();document.getElementById('qcmContainer').innerHTML=`<div class="score-card" id="scoreCard" style="display:block"><div class="score-big">${pct}%</div><div class="score-label">${isRetryMode?'Session de révision terminée':'Série '+(currentSerie+1)+' terminée'}</div><div class="score-stats"><div class="score-stat green"><div class="score-stat-val">${correct}</div><div class="score-stat-label">✅ Correct</div></div><div class="score-stat red"><div class="score-stat-val">${wrong}</div><div class="score-stat-label">❌ Incorrect</div></div><div class="score-stat"><div class="score-stat-val">${total}</div><div class="score-stat-label">Total</div></div>${markedCount>0?`<div class="score-stat orange"><div class="score-stat-val">${markedCount}</div><div class="score-stat-label">🔶 Marquées</div></div>`:''}</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-primary" onclick="loadSerie(${currentSerie})">🔄 Recommencer</button>${wrongList.length>0?`<button class="btn-retry" onclick="loadRetry()">🎯 Questions ratées (${wrongList.length})</button>`:''}</div><div style="margin-top:16px;font-size:12px;color:var(--text3)">${pct>=70?'🎉 Excellent !':pct>=50?'📚 Continuez à réviser.':'⚠ Révisez les fiches et recommencez.'}</div></div>`;document.getElementById('qcmProgressBar').style.width='100%';}
+
+// ✏ ZONE E — buildMethode
+function buildMethode(){const container=document.getElementById('section-methode');container.innerHTML=`
+<div style="margin-bottom:20px;">
+  <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);margin-bottom:6px;">🔬 Méthode — M17 Création d'entreprise</div>
+  <div style="font-size:12px;color:var(--text3);">Mots-pièges, chiffres-clés, schémas de décision et confusions à éviter</div>
+</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">⚠ Mots-pièges à l'examen</div>
+    <span class="piege-word">étude de marché</span>
+    <span class="piege-word">multidisciplinaire</span>
+    <span class="piege-word">liquidative</span>
+    <span class="piege-word">rentabilité</span>
+    <span class="piege-word">moins immédiat</span>
+    <span class="piege-word">invariable</span>
+    <span class="piege-word">mise de fonds</span>
+    <span class="piege-word">apports personnels</span>
+    <span class="piege-word">intrus du marché</span>
+    <span class="piege-word">non-clients absolus</span>
+    <span class="piege-word">marché des biens et services</span>
+    <span class="piege-word">présence vs absence</span>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3);">Ces mots créent des confusions dans les QCM — lire TRÈS attentivement.</div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">📊 Chiffres-clés à mémoriser</div>
+    <table class="chiffres-table">
+      <tr><th>Valeur</th><th>Signification</th></tr>
+      <tr><td>4</td><td>Finalités du Business Plan</td></tr>
+      <tr><td>5</td><td>Étapes de réalisation d'une étude de marché</td></tr>
+      <tr><td>4</td><td>Types de marchés (principal, générique, complémentaire, substitution)</td></tr>
+      <tr><td>2</td><td>Questions auxquelles répond la partie financière (levée de capitaux)</td></tr>
+      <tr><td>40 pages</td><td>Maximum du BP hors annexes</td></tr>
+      <tr><td>5 000 F</td><td>Capital min. SARL au Burkina Faso</td></tr>
+      <tr><td>10 000 000 F</td><td>Capital minimum SA (OHADA)</td></tr>
+      <tr><td>100 000 000 F</td><td>Seuil RNI (livraisons/travaux)</td></tr>
+      <tr><td>50 000 000 F</td><td>Seuil RNI (autres opérations)</td></tr>
+      <tr><td>30 000 000 F</td><td>Seuil RSI (livraisons/travaux)</td></tr>
+      <tr><td>15 000 000 F</td><td>Seuil RSI (autres opérations)</td></tr>
+      <tr><td>40 000 F</td><td>Coût CEFORE — EI</td></tr>
+      <tr><td>47 500 F</td><td>Coût CEFORE — Société</td></tr>
+      <tr><td>30 jours</td><td>Délai déclaration d'existence CSI</td></tr>
+      <tr><td>3 ans</td><td>Irrévocabilité option régime imposition</td></tr>
+      <tr><td>12</td><td>Étapes clés de création d'entreprise (Bertholet)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="margin:20px 0 10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px;">🔀 Schéma de décision — Quel régime d'imposition ?</div>
+
+<div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Nature des opérations ?</strong> → Livraisons/ventes/travaux OU autres opérations (services, conseil...)</div></div>
+<div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Personne physique ou morale ?</strong> → Personne morale : RNI ou RSI seulement (jamais CSI)</div></div>
+<div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>CA annuel HT (livraisons) ?</strong> → ≥100M = RNI | 30M–100M = RSI | &lt;30M = CSI</div></div>
+<div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>CA annuel HT (autres) ?</strong> → ≥50M = RNI | 15M–50M = RSI | &lt;15M = CSI</div></div>
+<div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Activités mixtes ?</strong> → Seuil CA global &lt;15M FCFA pour CSI. Sinon RSI ou RNI selon le plus élevé.</div></div>
+<div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>Début d'année en cours ?</strong> → Proratiser tous les seuils au temps d'exploitation</div></div>
+
+<div style="margin:20px 0 10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px;">🔀 Schéma de décision — Quelle finalité du Business Plan ?</div>
+
+<div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Projet portant sur l'ensemble de l'entreprise + vente/PPP ?</strong> → Finalité : Évaluation rentabilité commerciale et négociation du prix</div></div>
+<div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Projet portant sur l'ensemble de l'entreprise + actionnaire/société mère ?</strong> → Finalité : Validation orientations stratégiques et prévisions financières</div></div>
+<div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Projet interne MARCHAND (nouveau produit/CA) ?</strong> → Finalité : Adoption projet interne / outil d'évaluation rentabilité</div></div>
+<div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Projet interne NON MARCHAND (efficacité) ?</strong> → Finalité : Convaincre de l'intérêt du projet pour l'efficacité</div></div>
+<div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Besoin de lever des capitaux ?</strong> → Finalité : Levée de capitaux (emprunt, subvention, capital). Valorisation par DCF.</div></div>
+
+<div style="margin:20px 0 10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px;">🔄 Confusions classiques à éviter</div>
+
+<div class="methode-grid">
+  <div class="methode-card">
+    <div class="methode-card-title">❌ Confusions BP / Autres</div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ Business Plan ≠ Étude de marché</div>
+      <div class="piege-text">Le BP inclut l'étude de marché mais va bien au-delà : technique, organisationnel, financier.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ Business Plan ≠ Business Model</div>
+      <div class="piege-text">Le BM est la façon de générer du profit. C'est le CŒUR du BP, pas le BP lui-même.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ Business Case ≠ Business Plan</div>
+      <div class="piege-text">Le business case ne débouche PAS sur des plans d'actions précis → c'est une étude d'opportunité.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ Régime imposition ≠ Régime fiscal</div>
+      <div class="piege-text">Régime d'imposition = RNI/RSI/CSI (comment calculer la base). Régime fiscal = IR/IS/micro-entreprise (quel impôt).</div>
+    </div>
+  </div>
+
+  <div class="methode-card">
+    <div class="methode-card-title">❌ Confusions Formes juridiques</div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ EI : patrimoine mélangé !</div>
+      <div class="piege-text">L'EI n'a PAS de séparation patrimoine pro/perso. Responsabilité ILLIMITÉE sur biens propres.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ SNC : tous commerçants !</div>
+      <div class="piege-text">TOUS les associés sont commerçants. Fonctionnaires, mineurs non émancipés = exclus. Décès = dissolution en principe.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ SARL Burkina Faso ≠ OHADA</div>
+      <div class="piege-text">OHADA : capital min 1 000 000 FCFA. Burkina Faso : décret 2016-314 → 5 000 FCFA. Part sociale min toujours = 5 000 FCFA.</div>
+    </div>
+    <div class="piege-box">
+      <div class="piege-title">⚠ Incubateur ≠ Pépinière</div>
+      <div class="piege-text">Incubateur = avant la création (gestation). Pépinière = après la création (hébergement + mutualisation).</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin:20px 0 10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:6px;">🎯 Top 10 des pièges d'examen M17</div>
+
+<div class="schema-step"><div class="schema-num">1</div><div class="schema-text"><strong>Crédit-bail :</strong> l'AVANTAGE est l'ABSENCE de mise de fonds initiale (pas la 'présence'). La formulation trompeuse de l'examen dit 'présence' — c'est correct car il y a absence de mise de fonds.</div></div>
+<div class="schema-step"><div class="schema-num">2</div><div class="schema-text"><strong>Intrus du marché :</strong> les APPORTEURS DE CAPITAUX ne font pas partie du marché. Le marché = clients + concurrents + produits/services.</div></div>
+<div class="schema-step"><div class="schema-num">3</div><div class="schema-text"><strong>Plan financier invariable :</strong> FAUX — le plan financier doit être mis à jour. L'affirmation qu'il reste invariable est l'affirmation fausse à repérer.</div></div>
+<div class="schema-step"><div class="schema-num">4</div><div class="schema-text"><strong>Plan stratégique moyen terme :</strong> aspects financiers MOINS développés car objectif de rentabilité MOINS immédiat (double piège : deux 'moins').</div></div>
+<div class="schema-step"><div class="schema-num">5</div><div class="schema-text"><strong>Schéma de financement :</strong> les 3 sources sont fonds propres + EMPRUNT + subvention. Pas 'apports personnels' (qui font partie des fonds propres).</div></div>
+<div class="schema-step"><div class="schema-num">6</div><div class="schema-text"><strong>4 types de marchés :</strong> principal / générique / complémentaire / substitution. 'Marché des biens et services' est un piège — ce n'est pas un des 4 types.</div></div>
+<div class="schema-step"><div class="schema-num">7</div><div class="schema-text"><strong>Non-clients absolus ≠ anciens clients ≠ refus :</strong> ce sont les individus ne consommant pas le produit AU MOMENT DE L'ÉTUDE.</div></div>
+<div class="schema-step"><div class="schema-num">8</div><div class="schema-text"><strong>Étude de marché = marketing d'étude</strong> (pas marketing opérationnel, pas marketing stratégique).</div></div>
+<div class="schema-step"><div class="schema-num">9</div><div class="schema-text"><strong>BFR ≠ charge immobilisée :</strong> le BFR est un besoin de financement, pas une charge immobilisée (contrairement aux frais R&D, primes d'obligations, charges à répartir).</div></div>
+<div class="schema-step"><div class="schema-num">10</div><div class="schema-text"><strong>Calcul subvention :</strong> Total - Apport perso - Emprunt (50% du total) = Subvention. Ex : 500M - 200M - 250M = 50M = 10% du total.</div></div>
+`;}
+
+document.addEventListener('DOMContentLoaded',()=>{buildFiches();buildMethode();loadSerie(0);checkResume();});
+</script>
+</body>
+</html>
