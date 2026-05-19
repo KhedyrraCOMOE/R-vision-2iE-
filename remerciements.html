@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Remerciements — Hub Révision 2iE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#060c17; --surface:#0d1822; --card:#121d2b; --border:#182840;
+      --cyan:#00d4aa; --blue:#0090ff; --orange:#ff6b35; --yellow:#ffd166;
+      --green:#22c55e; --text:#edf2f9; --muted:#546a7e;
+      --mono:'Space Mono',monospace; --body:'DM Sans',sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 10%,rgba(0,212,170,0.04) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(0,144,255,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+    .wrapper{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px 60px;}
+    .page-header{text-align:center;padding:52px 20px 40px;position:relative;}
+    .header-glow{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(0,212,170,0.1) 0%,transparent 70%);pointer-events:none;}
+    .header-icon{font-size:52px;margin-bottom:16px;display:block;animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .header-tag{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--cyan);background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:99px;padding:4px 16px;letter-spacing:0.12em;margin-bottom:20px;}
+    .header-title{font-size:clamp(22px,5vw,32px);font-weight:700;line-height:1.25;background:linear-gradient(135deg,#ffffff 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .deco-line{display:flex;align-items:center;gap:12px;margin:28px 0;}
+    .deco-line::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border));}
+    .deco-line::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+    .deco-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+    .message-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 26px;margin-bottom:20px;position:relative;overflow:hidden;}
+    .message-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--blue),transparent);}
+    .message-text{font-size:14.5px;line-height:1.85;color:#b8c8d8;}
+    .message-text p{margin-bottom:16px;}
+    .message-text p:last-child{margin-bottom:0;}
+    .message-highlight{color:var(--text);font-weight:500;}
+    .section-label{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+    .members-section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;}
+    .members-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--yellow),var(--orange),transparent);}
+    .member-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;transition:border-color 0.2s,background 0.2s;}
+    .member-card:last-child{margin-bottom:0;}
+    .member-card:hover{border-color:rgba(255,209,102,0.3);background:rgba(255,209,102,0.03);}
+    .member-star{font-size:20px;flex-shrink:0;}
+    .member-info{flex:1;min-width:0;}
+    .member-name{font-size:14px;font-weight:700;color:var(--text);}
+    .member-contact{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px;}
+    .motivation-card{background:linear-gradient(135deg,#0d1e14,#0a1820);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:26px;margin-bottom:24px;position:relative;overflow:hidden;}
+    .motivation-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent);}
+    .motivation-card::after{content:'"';position:absolute;top:10px;right:20px;font-size:80px;color:rgba(34,197,94,0.06);font-family:Georgia,serif;line-height:1;pointer-events:none;}
+    .motivation-text{font-size:14.5px;line-height:1.85;color:#a8c8b8;}
+    .motivation-text p{margin-bottom:14px;}
+    .motivation-text p:last-child{margin-bottom:0;}
+    .motivation-text strong{color:var(--green);font-weight:600;}
+    .courage-line{font-size:16px;font-weight:700;color:var(--text);margin-top:18px;display:flex;align-items:center;gap:8px;}
+    .signature{text-align:center;margin-bottom:28px;}
+    .signature-name{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:4px;}
+    .signature-role{font-size:12px;color:var(--muted);}
+    .cta-wrap{text-align:center;margin-top:8px;}
+    .cta-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0d9e7e,#0a7d64);color:white;font-family:var(--body);font-size:16px;font-weight:700;padding:16px 36px;border-radius:14px;border:none;cursor:pointer;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 8px 32px rgba(0,212,170,0.25);}
+    .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,170,0.35);}
+    .cta-btn:active{transform:translateY(0);}
+    .cta-arrow{font-size:20px;transition:transform 0.2s;}
+    .cta-btn:hover .cta-arrow{transform:translateX(4px);}
+    .cta-sub{font-size:12px;color:var(--muted);margin-top:12px;font-family:var(--mono);}
+    .page-footer{text-align:center;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);}
+    .footer-logo{font-family:var(--mono);font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+    .footer-text{font-size:11px;color:var(--muted);line-height:1.7;}
+    .fade-in{opacity:0;transform:translateY(20px);animation:fadeUp 0.6s ease forwards;}
+    .fade-in:nth-child(1){animation-delay:0.1s}
+    .fade-in:nth-child(2){animation-delay:0.25s}
+    .fade-in:nth-child(3){animation-delay:0.4s}
+    .fade-in:nth-child(4){animation-delay:0.55s}
+    .fade-in:nth-child(5){animation-delay:0.7s}
+    .fade-in:nth-child(6){animation-delay:0.85s}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+    .stars-row{display:flex;justify-content:center;gap:6px;margin-bottom:12px;}
+    .star-item{font-size:14px;animation:twinkle 2s ease-in-out infinite;}
+    .star-item:nth-child(2){animation-delay:.3s}
+    .star-item:nth-child(3){animation-delay:.6s}
+    .star-item:nth-child(4){animation-delay:.9s}
+    .star-item:nth-child(5){animation-delay:1.2s}
+    @keyframes twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="page-header fade-in">
+    <div class="header-glow"></div>
+    <span class="header-icon">🤝</span>
+    <div class="header-tag">BGIS · COHORTE FÉVRIER 2026</div>
+    <h1 class="header-title">Un projet né d'un<br>esprit d'équipe</h1>
+  </div>
+
+  <div class="message-card fade-in">
+    <div class="message-text">
+      <p>Cet outil de révision n'est pas le fruit d'un travail solitaire. Derrière chaque module, chaque ligne, chaque interaction, il y a des <span class="message-highlight">heures de réflexion collective</span> avec des camarades engagés qui m'ont fait confiance depuis le début.</p>
+      <p>Au nom de toute la <span class="message-highlight">Cohorte BGIS Février 2026</span>, je tiens à exprimer ma profonde gratitude à ces membres actifs qui ont œuvré en coulisses pour que cet apprentissage soit <span class="message-highlight">facile, accessible et efficace</span> pour tous.</p>
+    </div>
+  </div>
+
+  <div class="members-section fade-in">
+    <div class="section-label">🌟 Grâce à eux, ce projet existe</div>
+
+    <div class="member-card">
+      <span class="member-star">🌟</span>
+      <div class="member-info">
+        <div class="member-name">TRAORÉ Hakim</div>
+        <div class="member-contact">07-47-97-52-92</div>
+      </div>
+    </div>
+
+    <div class="member-card">
+      <span class="member-star">🌟</span>
+      <div class="member-info">
+        <div class="member-name">CAMARA Issouf</div>
+        <div class="member-contact">07-78-67-62-19</div>
+      </div>
+    </div>
+
+    <div class="member-card">
+      <span class="member-star">🌟</span>
+      <div class="member-info">
+        <div class="member-name">TESSOUGUÉ Aïcha</div>
+        <div class="member-contact">01-02-84-97-60</div>
+      </div>
+    </div>
+
+    <div class="member-card">
+      <span class="member-star">🌟</span>
+      <div class="member-info">
+        <div class="member-name">TUO Siaka</div>
+        <div class="member-contact">07-88-61-40-11</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="motivation-card fade-in">
+    <div class="motivation-text">
+      <p>Les examens approchent, mais avec de la <strong>discipline</strong>, de l'<strong>entraide</strong> et un <strong>travail régulier</strong>, rien n'est impossible.</p>
+      <p>Utilisons ce Hub comme un véritable outil de <strong>progression collective</strong>. Restons solidaires, concentrés et déterminés à donner le meilleur de nous-mêmes.</p>
+      <p>Le succès de la cohorte dépend aussi de <strong>l'implication de chacun</strong>.</p>
+    </div>
+    <div class="courage-line">💪 Courage à tous et bonne révision !</div>
+  </div>
+
+  <div class="signature fade-in">
+    <div class="stars-row">
+      <span class="star-item">⭐</span>
+      <span class="star-item">⭐</span>
+      <span class="star-item">⭐</span>
+      <span class="star-item">⭐</span>
+      <span class="star-item">⭐</span>
+    </div>
+    <div class="signature-name">KHEDYRRA COMOÉ</div>
+    <div class="signature-role">Délégué BGIS · Cohorte Février 2026 · Institut 2iE</div>
+  </div>
+
+  <div class="deco-line"><div class="deco-dot"></div></div>
+
+  <div class="cta-wrap fade-in">
+    <a href="https://khedyrracomoe.github.io/R-vision-2iE-/" class="cta-btn">
+      Accéder au Hub de Révision
+      <span class="cta-arrow">→</span>
+    </a>
+    <div class="cta-sub">12 modules · QCM · Fiches Mémo · Calculs</div>
+  </div>
+
+  <div class="page-footer fade-in">
+    <div class="footer-logo">2iE</div>
+    <div class="footer-text">
+      Hub de Révision — BGIS Cohorte Février 2026<br>
+      Contact : <strong style="color:var(--yellow)">07-88-41-13-78</strong>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
