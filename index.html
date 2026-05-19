@@ -396,26 +396,7 @@ const FIREBASE_API_KEY="AIzaSyDDs37KgcNMqa8RdR7Ost7jg8qMBJmm3Yg";
 const FIREBASE_PROJECT_ID="hub-revision-2ie";
 const SESSION_KEY="hub2ie_session";
 const MOIS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-function getCle(){const d=new Date();return`code_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,'0')}`;}
-function getMoisLabel(){const d=new Date();return`${MOIS[d.getMonth()]} ${d.getFullYear()}`;}
-function sessionValide(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");return s.expiry&&Date.now()<s.expiry;}catch{return false;}}
-function sauvegarderSession(){localStorage.setItem(SESSION_KEY,JSON.stringify({expiry:Date.now()+12*3600*1000}));}
-document.getElementById("lock-month-label").textContent="Mois : "+getMoisLabel();
-if(sessionValide()){document.getElementById("protection-overlay").classList.add("hidden");}else{document.body.style.overflow="hidden";}
-document.getElementById("lock-input").addEventListener("keydown",e=>{if(e.key==="Enter")verifierCode();});
-async function verifierCode(){
-  const input=document.getElementById("lock-input");
-  const msg=document.getElementById("lock-msg");
-  const saisi=input.value.trim().toUpperCase();
-  if(!saisi){msg.className="lock-msg error";msg.textContent="Entre le code reçu.";return;}
-  msg.className="lock-msg loading";msg.textContent="⏳ Vérification…";
-  try{
-    const url=`https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/codes/${getCle()}?key=${FIREBASE_API_KEY}`;
-    const resp=await fetch(url);
-    if(!resp.ok){msg.className="lock-msg error";msg.textContent=resp.status===404?"❌ Aucun code ce mois-ci.":"❌ Erreur connexion.";return;}
-    const data=await resp.json();
-    const code=(data?.fields?.valeur?.stringValue||"").toUpperCase();
-    if(saisi===code){msg.className="lock-msg success";msg.textContent="✅ Accès accordé !";sauvegarderSession();setTimeout(()=>{document.getElementById("protection-overlay").classList.add("hidden");document.body.style.overflow="";},700);}
+function getCle(){const d=new Date();return`code_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,'0')}`;}if(saisi===code){msg.className="lock-msg success";msg.textContent="✅ Accès accordé !";sauvegarderSession();setTimeout(()=>{if(!sessionStorage.getItem('thanksShown')){sessionStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");document.body.style.overflow="";}},700);}
     else{input.classList.add("error");setTimeout(()=>input.classList.remove("error"),500);msg.className="lock-msg error";msg.textContent="❌ Code incorrect.";}
   }catch{msg.className="lock-msg error";msg.textContent="❌ Pas de connexion internet.";}
 }
