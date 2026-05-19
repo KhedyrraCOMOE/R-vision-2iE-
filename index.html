@@ -335,7 +335,7 @@ async function verifierCode(){
     if(!resp.ok){msg.className="lock-msg error";msg.textContent=resp.status===404?"❌ Aucun code ce mois-ci.":"❌ Erreur connexion.";return;}
     const data=await resp.json();
     const code=(data?.fields?.valeur?.stringValue||"").toUpperCase();
-    if(saisi===code){msg.className="lock-msg success";msg.textContent="✅ Accès accordé !";sauvegarderSession();setTimeout(()=>{if(!sessionStorage.getItem('thanksShown')){sessionStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");document.body.style.overflow="";}},700);}
+    if(saisi===code){msg.className="lock-msg success";msg.textContent="✅ Accès accordé !";sauvegarderSession();setTimeout(()=>{if(!localStorage.getItem('thanksShown')){localStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");document.body.style.overflow="";}},700);}
     else{input.classList.add("error");setTimeout(()=>input.classList.remove("error"),500);msg.className="lock-msg error";msg.textContent="❌ Code incorrect.";}
   }catch{msg.className="lock-msg error";msg.textContent="❌ Pas de connexion internet.";}
 }
