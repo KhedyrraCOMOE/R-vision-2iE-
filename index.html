@@ -321,7 +321,7 @@ function getMoisLabel(){const d=new Date();return`${MOIS[d.getMonth()]} ${d.getF
 function sessionValide(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");return s.expiry&&Date.now()<s.expiry;}catch{return false;}}
 function sauvegarderSession(){localStorage.setItem(SESSION_KEY,JSON.stringify({expiry:Date.now()+12*3600*1000}));}
 document.getElementById("lock-month-label").textContent="Mois : "+getMoisLabel();
-if(sessionValide()){document.getElementById("protection-overlay").classList.add("hidden");}else{document.body.style.overflow="hidden";}
+if(sessionValide()){if(!localStorage.getItem('thanksShown')){localStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");}}else{document.body.style.overflow="hidden";}
 document.getElementById("lock-input").addEventListener("keydown",e=>{if(e.key==="Enter")verifierCode();});
 async function verifierCode(){
   const input=document.getElementById("lock-input");
