@@ -230,86 +230,20 @@
 </div>
 
 <script>
-/* =====================================================================
-   CONFIGURATION — NE MODIFIER QUE ICI
-   ===================================================================== */
 const MODULES = [
-  {
-    code: "M10",
-    name: "Suivi et contrôle des opérations de Génie Civil",
-    file: "M10_Suivi_Controle_Genie_Civil.html",
-    available: true
-  },
-  {
-    code: "M11",
-    name: "Suivi et contrôle des opérations d'installations",
-    file: "M11_Suivi_Controle_Installations.html",
-    available: true
-  },
-  {
-    code: "M12",
-    name: "AEP / Assainissement",
-    file: "M12_AEP_Assainissement_Revision.html",
-    available: true
-  },
-  {
-    code: "M13",
-    name: "Suivi Budgétaire",
-    file: "M13_Suivi_Budgetaire_2iE.html",
-    available: true
-  },
-  {
-    code: "M14",
-    name: "Suivi & Réglementation Sécurité Chantier",
-    file: "M14_Suivi_Securite_Chantier.html",
-    available: true
-  },
-  {
-    code: "M15",
-    name: "SQHE",
-    file: "M15_SQHE_Revision.html",
-    available: true
-  },
-  {
-    code: "M16",
-    name: "Rédaction du Reporting",
-    file: "M16_Redaction_Reporting_2iE.html",
-    available: true
-  },
-  {
-    code: "M17",
-    name: "Création d'Entreprise",
-    file: "M17_Creation_Entreprise.html",
-    available: true
-  },
-  {
-    code: "M18",
-    name: "Étude de Marché",
-    file: "M18_Etude_de_Marche_2iE.html",
-    available: true
-  },
-  {
-    code: "M19",
-    name: "Plan Financier",
-    file: "M19_Plan_Financier_2iE.html",
-    available: true
-  },
-  {
-    code: "M20",
-    name: "Droit du Travail",
-    file: "M20_Droit_Travail_2iE.html",
-    available: true
-  },
-  {
-    code: "M21",
-    name: "Environnement juridico-légal des travaux publics",
-    file: "M21_Environnement_Juridico_Legal_TP.html",
-    available: true
-  },
+  { code:"M10", name:"Suivi et contrôle des opérations de Génie Civil",        file:"M10_Suivi_Controle_Genie_Civil.html",       available:true },
+  { code:"M11", name:"Suivi et contrôle des opérations d'installations",       file:"M11_Suivi_Controle_Installations.html",     available:true },
+  { code:"M12", name:"AEP / Assainissement",                                   file:"M12_AEP_Assainissement_Revision.html",      available:true },
+  { code:"M13", name:"Suivi Budgétaire",                                       file:"M13_Suivi_Budgetaire_2iE.html",             available:true },
+  { code:"M14", name:"Suivi & Réglementation Sécurité Chantier",               file:"M14_Suivi_Securite_Chantier.html",          available:true },
+  { code:"M15", name:"SQHE",                                                   file:"M15_SQHE_Revision.html",                   available:true },
+  { code:"M16", name:"Rédaction du Reporting",                                 file:"M16_Redaction_Reporting_2iE.html",          available:true },
+  { code:"M17", name:"Création d'Entreprise",                                  file:"M17_Creation_Entreprise.html",              available:true },
+  { code:"M18", name:"Étude de Marché",                                        file:"M18_Etude_de_Marche_2iE.html",              available:true },
+  { code:"M19", name:"Plan Financier",                                         file:"M19_Plan_Financier_2iE.html",               available:true },
+  { code:"M20", name:"Droit du Travail",                                       file:"M20_Droit_Travail_2iE.html",                available:true },
+  { code:"M21", name:"Environnement juridico-légal des travaux publics",       file:"M21_Environnement_Juridico_Legal_TP.html",  available:true },
 ];
-/* =====================================================================
-   FIN DE LA ZONE DE CONFIGURATION
-   ===================================================================== */
 
 const list         = document.getElementById('module-list');
 const noResults    = document.getElementById('no-results');
@@ -331,7 +265,6 @@ function buildList() {
   const available = MODULES.filter(m => m.available !== false).length;
   countTotal.textContent   = available;
   countVisible.textContent = available;
-
   MODULES.forEach((mod) => {
     const item = document.createElement('div');
     item.className = 'module-item' + (mod.available === false ? ' module-coming-soon' : '');
@@ -392,15 +325,81 @@ buildList();
 </script>
 
 <script>
-const FIREBASE_API_KEY="AIzaSyDDs37KgcNMqa8RdR7Ost7jg8qMBJmm3Yg";
-const FIREBASE_PROJECT_ID="hub-revision-2ie";
-const SESSION_KEY="hub2ie_session";
-const MOIS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-function getCle(){const d=new Date();return`code_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,'0')}`;}if(saisi===code){msg.className="lock-msg success";msg.textContent="✅ Accès accordé !";sauvegarderSession();setTimeout(()=>{if(!sessionStorage.getItem('thanksShown')){sessionStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");document.body.style.overflow="";}},700);}
-    else{input.classList.add("error");setTimeout(()=>input.classList.remove("error"),500);msg.className="lock-msg error";msg.textContent="❌ Code incorrect.";}
-  }catch{msg.className="lock-msg error";msg.textContent="❌ Pas de connexion internet.";}
+const FIREBASE_API_KEY    = "AIzaSyDDs37KgcNMqa8RdR7Ost7jg8qMBJmm3Yg";
+const FIREBASE_PROJECT_ID = "hub-revision-2ie";
+const SESSION_KEY         = "hub2ie_session";
+const MOIS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+
+function getCle() {
+  const d = new Date();
+  return `code_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,'0')}`;
 }
-window.verifierCode=verifierCode;
+
+function getMoisLabel() {
+  const d = new Date();
+  return `${MOIS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function sessionValide() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    return s && s.cle === getCle();
+  } catch { return false; }
+}
+
+function sauvegarderSession() {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ cle: getCle() }));
+}
+
+document.getElementById("lock-month-label").textContent = getMoisLabel();
+
+if (sessionValide()) {
+  document.getElementById("protection-overlay").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("lock-input").addEventListener('keydown', e => {
+  if (e.key === 'Enter') verifierCode();
+});
+
+async function verifierCode() {
+  const input = document.getElementById("lock-input");
+  const msg   = document.getElementById("lock-msg");
+  const saisi = input.value.trim().toUpperCase();
+  if (!saisi) { msg.className="lock-msg error"; msg.textContent="Entrez le code du mois."; return; }
+  msg.className="lock-msg loading"; msg.textContent="Vérification…";
+  try {
+    const url = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/codes/${getCle()}?key=${FIREBASE_API_KEY}`;
+    const resp = await fetch(url);
+    if (!resp.ok) { msg.className="lock-msg error"; msg.textContent="❌ Erreur serveur."; return; }
+    const data = await resp.json();
+    const code = (data?.fields?.valeur?.stringValue || "").trim().toUpperCase();
+    if (saisi === code) {
+      msg.className="lock-msg success";
+      msg.textContent="✅ Accès accordé !";
+      sauvegarderSession();
+      setTimeout(() => {
+        if (!sessionStorage.getItem('thanksShown')) {
+          sessionStorage.setItem('thanksShown','1');
+          window.location.href = 'remerciements.html';
+        } else {
+          document.getElementById("protection-overlay").classList.add("hidden");
+          document.body.style.overflow = "";
+        }
+      }, 700);
+    } else {
+      input.classList.add("error");
+      setTimeout(() => input.classList.remove("error"), 500);
+      msg.className="lock-msg error";
+      msg.textContent="❌ Code incorrect.";
+    }
+  } catch {
+    msg.className="lock-msg error";
+    msg.textContent="❌ Pas de connexion internet.";
+  }
+}
+
+window.verifierCode = verifierCode;
 </script>
 
 </body>
