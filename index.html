@@ -318,7 +318,7 @@ const SESSION_KEY="hub2ie_session";
 const MOIS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 function getCle(){const d=new Date();return`code_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getMoisLabel(){const d=new Date();return`${MOIS[d.getMonth()]} ${d.getFullYear()}`;}
-function sessionValide(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");return s.expiry&&Date.now()<s.expiry;}catch{return false;}}
+function sessionValide(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");if(s.expiry&&Date.now()<s.expiry){return true;}else{localStorage.removeItem('thanksShown');return false;}}catch{return false;}}
 function sauvegarderSession(){localStorage.setItem(SESSION_KEY,JSON.stringify({expiry:Date.now()+12*3600*1000}));}
 document.getElementById("lock-month-label").textContent="Mois : "+getMoisLabel();
 if(sessionValide()){if(!localStorage.getItem('thanksShown')){localStorage.setItem('thanksShown','1');window.location.href='remerciements.html';}else{document.getElementById("protection-overlay").classList.add("hidden");}}else{document.body.style.overflow="hidden";}
